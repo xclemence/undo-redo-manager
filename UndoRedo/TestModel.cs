@@ -1,6 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using Xce.TRackingItem.TestModel;
+using Xce.TRackingItem.TestModel.PropertySave;
 
 namespace Xce.TrackingItem
 {
@@ -39,6 +42,8 @@ namespace Xce.TrackingItem
         }
 
         public ObservableCollection<ListItem> Items { get; set; }
+
+        public IList<object> Drivers { get; set; }
 
         private void OnItemsCollectionChanged<TItem>(object sender, NotifyCollectionChangedEventArgs e)
         {

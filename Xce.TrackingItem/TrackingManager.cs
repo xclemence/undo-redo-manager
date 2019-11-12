@@ -17,6 +17,7 @@ namespace Xce.TrackingItem
         public bool IsAction { get; set; }
 
         public void AddAction(ITrackingAction action) => GetCurrentRegisterScope()?.AddAction(action);
+        public void AddAction(Func<ITrackingAction> action) => GetCurrentRegisterScope()?.AddAction(action);
 
         public bool CanRevert=> (GetCurrentRegisterScope()?.LastActions.Count ?? 0) != 0;
         public bool CanRemake => (GetCurrentRegisterScope()?.RevertedActions.Count ?? 0) != 0;

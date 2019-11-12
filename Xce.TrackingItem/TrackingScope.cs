@@ -19,6 +19,7 @@ namespace Xce.TrackingItem
         public IList<ITrackingAction> LastActions { get; set; } = new List<ITrackingAction>();
 
         public IList<ITrackingAction> RevertedActions { get; set; } = new List<ITrackingAction>();
+        public IList<TrackingLog> Logs { get; } = new List<TrackingLog>();
 
         private TrackingScope Parent { get; }
 
@@ -27,6 +28,21 @@ namespace Xce.TrackingItem
             lock (actionLocker)
             {
                 LastActions.Insert(0, action);
+                RevertedActions.Clear();
+            }
+        }
+
+        public void AddAction(Func<ITrackingAction> action)
+        {
+            lock (actionLocker)
+            {
+                using (var logger = new TrackingLoggerScope(Logs, "Add"))
+                {
+                    var newItem = action();
+                    logger.Type = newItem.GetType().Name;
+                    LastActions.Insert(0, newItem);
+                }
+
                 RevertedActions.Clear();
             }
         }
@@ -40,12 +56,14 @@ namespace Xce.TrackingItem
                 if (lastItem == null)
                     return;
 
-                lastItem.Revert();
+                using (var logger = new TrackingLoggerScope(Logs, "Revert", lastItem.GetType().Name))
+                    lastItem.Revert();
 
                 LastActions.Remove(lastItem);
                 RevertedActions.Insert(0, lastItem);
             }
         }
+
         public void Remake()
         {
             lock (actionLocker)
@@ -56,7 +74,8 @@ namespace Xce.TrackingItem
                 if (lastItem == null)
                     return;
 
-                lastItem.Apply();
+                using (var logger = new TrackingLoggerScope(Logs, "Remake", lastItem.GetType().Name))
+                    lastItem.Apply();
 
                 RevertedActions.Remove(lastItem);
                 LastActions.Insert(0, lastItem);

@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="28.4.1" />
     <PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Xce.TRackingItem.TestModel\Xce.TRackingItem.TestModel.csproj" />
     <ProjectReference Include="..\Xce.TrackingItem\Xce.TrackingItem.csproj" />
   </ItemGroup>
 

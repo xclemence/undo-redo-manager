@@ -22,13 +22,30 @@
         </UniformGrid>
         <GroupBox Header="Model" DockPanel.Dock="Bottom">
             <DockPanel>
-                <UniformGrid Columns="2" DockPanel.Dock="Top" >
-                    <TextBlock Text="Name"/>
-                    <TextBox Text="{Binding Model.Name}"/>
-                    <TextBlock Text="value"/>
-                    <TextBox Text="{Binding Model.Value}"/>
-                </UniformGrid>
-                <DataGrid ItemsSource="{Binding Model.Items}"/>
+                <local:EditionPanel EditObject="{Binding Model}">
+                    <local:EditionPanel.Resources>
+
+                        <Style TargetType="GroupBox" BasedOn="{StaticResource {x:Type GroupBox}}">
+                        </Style>
+                        
+                        <Style TargetType="TextBlock" >
+                            <Setter Property="Width" Value="140"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="5"/>
+                        </Style>
+
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Setter Property="Width" Value="140"/>
+                            <Setter Property="Margin" Value="5"/>
+                        </Style>
+
+                        <Style TargetType="DataGrid">
+                            <Setter Property="Height" Value="200"/>
+                            <Setter Property="Width" Value="280"/>
+                            <Setter Property="Margin" Value="0 5"/>
+                        </Style>
+                    </local:EditionPanel.Resources>
+                </local:EditionPanel>
             </DockPanel>
             
         </GroupBox>
