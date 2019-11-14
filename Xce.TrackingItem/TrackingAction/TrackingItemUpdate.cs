@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Xce.TrackingItem.TrackingAction
 {
@@ -12,20 +14,50 @@ namespace Xce.TrackingItem.TrackingAction
         void Set(T item);
     }
 
+    public class TrackingItemCache
+    {
+        public static TrackingItemCache Instance { get; } = new TrackingItemCache();
+
+        private IDictionary<object, object> cache = new Dictionary<object, object>();
+
+        public T GetCacheObject<T>(T referenceObject) where T: class
+        {
+            if (cache.TryGetValue(referenceObject, out var item))
+                return item as T;
+
+            return null;
+        }
+
+        public T SetCacheObject<T>(T referenceObject) where T : class, ICopiable<T>
+        {
+            var item = referenceObject.DeepCopy();
+            cache[referenceObject] = item;
+
+            return item;
+        }
+
+        public T SetCacheObject<T>(T referenceObject, T item) where T : class, ICopiable<T>
+        {
+            cache[referenceObject] = item;
+            return item;
+        }
+
+        public void Clear() => cache.Clear();
+    }
+
     public class TrackingItemUpdate<TObject> : ITrackingAction
         where TObject : ICopiable<TObject>, ISettable<TObject>
     {
-        public TrackingItemUpdate(TObject oldItem, TObject newItem)
+        public TrackingItemUpdate(TObject referenceItem, TObject newItem, TObject oldItem)
         {
             OldItem = oldItem;
-            NewItem = newItem.DeepCopy();
-
-            ItemReference = newItem;
+            ItemReference = referenceItem;
+            NewItem = newItem;
         }
 
         public TObject ItemReference { get; }
         public TObject OldItem { get; }
-        public TObject NewItem { get; }
+        public TObject NewItem { get; private set; }
 
         public void Apply() => ItemReference.Set(NewItem);
 

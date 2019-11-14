@@ -22,6 +22,8 @@ namespace Xce.TrackingItem
         public bool CanRevert=> (GetCurrentRegisterScope()?.LastActions.Count ?? 0) != 0;
         public bool CanRemake => (GetCurrentRegisterScope()?.RevertedActions.Count ?? 0) != 0;
 
+        public TrackingScope CurrentScope => trackingScopes.Peek();
+
         public void Revert()
         {
             IsAction = true;

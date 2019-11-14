@@ -8,6 +8,12 @@ namespace Xce.TRackingItem.TestModel.ItemSave
     {
         private readonly TrackingManager trackingManager = ItemTrackingManagerProvider.Instance.Manager;
 
+        public CarItem() : base()
+        {
+            if (!trackingManager.IsAction)
+                TrackingItemCache.Instance.SetCacheObject(this);
+        }
+
         public CarItem DeepCopy()
         {
             trackingManager.IsAction = true;
@@ -35,21 +41,29 @@ namespace Xce.TRackingItem.TestModel.ItemSave
             Type = item.Type;
             Vin = item.Vin;
 
+            TrackingItemCache.Instance.SetCacheObject(this, item);
+
             trackingManager.IsAction = false;
         }
-
-        private CarItem itemTmp;
-
-        protected override void OnBeforeSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName) => itemTmp = DeepCopy();
 
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
         {
             if (trackingManager.IsAction)
                 return;
-            var oldItem = itemTmp;
-            itemTmp = null;
-            
-            trackingManager.AddAction(() => this.GetTrackingItemUpdate(oldItem));
+
+            trackingManager.AddAction(() =>
+            {
+                trackingManager.IsAction = true;
+
+                var oldItem = TrackingItemCache.Instance.GetCacheObject(this);
+                var newItem = TrackingItemCache.Instance.SetCacheObject(this);
+
+                var item = this.GetTrackingItemUpdate(newItem, oldItem);
+
+                trackingManager.IsAction = false;
+
+                return item;
+            });
         }
     }
 }

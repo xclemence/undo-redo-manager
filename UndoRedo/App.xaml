@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:UndoRedo"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="local:EnterValidationBehavior.Attach" Value="True"/>
+        </Style>
     </Application.Resources>
 </Application>

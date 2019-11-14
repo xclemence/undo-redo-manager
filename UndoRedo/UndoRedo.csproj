@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Xce.TrackingItem\Xce.TrackingItem.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="TestModelEditionView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

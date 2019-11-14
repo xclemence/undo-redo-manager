@@ -16,7 +16,7 @@ namespace Xce.TRackingItem.TestModel.Multi
 
         private readonly TrackingManager trackingManager = MultiTrackingManagerProvider.Instance.Manager;
 
-        protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
+        protected override void OnBeforeSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
         {
             if (!trackingManager.IsAction)
             {

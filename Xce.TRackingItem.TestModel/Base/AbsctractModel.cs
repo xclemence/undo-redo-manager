@@ -17,13 +17,14 @@ namespace Xce.TRackingItem.TestModel.Base
             field = value;
 
             OnAfterSetProperty(item, field, value, callerName);
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(callerName));
 
             return true;
         }
 
-        protected abstract void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName);
-
         protected virtual void OnBeforeSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName) { }
+
+        protected virtual void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName) { }
     }
 }

@@ -15,7 +15,6 @@ namespace Xce.TrackingItem
             Parent = parent;
             this.onDispose = onDispose;
         }
-
         public IList<ITrackingAction> LastActions { get; set; } = new List<ITrackingAction>();
 
         public IList<ITrackingAction> RevertedActions { get; set; } = new List<ITrackingAction>();
@@ -80,6 +79,13 @@ namespace Xce.TrackingItem
                 RevertedActions.Remove(lastItem);
                 LastActions.Insert(0, lastItem);
             }
+        }
+
+        public void Clear()
+        {
+            LastActions.Clear();
+            RevertedActions.Clear();
+            Logs.Clear();
         }
 
         public void Dispose()

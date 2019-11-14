@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="UndoRedo.TestModelEditionView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UndoRedo"
+        mc:Ignorable="d" >
+    <DockPanel>
+        <GroupBox Header="Model generator" DockPanel.Dock="Top">
+            <UniformGrid Columns="1" Margin="10">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5">
+                    <TextBlock Text="Seed"/>
+                    <TextBox Text="{Binding Seed}" Width="120" Margin="10 0" TextAlignment="Right"/>
+                </StackPanel>
+                <UniformGrid DockPanel.Dock="top" Rows="1" Margin="10 5">
+                    <Button Command="{Binding GenerateDrivers}" Content="Generate drivers"/>
+                    <Button Command="{Binding GenerateCars}" Content="Generate Cars"/>
+                    <Button Command="{Binding GenerateAddresses}" Content="Generate Addresses"/>
+                </UniformGrid>
+                <UniformGrid DockPanel.Dock="top" Rows="1" Margin="10 5">
+                    <TextBox Text="{Binding DriverNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
+                    <TextBox Text="{Binding CarNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
+                    <TextBox Text="{Binding AddressNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
+                </UniformGrid>
+            </UniformGrid>
+        </GroupBox>
+        <UniformGrid DockPanel.Dock="top" Rows="1" >
+            <Button Command="{Binding Undo}" Content="Undo"/>
+            <Button Command="{Binding Redo}" Content="Redo"/>
+        </UniformGrid>
+        <UniformGrid DockPanel.Dock="top" Rows="1" >
+            <Button Command="{Binding UndoAllCommand}" Content="Undo All"/>
+            <Button Command="{Binding RedoAllCommand}" Content="Redo All"/>
+        </UniformGrid>
+        <GroupBox Header="Model" DockPanel.Dock="Top">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Right" Width="250">
+                    <Button Command="{Binding RefreshLogCommand}" Content="Refresh log" DockPanel.Dock="Top"/>
+                    <TextBox Text="{Binding LogDetails}" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
+                </DockPanel>
+                <local:EditionPanel EditObject="{Binding Model}" DockPanel.Dock="Left">
+                    <local:EditionPanel.Resources>
+
+                        <Style TargetType="GroupBox" BasedOn="{StaticResource {x:Type GroupBox}}">
+                        </Style>
+                        
+                        <Style TargetType="TextBlock" >
+                            <Setter Property="Width" Value="140"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="5"/>
+                        </Style>
+
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Setter Property="Width" Value="140"/>
+                            <Setter Property="Margin" Value="5"/>
+                        </Style>
+
+                        <Style TargetType="DataGrid">
+                            <Setter Property="Height" Value="200"/>
+                            <Setter Property="Width" Value="280"/>
+                            <Setter Property="Margin" Value="0 5"/>
+                        </Style>
+                    </local:EditionPanel.Resources>
+                </local:EditionPanel>
+            </DockPanel>
+        </GroupBox>
+    </DockPanel>
+</UserControl>

@@ -7,47 +7,26 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
-        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-            <Setter Property="local:EnterValidationBehavior.Attach" Value="True"/>
-        </Style>
+        <DataTemplate DataType="{x:Type local:TestModelEditionViewModel}">
+            <local:TestModelEditionView DataContext="{Binding}"/>
+        </DataTemplate>
     </Window.Resources>
+
     <DockPanel>
-        <UniformGrid DockPanel.Dock="top" Rows="1" >
-            <Button Command="{Binding Undo}" Content="Undo"/>
-            <Button Command="{Binding Redo}" Content="Redo"/>
-        </UniformGrid>
-        <UniformGrid DockPanel.Dock="top" Rows="1">
-            <Button Command="{Binding StartScope}" Content="Start Scope"/>
-            <Button Command="{Binding StopScope}" Content="Stop Scope"/>
-        </UniformGrid>
-        <GroupBox Header="Model" DockPanel.Dock="Bottom">
-            <DockPanel>
-                <local:EditionPanel EditObject="{Binding Model}">
-                    <local:EditionPanel.Resources>
+        <GroupBox Header="Tracking Type" DockPanel.Dock="Top" Margin="5" Padding="10">
+            <UniformGrid Rows="1" >
+                <RadioButton Content="Property" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.PropertyModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.PropertyModeKey}, Mode=OneWay}"/>
 
-                        <Style TargetType="GroupBox" BasedOn="{StaticResource {x:Type GroupBox}}">
-                        </Style>
-                        
-                        <Style TargetType="TextBlock" >
-                            <Setter Property="Width" Value="140"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="Margin" Value="5"/>
-                        </Style>
+                <RadioButton Content="Item" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.ItemModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.ItemModeKey}, Mode=OneWay}"/>
 
-                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                            <Setter Property="Width" Value="140"/>
-                            <Setter Property="Margin" Value="5"/>
-                        </Style>
+                <RadioButton Content="All" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.AllModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.AllModeKey}, Mode=OneWay}"/>
 
-                        <Style TargetType="DataGrid">
-                            <Setter Property="Height" Value="200"/>
-                            <Setter Property="Width" Value="280"/>
-                            <Setter Property="Margin" Value="0 5"/>
-                        </Style>
-                    </local:EditionPanel.Resources>
-                </local:EditionPanel>
-            </DockPanel>
-            
+            </UniformGrid>
         </GroupBox>
+        
+        <ContentControl Content="{Binding CurrentTestModelEdition}" />
     </DockPanel>
 </Window>

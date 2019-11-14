@@ -7,7 +7,7 @@ namespace Xce.TRackingItem.TestModel.PropertySave
     {
         private readonly TrackingManager trackingManager = PropertyTrackingManagerProvider.Instance.Manager;
 
-        protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
+        protected override void OnBeforeSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
         {
             if (!trackingManager.IsAction)
                 trackingManager.AddAction(() => item.GetTrackingPropertyUpdate(field, value, callerName));
