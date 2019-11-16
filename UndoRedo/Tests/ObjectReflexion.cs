@@ -22,6 +22,8 @@ namespace UndoRedo.Tests
             (Action<TObject, TValue>)Delegate.CreateDelegate(typeof(Action<TObject, TValue>), null, typeof(TObject).GetProperty(callerName).GetSetMethod());
 
         public MethodInfo TestFindSetter2(string callerName) => TestFindPropertyInfoReflexion(callerName).GetSetMethod();
+
+
         public Action<ObjectReflexion, dynamic> TestFindSetter3(string callerName)
         {
             var methodInfo = TestFindPropertyInfoReflexion(callerName).GetSetMethod();

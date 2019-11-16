@@ -174,6 +174,9 @@ namespace UndoRedo
             if (!item.CanWrite || !item.CanRead)
                 return;
 
+            if (item.SetMethod.IsPrivate)
+                return;
+
             var panel = new StackPanel { Orientation = Orientation.Horizontal };
 
             panel.Children.Add(new TextBlock { Text = item.Name });

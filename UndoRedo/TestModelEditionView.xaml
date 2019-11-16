@@ -10,28 +10,37 @@
             <UniformGrid Columns="1" Margin="10">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5">
                     <TextBlock Text="Seed"/>
-                    <TextBox Text="{Binding Seed}" Width="120" Margin="10 0" TextAlignment="Right"/>
+                    <TextBox Text="{Binding GeneratorProperties.Seed}" Width="120" Margin="10 0" TextAlignment="Right"/>
                 </StackPanel>
-                <UniformGrid DockPanel.Dock="top" Rows="1" Margin="10 5">
-                    <Button Command="{Binding GenerateDrivers}" Content="Generate drivers"/>
-                    <Button Command="{Binding GenerateCars}" Content="Generate Cars"/>
-                    <Button Command="{Binding GenerateAddresses}" Content="Generate Addresses"/>
+                <UniformGrid Rows="1" Margin="10 5">
+                    <Button Command="{Binding GenerateDriversCommand}" Content="Generate drivers"/>
+                    <Button Command="{Binding GenerateCarsCommand}" Content="Generate Cars"/>
+                    <Button Command="{Binding GenerateAddressesCommand}" Content="Generate Addresses"/>
                 </UniformGrid>
-                <UniformGrid DockPanel.Dock="top" Rows="1" Margin="10 5">
-                    <TextBox Text="{Binding DriverNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
-                    <TextBox Text="{Binding CarNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
-                    <TextBox Text="{Binding AddressNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
+                <UniformGrid Rows="1" Margin="10 5">
+                    <TextBox Text="{Binding GeneratorProperties.DriverNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
+                    <TextBox Text="{Binding GeneratorProperties.CarNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
+                    <TextBox Text="{Binding GeneratorProperties.AddressNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
                 </UniformGrid>
             </UniformGrid>
         </GroupBox>
-        <UniformGrid DockPanel.Dock="top" Rows="1" >
-            <Button Command="{Binding Undo}" Content="Undo"/>
-            <Button Command="{Binding Redo}" Content="Redo"/>
-        </UniformGrid>
-        <UniformGrid DockPanel.Dock="top" Rows="1" >
-            <Button Command="{Binding UndoAllCommand}" Content="Undo All"/>
-            <Button Command="{Binding RedoAllCommand}" Content="Redo All"/>
-        </UniformGrid>
+        <GroupBox Header="Undo / Redo" DockPanel.Dock="top">
+            <UniformGrid Columns="1" Margin="10">
+                <UniformGrid Rows="1" >
+                    <Button Command="{Binding UndoCommand}" Content="Undo"/>
+                    <Button Command="{Binding RedoCommand}" Content="Redo"/>
+                    <Button Command="{Binding UndoAllCommand}" Content="Undo All"/>
+                    <Button Command="{Binding RedoAllCommand}" Content="Redo All"/>
+                </UniformGrid>
+
+                <UniformGrid Rows="1" >
+                    <Button Command="{Binding StartNewScopeCommand}" Content="Sart Scope"/>
+                    <Button Command="{Binding StopNewScopeCommand}" Content="Stop Scope"/>
+                </UniformGrid>
+            </UniformGrid>
+        </GroupBox>
+        
+
         <GroupBox Header="Model" DockPanel.Dock="Top">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Right" Width="250">

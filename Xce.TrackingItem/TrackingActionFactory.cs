@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Xce.TrackingItem.Interfaces;
 using Xce.TrackingItem.TrackingAction;
 
 namespace Xce.TrackingItem
@@ -36,10 +37,16 @@ namespace Xce.TrackingItem
             return new TrackingPropertyUpdate<TObject, TValue>(field, value, item, setterMethod);
         }
 
-        public static ITrackingAction GetTrackingItemUpdate<TObject>(this TObject referenceItem, TObject newItem, TObject oldItem)
-            where TObject : ICopiable<TObject>, ISettable<TObject>
+        public static ITrackingAction GetTrackingItemUpdate<TObject>(this TObject referenceItem)
+            where TObject : class, ICopiable<TObject>, ISettable<TObject>
         {
-            return new TrackingItemUpdate<TObject>(referenceItem, newItem, oldItem);
+            return new TrackingItemUpdate<TObject>(referenceItem);
+        }
+
+        public static ITrackingAction GetTrackingDatSetUpdate<TDataSet>(this TDataSet currentDataSet)
+            where TDataSet : class, ICopiable<TDataSet>, ISettable<TDataSet>
+        {
+            return new TrackingDataSetUpdate<TDataSet>(currentDataSet);
         }
     }
 }

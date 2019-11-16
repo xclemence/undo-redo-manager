@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
 using Xce.TrackingItem;
-using Xce.TRackingItem.TestModel.Base;
-using Xce.TRackingItem.TestModel.ItemSave;
-using Xce.TRackingItem.TestModel.PropertySave;
+using Xce.TrackingItem.TestModel.Base;
+using Xce.TrackingItem.TestModel.DataSet;
+using Xce.TrackingItem.TestModel.ItemSave;
+using Xce.TrackingItem.TestModel.PropertySave;
 
-namespace Xce.TRackingItem.TestModel.Multi
+namespace Xce.TrackingItem.TestModel.Multi
 {
     public class DriverMulti : Driver<CarMulti, AddressMulti>
     {
         private readonly IList<AbsctractModel> testItems = new List<AbsctractModel>
         {
             new DriverProperty(),
-            new DriverItem()
+            new DriverItem(),
+            new DriverDataSet(),
         };
 
         private readonly TrackingManager trackingManager = MultiTrackingManagerProvider.Instance.Manager;

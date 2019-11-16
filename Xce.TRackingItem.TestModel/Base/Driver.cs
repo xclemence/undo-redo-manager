@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 
-namespace Xce.TRackingItem.TestModel.Base
+namespace Xce.TrackingItem.TestModel.Base
 {
     public abstract class Driver<TCar, TAddr> : AbsctractModel
      where TCar : Car
@@ -28,7 +28,11 @@ namespace Xce.TRackingItem.TestModel.Base
             set => SetProperty(this, ref phoneNumber, value);
         }
 
-        public IList<TCar> Cars { get; set; }
-        public IList<TAddr> Addresses { get; set; }
+
+
+        public ObservableCollection<TCar> Cars { get; set; } = new ObservableCollection<TCar>();
+        public ObservableCollection<TAddr> Addresses { get; set; } = new ObservableCollection<TAddr>();
+
+        public virtual void FinishCreation() { }
     }
 }

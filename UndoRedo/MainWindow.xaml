@@ -15,11 +15,18 @@
     <DockPanel>
         <GroupBox Header="Tracking Type" DockPanel.Dock="Top" Margin="5" Padding="10">
             <UniformGrid Rows="1" >
+
+                <RadioButton Content="Demo" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.DemoModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.DemoModeKey}, Mode=OneWay}"/>
+
                 <RadioButton Content="Property" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.PropertyModeKey}"
                          IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.PropertyModeKey}, Mode=OneWay}"/>
 
                 <RadioButton Content="Item" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.ItemModeKey}"
                          IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.ItemModeKey}, Mode=OneWay}"/>
+                
+                <RadioButton Content="DataSet" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.DataSetModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.DataSetModeKey}, Mode=OneWay}"/>
 
                 <RadioButton Content="All" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.AllModeKey}"
                          IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.AllModeKey}, Mode=OneWay}"/>

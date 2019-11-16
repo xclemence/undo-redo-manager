@@ -1,10 +1,10 @@
 ﻿using Xce.TrackingItem.TestModel.Base;
 
-namespace Xce.TrackingItem.TestModel.PropertySave
+namespace Xce.TrackingItem.TestModel.Demo
 {
-    public class AddressProperty : Address
+    public class AddressDemo : Address
     {
-        private readonly TrackingManager trackingManager = PropertyTrackingManagerProvider.Instance.Manager;
+        private readonly TrackingManager trackingManager = DemoTrackingManagerProvider.Instance.Manager;
 
         protected override void OnBeforeSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
         {

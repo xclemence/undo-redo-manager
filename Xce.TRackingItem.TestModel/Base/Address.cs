@@ -1,4 +1,4 @@
-﻿namespace Xce.TRackingItem.TestModel.Base
+﻿namespace Xce.TrackingItem.TestModel.Base
 {
     public abstract class Address : AbsctractModel
     {

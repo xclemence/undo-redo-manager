@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Xce.TrackingItem;
 using Xce.TrackingItem.TrackingAction;
 
-namespace Xce.TRackingItem.TestModel.Base
+namespace Xce.TrackingItem.TestModel.Base
 {
     public interface ITrackingManagerProvider
     {
@@ -17,6 +16,8 @@ namespace Xce.TRackingItem.TestModel.Base
 
     public abstract class TrackingManagerProvider : ITrackingManagerProvider
     {
+        internal TrackingManager Manager { get; } = new TrackingManager();
+
         public void RevertMulti()
         {
             var trackingManagers = GetTrackingManagers().ToList();
@@ -57,12 +58,15 @@ namespace Xce.TRackingItem.TestModel.Base
             var trackingManagers = GetTrackingManagers().ToList();
 
             foreach (var item in trackingManagers)
-                item.Remake();
+                item.CurrentScope.Clear();
 
             TrackingItemCache.Instance.Clear();
         }
 
-        public abstract IEnumerable<TrackingManager> GetTrackingManagers();
+        public virtual IEnumerable<TrackingManager> GetTrackingManagers()
+        {
+            yield return Manager;
+        }
     }
 
 }

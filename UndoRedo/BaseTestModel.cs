@@ -9,19 +9,19 @@ namespace Xce.TrackingItem
         public int Id { get; set; }
     }
 
-    public class TestModel : ModelBase
+    public class BaseTestModel : ModelBase
     {
         private int value;
         private string name;
 
-        public TestModel(TrackingManager trackingManager) 
+        public BaseTestModel(TrackingManager trackingManager) 
             : base(trackingManager)
         {
             Items = new ObservableCollection<ListItem>();
             Items.CollectionChanged += OnItemsCollectionChanged<ListItem>;
         }
 
-        ~TestModel()
+        ~BaseTestModel()
         {
             Items.CollectionChanged -= OnItemsCollectionChanged<ListItem>;
         }

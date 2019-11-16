@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Input;
 using Bogus;
 using Xce.TrackingItem;
-using Xce.TRackingItem.TestModel.Base;
+using Xce.TrackingItem.TestModel.Base;
 
 namespace UndoRedo
 {
@@ -20,20 +20,29 @@ namespace UndoRedo
         private readonly ITrackingManagerProvider managerProvider;
         private string logDetails;
 
-        public TestModelEditionViewModel(ITrackingManagerProvider managerProvider)
+        private bool scopeEnabled;
+
+        private IList<TrackingScope> scopes;
+
+        public TestModelEditionViewModel(ITrackingManagerProvider managerProvider, GeneratorPropertiesModel generatorProperties)
         {
+            GeneratorProperties = generatorProperties;
             trackingManagers = managerProvider.GetTrackingManagers().ToList();
             this.managerProvider = managerProvider;
 
-            Undo = new RelayCommand(managerProvider.RevertMulti, () => trackingManagers.First().CanRevert);
-            Redo = new RelayCommand(managerProvider.RemakeMulti, () => trackingManagers.First().CanRemake);
+
+            UndoCommand = new RelayCommand(managerProvider.RevertMulti, () => trackingManagers.First().CanRevert);
+            RedoCommand = new RelayCommand(managerProvider.RemakeMulti, () => trackingManagers.First().CanRemake);
 
             UndoAllCommand = new RelayCommand(managerProvider.RevertAlltMulti, () => trackingManagers.First().CanRevert);
             RedoAllCommand = new RelayCommand(managerProvider.RemakeAllMulti, () => trackingManagers.First().CanRemake);
 
-            GenerateDrivers = new RelayCommand(GenerateFakeDrivers);
-            GenerateCars = new RelayCommand(GenerateFakeCars);
-            GenerateAddresses = new RelayCommand(GenerateFakeAddresses);
+            GenerateDriversCommand = new RelayCommand(GenerateFakeDrivers);
+            GenerateCarsCommand = new RelayCommand(GenerateFakeCars);
+            GenerateAddressesCommand = new RelayCommand(GenerateFakeAddresses);
+
+            StartNewScopeCommand = new RelayCommand(StartTrackingScope, () => !scopeEnabled);
+            StopNewScopeCommand = new RelayCommand(StopTrackingScope, () => scopeEnabled);
 
             RefreshLogCommand = new RelayCommand(RefreshLogs);
         }
@@ -46,39 +55,35 @@ namespace UndoRedo
             set => Set(ref model, value);
         }
 
-        public ICommand Undo { get; }
-        public ICommand Redo { get; }
+        public ICommand UndoCommand { get; }
+        public ICommand RedoCommand { get; }
 
         public ICommand UndoAllCommand { get; }
         public ICommand RedoAllCommand { get; }
 
-        //public ICommand StartScope { get; }
-        //public ICommand StopScope { get; }
+        public ICommand StartNewScopeCommand { get; set; }
+        public ICommand StopNewScopeCommand { get; set; }
 
-        public ICommand GenerateDrivers { get; }
-        public ICommand GenerateCars { get; }
-        public ICommand GenerateAddresses { get; }
+        public ICommand GenerateDriversCommand { get; }
+        public ICommand GenerateCarsCommand { get; }
+        public ICommand GenerateAddressesCommand { get; }
         public ICommand RefreshLogCommand { get; }
 
-        public int DriverNumber { get; set; } = 50;
-        public int CarNumber { get; set; } = 100;
-        public int AddressNumber { get; set; } = 100;
-
-        public int Seed { get; set; }
+        public GeneratorPropertiesModel GeneratorProperties { get; }
 
         private void ApplySeed()
         {
-            if (Seed != 0)
-                Randomizer.Seed = new Random(Seed);
+            if (GeneratorProperties.Seed != 0)
+                Randomizer.Seed = new Random(GeneratorProperties.Seed);
         }
 
-        private void GenerateFakeAddresses() => GenerateFake(FakerProviders.GetFakerAddress<TAddr>(), AddressNumber);
+        private void GenerateFakeAddresses() => GenerateFake(FakerProviders.GetFakerAddress<TAddr>(), GeneratorProperties.AddressNumber);
 
 
-        private void GenerateFakeCars() => GenerateFake(FakerProviders.GetFakerCar<TCar>(), CarNumber);
+        private void GenerateFakeCars() => GenerateFake(FakerProviders.GetFakerCar<TCar>(), GeneratorProperties.CarNumber);
 
         private void GenerateFakeDrivers() => 
-            GenerateFake(FakerProviders.getFakerDriver<TDriver, TCar, TAddr>(), DriverNumber);
+            GenerateFake(FakerProviders.getFakerDriver<TDriver, TCar, TAddr>(), GeneratorProperties.DriverNumber);
 
         private void GenerateFake<T>(Faker<T> faker, int itemNumber)
             where T: class
@@ -133,18 +138,24 @@ namespace UndoRedo
             set => Set(ref logDetails, value);
         }
 
-        //private void StopTrackingScope()
-        //{
-        //    scopeEnabled = false;
-        //    scope.Dispose();
-        //    scope = null;
-        //}
+        private void StopTrackingScope()
+        {
 
-        //private void StartTrackingScope()
-        //{
-        //    scopeEnabled = true;
-        //    scope = trackingManager.NewScope();
-        //}
+            scopeEnabled = false;
 
+            if (scopes == null)
+                return;
+
+            foreach (var item in scopes)
+                item.Dispose();
+
+            scopes = null;
+        }
+
+        private void StartTrackingScope()
+        {
+            scopeEnabled = true;
+            scopes = trackingManagers.Select(x => x.NewScope()).ToList();
+        }
     }
 }

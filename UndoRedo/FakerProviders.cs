@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using Xce.TRackingItem.TestModel.Base;
+using Xce.TrackingItem.TestModel.Base;
 
 namespace UndoRedo
 {
@@ -45,12 +45,21 @@ namespace UndoRedo
             var fakerCar = GetFakerCar<TCar>();
             var fakerAddr = GetFakerAddress<TAddress>();
 
-            var driversGenerator = new Faker<TDriver>().RuleFor(x => x.FirstName, f => f.Name.FirstName())
+            return new Faker<TDriver>().RuleFor(x => x.FirstName, f => f.Name.FirstName())
                                                        .RuleFor(x => x.LastName, f => f.Name.LastName())
                                                        .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
-                                                       .RuleFor(x => x.Addresses, f => fakerAddr.Generate(f.Random.Int(1, 10)))
-                                                       .RuleFor(x => x.Cars, f => fakerCar.Generate(f.Random.Int(10, 1000)));
-            return driversGenerator;
+                                                       .FinishWith((f, u) =>
+                                                       {
+                                                            var addresses = fakerAddr.Generate(f.Random.Int(1, 10));
+
+                                                           foreach (var item in addresses)
+                                                               u.Addresses.Add(item);
+
+                                                           var cars = fakerCar.Generate(f.Random.Int(10, 1000));
+
+                                                           foreach (var item in cars)
+                                                               u.Cars.Add(item);
+                                                       });
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Xce.TrackingItem;
+﻿using Xce.TrackingItem.Interfaces;
 using Xce.TrackingItem.TrackingAction;
-using Xce.TRackingItem.TestModel.Base;
+using Xce.TrackingItem.TestModel.Base;
 
-namespace Xce.TRackingItem.TestModel.ItemSave
+namespace Xce.TrackingItem.TestModel.ItemSave
 {
     public class DriverItem : Driver<CarItem, AddressItem>, ICopiable<DriverItem>, ISettable<DriverItem>
     {
@@ -16,29 +16,14 @@ namespace Xce.TRackingItem.TestModel.ItemSave
 
         public DriverItem DeepCopy()
         {
-            trackingManager.IsAction = true;
-            var copy = new DriverItem
-            {
-                FirstName = FirstName,
-                LastName = LastName,
-                PhoneNumber = PhoneNumber,
-            };
-            trackingManager.IsAction = false;
-
-            return copy;
+            using var scope = new StopTrackingScope(trackingManager);
+            return this.DeepCopyDriver<DriverItem, CarItem, AddressItem>();
         }
 
         public void Set(DriverItem item)
         {
-            trackingManager.IsAction = true;
-
-            FirstName = item.FirstName;
-            LastName = item.LastName;
-            PhoneNumber = item.PhoneNumber;
-
-            TrackingItemCache.Instance.SetCacheObject(this, item);
-
-            trackingManager.IsAction = false;
+            using var scope = new StopTrackingScope(trackingManager);
+            this.SetDriver<DriverItem, CarItem, AddressItem>(item);
         }
 
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
@@ -48,16 +33,8 @@ namespace Xce.TRackingItem.TestModel.ItemSave
 
             trackingManager.AddAction(() =>
             {
-                trackingManager.IsAction = true;
-
-                var oldItem = TrackingItemCache.Instance.GetCacheObject(this);
-                var newItem = TrackingItemCache.Instance.SetCacheObject(this);
-
-                var item = this.GetTrackingItemUpdate(newItem, oldItem);
-
-                trackingManager.IsAction = false;
-
-                return item;
+                using var scope = new StopTrackingScope(trackingManager);
+                return this.GetTrackingItemUpdate();
             });
         }
     }

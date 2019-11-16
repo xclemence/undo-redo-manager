@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xce.TRackingItem.TestModel\Xce.TRackingItem.TestModel.csproj" />
+    <ProjectReference Include="..\Xce.TRackingItem.TestModel\Xce.TrackingItem.TestModel.csproj" />
     <ProjectReference Include="..\Xce.TrackingItem\Xce.TrackingItem.csproj" />
   </ItemGroup>
 

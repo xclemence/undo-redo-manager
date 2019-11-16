@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>Xce.TrackingItem.TestModel</AssemblyName>
+    <RootNamespace>Xce.TrackingItem.TestModel</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UndoRedo", "UndoRedo\UndoRe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.TrackingItem", "Xce.TrackingItem\Xce.TrackingItem.csproj", "{C3A044CC-4D04-422D-A7DC-309AB6F4087B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xce.TRackingItem.TestModel", "Xce.TRackingItem.TestModel\Xce.TRackingItem.TestModel.csproj", "{4B860F35-C65D-430C-B5F1-47184F656A26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.TrackingItem.TestModel", "Xce.TRackingItem.TestModel\Xce.TrackingItem.TestModel.csproj", "{4B860F35-C65D-430C-B5F1-47184F656A26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

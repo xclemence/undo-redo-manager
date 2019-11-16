@@ -1,7 +1,6 @@
-﻿using Xce.TrackingItem;
-using Xce.TRackingItem.TestModel.Base;
+﻿using Xce.TrackingItem.TestModel.Base;
 
-namespace Xce.TRackingItem.TestModel.PropertySave
+namespace Xce.TrackingItem.TestModel.PropertySave
 {
     public class CarProperty : Car
     {

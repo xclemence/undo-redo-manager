@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Xce.TrackingItem.Interfaces;
 
 namespace Xce.TrackingItem.TrackingAction
 {
-    public interface ICopiable<out T> where T : ICopiable<T>
-    {
-        T DeepCopy();
-    }
-
-    public interface ISettable<in T> where T : ISettable<T>
-    {
-        void Set(T item);
-    }
-
     public class TrackingItemCache
     {
         public static TrackingItemCache Instance { get; } = new TrackingItemCache();
 
-        private IDictionary<object, object> cache = new Dictionary<object, object>();
+        private readonly IDictionary<object, object> cache = new Dictionary<object, object>();
 
         public T GetCacheObject<T>(T referenceObject) where T: class
         {
@@ -46,21 +35,29 @@ namespace Xce.TrackingItem.TrackingAction
     }
 
     public class TrackingItemUpdate<TObject> : ITrackingAction
-        where TObject : ICopiable<TObject>, ISettable<TObject>
+        where TObject : class, ICopiable<TObject>, ISettable<TObject>
     {
-        public TrackingItemUpdate(TObject referenceItem, TObject newItem, TObject oldItem)
+        public TrackingItemUpdate(TObject referenceItem)
         {
-            OldItem = oldItem;
-            ItemReference = referenceItem;
-            NewItem = newItem;
+            ReferenceItem = referenceItem;
+            OldItem = TrackingItemCache.Instance.GetCacheObject(referenceItem);
+            NewItem = TrackingItemCache.Instance.SetCacheObject(referenceItem);
         }
 
-        public TObject ItemReference { get; }
+        public TObject ReferenceItem { get; }
         public TObject OldItem { get; }
         public TObject NewItem { get; private set; }
 
-        public void Apply() => ItemReference.Set(NewItem);
+        public void Apply()
+        {
+            ReferenceItem.Set(NewItem);
+            TrackingItemCache.Instance.SetCacheObject(ReferenceItem, NewItem);
+        }
 
-        public void Revert() => ItemReference.Set(OldItem);
+        public void Revert()
+        {
+            ReferenceItem.Set(OldItem);
+            TrackingItemCache.Instance.SetCacheObject(ReferenceItem, OldItem);
+        }
     }
 }
