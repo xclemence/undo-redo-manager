@@ -37,7 +37,7 @@ namespace UndoRedo
                                    .RuleFor(x => x.Vin, f => f.Vehicle.Vin());
         }
 
-        public static Faker<TDriver> getFakerDriver<TDriver, TCar, TAddress>()
+        public static Faker<TDriver> getFakerDriver<TDriver, TCar, TAddress>(int carMaxNumber, int addressMaxNumber)
             where TDriver : Driver<TCar, TAddress>
             where TCar : Car
             where TAddress : Address
@@ -50,12 +50,12 @@ namespace UndoRedo
                                                        .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
                                                        .FinishWith((f, u) =>
                                                        {
-                                                            var addresses = fakerAddr.Generate(f.Random.Int(1, 10));
+                                                            var addresses = fakerAddr.Generate(f.Random.Int(1, addressMaxNumber));
 
                                                            foreach (var item in addresses)
                                                                u.Addresses.Add(item);
 
-                                                           var cars = fakerCar.Generate(f.Random.Int(10, 1000));
+                                                           var cars = fakerCar.Generate(f.Random.Int(10, carMaxNumber));
 
                                                            foreach (var item in cars)
                                                                u.Cars.Add(item);

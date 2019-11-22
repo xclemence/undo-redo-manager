@@ -8,7 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Runtime.CompilerServices;
 using System;
 
-namespace UndoRedo
+namespace UndoRedo.Base
 {
     public class PropertyObject : INotifyPropertyChanged
     {
@@ -133,7 +133,7 @@ namespace UndoRedo
             foreach (var item in properties)
             {
                 if (item.PropertyType != typeof(string) && typeof(System.Collections.IEnumerable).IsAssignableFrom(item.PropertyType))
-                    control.AddCollectionItem(item);
+                    control.AddCollectionItem(item, e.NewValue);
                 else
                     control.AddPropertyItem(item);
             }
@@ -141,15 +141,15 @@ namespace UndoRedo
 
         public SelectionManager SelectionManager { get; }
 
-        private void AddCollectionItem(PropertyInfo item)
+        private void AddCollectionItem(PropertyInfo item, object parent)
         {
             if (!item.CanRead)
                 return;
 
             var dataGrid = new DataGrid { HeadersVisibility = DataGridHeadersVisibility.Column };
-            
-            dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(item.Name));
 
+            dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(item.Name));
+            
             var index = SelectionManager.AddNewItem();
 
             var selectionBinding = new Binding($"{nameof(SelectionManager)}[{index}]")
@@ -158,11 +158,23 @@ namespace UndoRedo
                 Mode = BindingMode.TwoWay
             };
 
+            int? value = null;
+
+            try
+            {
+                dynamic collection = item.GetMethod.Invoke(parent, null);
+                value = collection.Count;
+            }
+            catch
+            {
+                // DO nothing
+            }
+            
             dataGrid.SetBinding(Selector.SelectedItemProperty, selectionBinding);
 
             var group = new GroupBox 
             { 
-                Header = item.Name,
+                Header = $"{item.Name} ({value}",
                 Content = dataGrid,
             };
 

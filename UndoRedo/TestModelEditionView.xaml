@@ -3,21 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UndoRedo"
+        xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
+            xmlns:base="clr-namespace:UndoRedo.Base"
         mc:Ignorable="d" >
     <DockPanel>
         <GroupBox Header="Model generator" DockPanel.Dock="Top">
-            <UniformGrid Columns="1" Margin="10">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5">
+            <UniformGrid Columns="1">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2">
                     <TextBlock Text="Seed"/>
                     <TextBox Text="{Binding GeneratorProperties.Seed}" Width="120" Margin="10 0" TextAlignment="Right"/>
                 </StackPanel>
-                <UniformGrid Rows="1" Margin="10 5">
+                <UniformGrid Rows="1" Margin="2">
                     <Button Command="{Binding GenerateDriversCommand}" Content="Generate drivers"/>
                     <Button Command="{Binding GenerateCarsCommand}" Content="Generate Cars"/>
                     <Button Command="{Binding GenerateAddressesCommand}" Content="Generate Addresses"/>
                 </UniformGrid>
-                <UniformGrid Rows="1" Margin="10 5">
+                <UniformGrid Rows="1" Margin="2">
                     <TextBox Text="{Binding GeneratorProperties.DriverNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
                     <TextBox Text="{Binding GeneratorProperties.CarNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
                     <TextBox Text="{Binding GeneratorProperties.AddressNumber}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextAlignment="Right"/>
@@ -25,17 +26,22 @@
             </UniformGrid>
         </GroupBox>
         <GroupBox Header="Undo / Redo" DockPanel.Dock="top">
-            <UniformGrid Columns="1" Margin="10">
-                <UniformGrid Rows="1" >
+            <UniformGrid Columns="1">
+                <UniformGrid Rows="1"  Margin="0 0 0 2">
                     <Button Command="{Binding UndoCommand}" Content="Undo"/>
                     <Button Command="{Binding RedoCommand}" Content="Redo"/>
                     <Button Command="{Binding UndoAllCommand}" Content="Undo All"/>
                     <Button Command="{Binding RedoAllCommand}" Content="Redo All"/>
                 </UniformGrid>
 
-                <UniformGrid Rows="1" >
+                <UniformGrid Rows="1" Margin="0 2 0 0">
                     <Button Command="{Binding StartNewScopeCommand}" Content="Sart Scope"/>
                     <Button Command="{Binding StopNewScopeCommand}" Content="Stop Scope"/>
+                </UniformGrid>
+
+                <UniformGrid Rows="1" Margin="0 2 0 0">
+                    <Button Command="{Binding StopTrackingCommand}" Content="Stop tracking"/>
+                    <Button Command="{Binding StartTrackingCommand}" Content="Start tracking"/>
                 </UniformGrid>
             </UniformGrid>
         </GroupBox>
@@ -47,8 +53,8 @@
                     <Button Command="{Binding RefreshLogCommand}" Content="Refresh log" DockPanel.Dock="Top"/>
                     <TextBox Text="{Binding LogDetails}" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
                 </DockPanel>
-                <local:EditionPanel EditObject="{Binding Model}" DockPanel.Dock="Left">
-                    <local:EditionPanel.Resources>
+                <base:EditionPanel EditObject="{Binding Model}" DockPanel.Dock="Left">
+                    <base:EditionPanel.Resources>
 
                         <Style TargetType="GroupBox" BasedOn="{StaticResource {x:Type GroupBox}}">
                         </Style>
@@ -68,9 +74,17 @@
                             <Setter Property="Height" Value="200"/>
                             <Setter Property="Width" Value="280"/>
                             <Setter Property="Margin" Value="0 5"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Standard"/>
+                            <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+                            <Setter Property="mahapps:DataGridHelper.ColumnHeaderPadding" Value="0"/>
                         </Style>
-                    </local:EditionPanel.Resources>
-                </local:EditionPanel>
+                        
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </base:EditionPanel.Resources>
+                </base:EditionPanel>
             </DockPanel>
         </GroupBox>
     </DockPanel>

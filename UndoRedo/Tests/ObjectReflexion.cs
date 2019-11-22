@@ -18,25 +18,25 @@ namespace UndoRedo.Tests
             return (PropertyInfo) body.Member;
         }
 
-        public static  Action<TObject, TValue> TestFindSetter<TObject, TValue>(string callerName) => 
+        public static  Action<TObject, TValue> TestFindSetterAndCreateDelegate<TObject, TValue>(string callerName) => 
             (Action<TObject, TValue>)Delegate.CreateDelegate(typeof(Action<TObject, TValue>), null, typeof(TObject).GetProperty(callerName).GetSetMethod());
 
-        public MethodInfo TestFindSetter2(string callerName) => TestFindPropertyInfoReflexion(callerName).GetSetMethod();
-
-
-        public Action<ObjectReflexion, dynamic> TestFindSetter3(string callerName)
-        {
-            var methodInfo = TestFindPropertyInfoReflexion(callerName).GetSetMethod();
-            return (x, y) => methodInfo.Invoke(x, new[] { y });
-        }
-
-        public Action<ObjectReflexion, T> TestFindSetter4<T>(string callerName)
+        public Action<ObjectReflexion, T> TestFindSetterAndCreateDelegateFromInfo<T>(string callerName)
         {
             var methodInfo = TestFindPropertyInfoReflexion(callerName).GetSetMethod();
             return (Action<ObjectReflexion, T>)methodInfo.CreateDelegate(typeof(Action<ObjectReflexion, T>));
         }
 
-        public Action<ObjectReflexion, T> TestFindSetter5<T>(string callerName)
+        public MethodInfo TestFindSetterAndCreateMethodInfo(string callerName) => TestFindPropertyInfoReflexion(callerName).GetSetMethod();
+
+
+        public Action<ObjectReflexion, dynamic> TestFindSetterCreateActionInvoke(string callerName)
+        {
+            var methodInfo = TestFindPropertyInfoReflexion(callerName).GetSetMethod();
+            return (x, y) => methodInfo.Invoke(x, new[] { y });
+        }
+
+        public Action<ObjectReflexion, T> TestFindSetterFullAction<T>(string callerName)
         {
             return (x, t) => x.GetType().GetProperty(callerName).GetSetMethod().CreateDelegate(typeof(Action<ObjectReflexion, T>));
         }
