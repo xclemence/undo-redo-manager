@@ -1,39 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace UndoRedo.Tests
 {
     public class TestPerf
     {
-        public void RunTest()
+        public uint TryNumber { get; set; } = 1000000;
+
+        public IEnumerable<(string test, TimeSpan duration)> RunTest()
         {
             var testObject = new ObjectReflexion();
 
-            var propertyByReflexion = ExecuteTest(() => testObject.TestFindPropertyInfoReflexion(nameof(ObjectReflexion.Name)));
-            var propertyByExpression = ExecuteTest(() => testObject.TestFindPropertyInfoExpression(() => testObject.Name));
+            yield return ("PropertyInfo With Reflexion", ExecuteTest(() => testObject.TestFindPropertyInfoReflexion(nameof(ObjectReflexion.Name))));
+            yield return ("PropertyInfo With Expression", ExecuteTest(() => testObject.TestFindPropertyInfoExpression(() => testObject.Name)));
+            yield return ("MathodInfo with Reflexion", ExecuteTest(() => testObject.TestFindSetterAndCreateMethodInfo(nameof(ObjectReflexion.Name))));
+            
+            yield return ("Delegate From Delegate", ExecuteTest(() => ObjectReflexion.TestFindSetterAndCreateDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name))));
+            //yield return ("Delegate From MethodInfo", ExecuteTest(() => testObject.TestFindSetterAndCreateDelegateFromInfo<string>(nameof(ObjectReflexion.Name))));
+            
+            yield return ("Action From MethodInfo (capture)", ExecuteTest(() => testObject.TestFindSetterCreateActionInvoke(nameof(ObjectReflexion.Name))));
+            yield return ("Action From MethodInfo (no capture)", ExecuteTest(() => testObject.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name))));
 
+            yield return ("-------------------------------", TimeSpan.Zero);
+            
+            yield return ("Set Direct", ExecuteTest(() => testObject.Name = "truc"));
+            
+            var propertyInfo = testObject.TestFindPropertyInfoReflexion(nameof(ObjectReflexion.Name));
+            yield return ("Set PropertyInfo", ExecuteTest(() => propertyInfo.SetValue(testObject, "truc")));
 
-            var setterMethod = ExecuteTest(() => ObjectReflexion.TestFindSetter<ObjectReflexion, string>(nameof(ObjectReflexion.Name)));
-            var setterMethod2 = ExecuteTest(() => testObject.TestFindSetter2(nameof(ObjectReflexion.Name)));
+            var methodInfo = testObject.TestFindSetterAndCreateMethodInfo(nameof(ObjectReflexion.Name));
+            yield return ("Set MethodIndo", ExecuteTest(() => methodInfo.Invoke(testObject, new[] { "tsffdsruc" })));
 
-            var setterMethod3 = ExecuteTest(() => testObject.TestFindSetter3(nameof(ObjectReflexion.Name)));
-            var setterMethod4 = ExecuteTest(() => testObject.TestFindSetter4<string>(nameof(ObjectReflexion.Name)));
-            var setterMethod5 = ExecuteTest(() => testObject.TestFindSetter5<string>(nameof(ObjectReflexion.Name)));
+            var setterDelegate = ObjectReflexion.TestFindSetterAndCreateDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name));
+            var setterDelegateFromMethod = testObject.TestFindSetterAndCreateDelegateFromInfo<string>(nameof(ObjectReflexion.Name));
+            
+            var setterActionContext = testObject.TestFindSetterCreateActionInvoke(nameof(ObjectReflexion.Name));
+            var setterActionNoContext = testObject.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name));
 
-            var property = testObject.TestFindPropertyInfoExpression(() => testObject.Name);
+            yield return ("Set Delegate", ExecuteTest(() => setterDelegate(testObject, "machin")));
+            //yield return ("Set Delegate from method", ExecuteTest(() => setterDelegateFromMethod(testObject, "machin1à")));
 
-            var setPropertyValue = ExecuteTest(() => testObject.TestSet(property, "truc"));
-            var setDirectValue = ExecuteTest(() => testObject.Name = "truc");
-
-            var setter = ObjectReflexion.TestFindSetter<ObjectReflexion, string>(nameof(ObjectReflexion.Name));
-            var setter3 = testObject.TestFindSetter3(nameof(ObjectReflexion.Name));
-            var setter4 = testObject.TestFindSetter4<string>(nameof(ObjectReflexion.Name));
-            var setter5 = testObject.TestFindSetter5<string>(nameof(ObjectReflexion.Name));
-        
-            var setterCall = ExecuteTest(() => setter(testObject, "machin"));
-            var setterCall3 = ExecuteTest(() => setter3(testObject, "machin1à"));
-            var setterCall4 = ExecuteTest(() => setter4(testObject, "machin1à"));
-            var setterCall5 = ExecuteTest(() => setter5(testObject, "hello"));
+            yield return ("Set Action Context", ExecuteTest(() => setterActionContext(testObject, "machin1à")));
+            yield return ("Set Action No context", ExecuteTest(() => setterActionNoContext(testObject, "hello")));
 
         }
 
@@ -42,7 +51,7 @@ namespace UndoRedo.Tests
             var watch = new Stopwatch();
 
             watch.Start();
-            for (var i = 0; i < 1000000; ++i)
+            for (var i = 0; i < TryNumber; ++i)
             {
                 action();
             }

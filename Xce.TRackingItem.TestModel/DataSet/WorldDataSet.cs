@@ -47,5 +47,12 @@ namespace Xce.TrackingItem.TestModel.DataSet
             Cars.Set(item.Cars);
             Addresses.Set(item.Addresses);
         }
+
+        public void Clear()
+        {
+            Drivers.Clear();
+            Cars.Clear();
+            Addresses.Clear();
+        }
     }
 }

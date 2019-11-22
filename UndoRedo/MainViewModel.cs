@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using UndoRedo.Base;
+using UndoRedo.Tests;
 using Xce.TrackingItem.TestModel.DataSet;
 using Xce.TrackingItem.TestModel.Demo;
 using Xce.TrackingItem.TestModel.ItemSave;
@@ -39,11 +41,23 @@ namespace UndoRedo
             SetMode(DemoModeKey);
 
             SetModeCommand = new RelayCommand<string>(SetMode, x => x != currentMode);
+
+            OpenTestPerfCommand = new RelayCommand(OpenTestPerf);
         }
+
+        private void OpenTestPerf()
+        {
+            var window = new SetterPerformanceWindow();
+            window.Show();
+        }
+
+        public ICommand OpenTestPerfCommand { get; }
 
         private void SetMode(string mode) 
         {
             currentMode = mode;
+
+            CurrentTestModelEdition?.Dispose();
             CurrentTestModelEdition = modes[mode]();
         }
 

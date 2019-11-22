@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using Bogus;
+using UndoRedo.Base;
 using Xce.TrackingItem;
 using Xce.TrackingItem.TestModel.Base;
 
 namespace UndoRedo
 {
-    public class TestModelEditionViewModel : PropertyObject {  }
+    public abstract class TestModelEditionViewModel : PropertyObject, IDisposable
+    {
+        public abstract void Dispose();
+    }
 
     public class TestModelEditionViewModel<TDriver, TCar, TAddr> : TestModelEditionViewModel
         where TDriver : Driver<TCar, TAddr>
@@ -20,7 +24,7 @@ namespace UndoRedo
         private readonly ITrackingManagerProvider managerProvider;
         private string logDetails;
 
-        private bool scopeEnabled;
+        public IList<StopTrackingScope> stopTrackingScopes;
 
         private IList<TrackingScope> scopes;
 
@@ -41,8 +45,11 @@ namespace UndoRedo
             GenerateCarsCommand = new RelayCommand(GenerateFakeCars);
             GenerateAddressesCommand = new RelayCommand(GenerateFakeAddresses);
 
-            StartNewScopeCommand = new RelayCommand(StartTrackingScope, () => !scopeEnabled);
-            StopNewScopeCommand = new RelayCommand(StopTrackingScope, () => scopeEnabled);
+            StartNewScopeCommand = new RelayCommand(StartTrackingScope, () => scopes == null);
+            StopNewScopeCommand = new RelayCommand(StopTrackingScope, () => scopes != null);
+
+            StopTrackingCommand = new RelayCommand(DisableTracking, () => stopTrackingScopes == null);
+            StartTrackingCommand = new RelayCommand(EnableTracking, () => stopTrackingScopes != null);
 
             RefreshLogCommand = new RelayCommand(RefreshLogs);
         }
@@ -69,7 +76,16 @@ namespace UndoRedo
         public ICommand GenerateAddressesCommand { get; }
         public ICommand RefreshLogCommand { get; }
 
+        public ICommand StopTrackingCommand { get; }
+        public ICommand StartTrackingCommand { get; }
+
         public GeneratorPropertiesModel GeneratorProperties { get; }
+
+        public string LogDetails
+        {
+            get => logDetails;
+            set => Set(ref logDetails, value);
+        }
 
         private void ApplySeed()
         {
@@ -83,13 +99,13 @@ namespace UndoRedo
         private void GenerateFakeCars() => GenerateFake(FakerProviders.GetFakerCar<TCar>(), GeneratorProperties.CarNumber);
 
         private void GenerateFakeDrivers() => 
-            GenerateFake(FakerProviders.getFakerDriver<TDriver, TCar, TAddr>(), GeneratorProperties.DriverNumber);
+            GenerateFake(FakerProviders.getFakerDriver<TDriver, TCar, TAddr>(GeneratorProperties.CarNumber, GeneratorProperties.AddressNumber), GeneratorProperties.DriverNumber);
 
         private void GenerateFake<T>(Faker<T> faker, int itemNumber)
             where T: class
         {
             managerProvider.Clear();
-
+            
             ApplySeed();
 
             UpdateModel(new List<object>(faker.Generate(itemNumber)));
@@ -132,30 +148,29 @@ namespace UndoRedo
             return builder.ToString();
         }
 
-        public string LogDetails
+        private void CleanUp<T>(ref IList<T> collection) where T : IDisposable
         {
-            get => logDetails;
-            set => Set(ref logDetails, value);
-        }
-
-        private void StopTrackingScope()
-        {
-
-            scopeEnabled = false;
-
-            if (scopes == null)
+            if (collection == null)
                 return;
 
-            foreach (var item in scopes)
+            foreach (var item in collection)
                 item.Dispose();
 
-            scopes = null;
+            collection = null;
         }
+        private void StopTrackingScope() => CleanUp(ref scopes);
 
-        private void StartTrackingScope()
+        private void StartTrackingScope() => scopes = trackingManagers.Select(x => x.NewScope()).ToList();
+
+        private void DisableTracking() => stopTrackingScopes = trackingManagers.Select(x => new StopTrackingScope(x)).ToList();
+        
+        private void EnableTracking() => CleanUp(ref stopTrackingScopes);
+
+        public override void Dispose()
         {
-            scopeEnabled = true;
-            scopes = trackingManagers.Select(x => x.NewScope()).ToList();
+            EnableTracking();
+            StopTrackingScope();
+            managerProvider.Clear();
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Xce.TrackingItem.TestModel.ItemSave
     {
         private readonly TrackingManager trackingManager = ItemTrackingManagerProvider.Instance.Manager;
 
-        public CarItem() : base()
+        public CarItem(bool tracking = false) : base()
         {
-            if (!trackingManager.IsAction)
+            if (!trackingManager.IsAction || tracking)
                 TrackingItemCache.Instance.SetCacheObject(this);
         }
 

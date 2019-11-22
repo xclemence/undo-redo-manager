@@ -4,8 +4,19 @@
              xmlns:local="clr-namespace:UndoRedo"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-            <Setter Property="local:EnterValidationBehavior.Attach" Value="True"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/light.olive.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="local:EnterValidationBehavior.Attach" Value="True"/>
+            </Style>
+        </ResourceDictionary>
+        
     </Application.Resources>
+
 </Application>

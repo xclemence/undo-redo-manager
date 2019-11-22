@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Xce.TrackingItem.TestModel.DataSet;
 using Xce.TrackingItem.TrackingAction;
 
 namespace Xce.TrackingItem.TestModel.Base
@@ -61,6 +62,8 @@ namespace Xce.TrackingItem.TestModel.Base
                 item.CurrentScope.Clear();
 
             TrackingItemCache.Instance.Clear();
+
+            DataSetTrackingManagerProvider.Instance.DataSet?.Clear();
         }
 
         public virtual IEnumerable<TrackingManager> GetTrackingManagers()
