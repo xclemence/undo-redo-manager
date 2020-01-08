@@ -13,7 +13,7 @@ namespace UndoRedo.Tests
         {
             InitializeComponent();
 
-            RunCommand = new RelayCommand(OnRun);
+            RunCommand = new AsyncCommand(OnRun);
 
             DataContext = this;
         }

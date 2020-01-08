@@ -7,6 +7,8 @@ namespace Xce.TrackingItem.TestModel.Base
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public virtual void Initialize() { }
+
         protected virtual bool SetProperty<TObject, TValue>(TObject item, ref TValue field, TValue value, [CallerMemberName] string callerName = null)
         {
             if (field == null && value == null || (field?.Equals(value) ?? false))

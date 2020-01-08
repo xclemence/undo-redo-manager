@@ -17,8 +17,9 @@ namespace UndoRedo.Tests
             yield return ("MathodInfo with Reflexion", ExecuteTest(() => testObject.TestFindSetterAndCreateMethodInfo(nameof(ObjectReflexion.Name))));
             
             yield return ("Delegate From Delegate", ExecuteTest(() => ObjectReflexion.TestFindSetterAndCreateDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name))));
-            //yield return ("Delegate From MethodInfo", ExecuteTest(() => testObject.TestFindSetterAndCreateDelegateFromInfo<string>(nameof(ObjectReflexion.Name))));
             
+            yield return ("Delegate Lazy", ExecuteTest(() => ObjectReflexion.TestFindSetterLazyDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name))));
+
             yield return ("Action From MethodInfo (capture)", ExecuteTest(() => testObject.TestFindSetterCreateActionInvoke(nameof(ObjectReflexion.Name))));
             yield return ("Action From MethodInfo (no capture)", ExecuteTest(() => testObject.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name))));
 
@@ -39,10 +40,16 @@ namespace UndoRedo.Tests
             var setterActionNoContext = testObject.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name));
 
             yield return ("Set Delegate", ExecuteTest(() => setterDelegate(testObject, "machin")));
+
+            var setterLazyDelegate = ObjectReflexion.TestFindSetterLazyDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name));
+            yield return ("Set Delegate Lazy", ExecuteTest(() => setterLazyDelegate(testObject, "machin")));
+
             //yield return ("Set Delegate from method", ExecuteTest(() => setterDelegateFromMethod(testObject, "machin1à")));
 
             yield return ("Set Action Context", ExecuteTest(() => setterActionContext(testObject, "machin1à")));
             yield return ("Set Action No context", ExecuteTest(() => setterActionNoContext(testObject, "hello")));
+
+
 
         }
 

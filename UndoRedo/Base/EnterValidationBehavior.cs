@@ -12,7 +12,6 @@ namespace UndoRedo
                             typeof(bool),
                             typeof(EnterValidationBehavior),
                             new UIPropertyMetadata(false, OnAttachChanged));
-
       
         internal static void OnAttachChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
         {
@@ -28,12 +27,12 @@ namespace UndoRedo
             textBox.InputBindings.Add(b);
         }
 
-        public static ICommand GetTextBindingCommand() => new RelayCommand<TextBox>((x) =>
+        public static ICommand GetTextBindingCommand() => new AsyncCommand<TextBox>((x) =>
         {
             var binding = BindingOperations.GetBindingExpression(x, TextBox.TextProperty);
             
             if(binding.IsDirty)
-                binding.UpdateSource();
+                Application.Current.Dispatcher.Invoke(() => binding.UpdateSource());
         });
 
         public static void SetAttach(FrameworkElement element, bool value) => element.SetValue(AttachProperty, value);

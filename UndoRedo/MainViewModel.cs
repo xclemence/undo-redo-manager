@@ -40,9 +40,9 @@ namespace UndoRedo
 
             SetMode(DemoModeKey);
 
-            SetModeCommand = new RelayCommand<string>(SetMode, x => x != currentMode);
+            SetModeCommand = new AsyncCommand<string>(SetMode, x => x != currentMode);
 
-            OpenTestPerfCommand = new RelayCommand(OpenTestPerf);
+            OpenTestPerfCommand = new AsyncCommand(OpenTestPerf);
         }
 
         private void OpenTestPerf()

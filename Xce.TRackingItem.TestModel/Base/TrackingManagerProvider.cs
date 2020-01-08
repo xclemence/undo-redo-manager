@@ -62,8 +62,8 @@ namespace Xce.TrackingItem.TestModel.Base
                 item.CurrentScope.Clear();
 
             TrackingItemCache.Instance.Clear();
-
             DataSetTrackingManagerProvider.Instance.DataSet?.Clear();
+            TrackingActionFactory.ClearCache();
         }
 
         public virtual IEnumerable<TrackingManager> GetTrackingManagers()

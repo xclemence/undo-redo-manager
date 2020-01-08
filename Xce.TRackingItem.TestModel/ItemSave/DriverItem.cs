@@ -14,6 +14,8 @@ namespace Xce.TrackingItem.TestModel.ItemSave
                 TrackingItemCache.Instance.SetCacheObject(this);
         }
 
+        public override void Initialize() => TrackingItemCache.Instance.SetCacheObject(this);
+
         public DriverItem DeepCopy()
         {
             using var scope = new StopTrackingScope(trackingManager);

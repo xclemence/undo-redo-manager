@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Xce.TrackingItem.Interfaces;
 using Xce.TrackingItem.TrackingAction;
@@ -8,7 +7,9 @@ namespace Xce.TrackingItem
 {
     public static class TrackingActionFactory
     {
-        private static IDictionary<Type, IDictionary<string, object>> setteMethodCache = new Dictionary<Type, IDictionary<string, object>>();
+        private static readonly IDictionary<Type, IDictionary<string, object>> setteMethodCache = new Dictionary<Type, IDictionary<string, object>>();
+
+        public static void ClearCache() => setteMethodCache.Clear();
 
         private static Action<TObject, TValue> GetSetter<TObject, TValue>(string propertyName)
         {
@@ -32,9 +33,12 @@ namespace Xce.TrackingItem
 
         public static ITrackingAction GetTrackingPropertyUpdate<TObject, TValue>(this TObject item, TValue field, TValue value, string propertyName)
         {
-            //var setterMethod = (Action<TObject, TValue>)Delegate.CreateDelegate(typeof(Action<TObject, TValue>), null, typeof(TObject).GetProperty(propertyName).GetSetMethod());
             var setterMethod = GetSetter<TObject, TValue>(propertyName);
             return new TrackingPropertyUpdate<TObject, TValue>(field, value, item, setterMethod);
+        }
+        public static ITrackingAction GetTrackingPropertyUpdateV2<TObject, TValue>(this TObject item, TValue field, TValue value, string propertyName)
+        {
+            return new TrackingPropertyUpdate<TObject, TValue>(field, value, item, (x, y) => GetSetter<TObject, TValue>(propertyName)(x, y));
         }
 
         public static ITrackingAction GetTrackingItemUpdate<TObject>(this TObject referenceItem)

@@ -1,5 +1,4 @@
 ﻿using System;
-using Xce.TrackingItem;
 using Xce.TrackingItem.Interfaces;
 using Xce.TrackingItem.TestModel.Base;
 using Xce.TrackingItem.TrackingAction;
@@ -20,6 +19,8 @@ namespace Xce.TrackingItem.TestModel.DataSet
         }
 
         public Guid Id { get; private set; } = Guid.NewGuid();
+
+        public override void Initialize() => DataSetTrackingManagerProvider.Instance.DataSet.Cars.Add(this);
 
         public CarDataSet DeepCopy()
         {

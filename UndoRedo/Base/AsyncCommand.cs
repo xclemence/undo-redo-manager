@@ -1,32 +1,33 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace UndoRedo
 {
-    public class RelayCommand : RelayCommand<object>
+    public class AsyncCommand : AsyncCommand<object>
     {
-        public RelayCommand(Action execute, Func<bool> canExecute) 
-            : base(_ => execute(), _ => canExecute())
+        public AsyncCommand(Func<Task> execute, Func<bool> canExecute = null)
+            : base(_ => execute(), canExecute == null ? (Predicate<object>) null : (_) => canExecute())
         {
         }
 
-        public RelayCommand(Action execute)
-           : base(_ => execute(), null)
+        public AsyncCommand(Action execute, Func<bool> canExecute = null)
+          : base(_ => execute(), canExecute == null ? (Predicate<object>) null : (_) => canExecute())
         {
         }
     }
 
-    public class RelayCommand<T> : ICommand
+    public class AsyncCommand<T> : ICommand
     {
-        private readonly Action<T> execute;
+        private readonly Func<T, Task> execute;
         private readonly Predicate<T> canExecute;
 
-        public RelayCommand(Action<T> execute)
-            : this(execute, null)
+        public AsyncCommand(Action<T> execute, Predicate<T> canExecute = null)
+            : this((x) => Task.Run(() => execute(x)), canExecute)
         {
         }
 
-        public RelayCommand(Action<T> execute, Predicate<T> canExecute)
+        public AsyncCommand(Func<T, Task> execute, Predicate<T> canExecute = null)
         {
             this.execute = execute ?? throw new ArgumentNullException("execute");
 

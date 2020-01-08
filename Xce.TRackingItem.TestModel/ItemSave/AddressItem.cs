@@ -8,11 +8,13 @@ namespace Xce.TrackingItem.TestModel.ItemSave
     {
         private readonly TrackingManager trackingManager = ItemTrackingManagerProvider.Instance.Manager;
 
-        public AddressItem(bool tracking = false) : base()
+        public AddressItem()
         {
-            if (!trackingManager.IsAction || tracking)
+            if (!trackingManager.IsAction)
                 TrackingItemCache.Instance.SetCacheObject(this);
         }
+
+        public override void Initialize() => TrackingItemCache.Instance.SetCacheObject(this);
 
         public AddressItem DeepCopy()
         {

@@ -16,9 +16,9 @@ namespace UndoRedo
     }
 
     public class TestModelEditionViewModel<TDriver, TCar, TAddr> : TestModelEditionViewModel
-        where TDriver : Driver<TCar, TAddr>
-        where TCar : Car
-        where TAddr : Address
+        where TDriver : Driver<TCar, TAddr>, new()
+        where TCar : Car, new()
+        where TAddr : Address, new()
     {
         private readonly IList<TrackingManager> trackingManagers;
         private readonly ITrackingManagerProvider managerProvider;
@@ -35,23 +35,23 @@ namespace UndoRedo
             this.managerProvider = managerProvider;
 
 
-            UndoCommand = new RelayCommand(managerProvider.RevertMulti, () => trackingManagers.First().CanRevert);
-            RedoCommand = new RelayCommand(managerProvider.RemakeMulti, () => trackingManagers.First().CanRemake);
+            UndoCommand = new AsyncCommand(managerProvider.RevertMulti, () => trackingManagers.First().CanRevert);
+            RedoCommand = new AsyncCommand(managerProvider.RemakeMulti, () => trackingManagers.First().CanRemake);
 
-            UndoAllCommand = new RelayCommand(managerProvider.RevertAlltMulti, () => trackingManagers.First().CanRevert);
-            RedoAllCommand = new RelayCommand(managerProvider.RemakeAllMulti, () => trackingManagers.First().CanRemake);
+            UndoAllCommand = new AsyncCommand(managerProvider.RevertAlltMulti, () => trackingManagers.First().CanRevert);
+            RedoAllCommand = new AsyncCommand(managerProvider.RemakeAllMulti, () => trackingManagers.First().CanRemake);
 
-            GenerateDriversCommand = new RelayCommand(GenerateFakeDrivers);
-            GenerateCarsCommand = new RelayCommand(GenerateFakeCars);
-            GenerateAddressesCommand = new RelayCommand(GenerateFakeAddresses);
+            GenerateDriversCommand = new AsyncCommand(GenerateFakeDrivers);
+            GenerateCarsCommand = new AsyncCommand(GenerateFakeCars);
+            GenerateAddressesCommand = new AsyncCommand(GenerateFakeAddresses);
 
-            StartNewScopeCommand = new RelayCommand(StartTrackingScope, () => scopes == null);
-            StopNewScopeCommand = new RelayCommand(StopTrackingScope, () => scopes != null);
+            StartNewScopeCommand = new AsyncCommand(StartTrackingScope, () => scopes == null);
+            StopNewScopeCommand = new AsyncCommand(StopTrackingScope, () => scopes != null);
 
-            StopTrackingCommand = new RelayCommand(DisableTracking, () => stopTrackingScopes == null);
-            StartTrackingCommand = new RelayCommand(EnableTracking, () => stopTrackingScopes != null);
+            StopTrackingCommand = new AsyncCommand(DisableTracking, () => stopTrackingScopes == null);
+            StartTrackingCommand = new AsyncCommand(EnableTracking, () => stopTrackingScopes != null);
 
-            RefreshLogCommand = new RelayCommand(RefreshLogs);
+            RefreshLogCommand = new AsyncCommand(RefreshLogs);
         }
 
         private EditionModel model;

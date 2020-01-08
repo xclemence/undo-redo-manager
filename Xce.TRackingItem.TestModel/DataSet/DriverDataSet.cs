@@ -17,8 +17,10 @@ namespace Xce.TrackingItem.TestModel.DataSet
                 TrackingDataSetCache.Instance.SetDataSet(DataSetTrackingManagerProvider.Instance.DataSet);
             }
         }
-
+     
         public Guid Id { get; private set; } = Guid.NewGuid();
+
+        public override void Initialize() => DataSetTrackingManagerProvider.Instance.DataSet.Drivers.Add(this);
 
         public DriverDataSet DeepCopy()
         {
