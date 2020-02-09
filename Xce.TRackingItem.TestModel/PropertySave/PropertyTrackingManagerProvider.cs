@@ -2,7 +2,7 @@
 
 namespace Xce.TrackingItem.TestModel.PropertySave
 {
-    public class PropertyTrackingManagerProvider : TrackingManagerProvider
+    public class PropertyTrackingManagerProvider : BaseTrackingManagerProvider
     {
         public static PropertyTrackingManagerProvider Instance { get; } = new PropertyTrackingManagerProvider();
     }

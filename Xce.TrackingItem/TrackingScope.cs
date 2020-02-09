@@ -10,7 +10,7 @@ namespace Xce.TrackingItem
         private readonly object actionLocker = new object();
         private readonly Action<TrackingScope> onDispose;
 
-        internal TrackingScope(TrackingScope parent, Action<TrackingScope> onDispose)
+        public TrackingScope(TrackingScope parent, Action<TrackingScope> onDispose)
         {
             Parent = parent;
             this.onDispose = onDispose;

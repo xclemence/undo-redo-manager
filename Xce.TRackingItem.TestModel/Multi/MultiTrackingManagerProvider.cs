@@ -6,7 +6,7 @@ using Xce.TrackingItem.TestModel.PropertySave;
 
 namespace Xce.TrackingItem.TestModel.Multi
 {
-    public class MultiTrackingManagerProvider : TrackingManagerProvider
+    public class MultiTrackingManagerProvider : BaseTrackingManagerProvider
     {
         public static MultiTrackingManagerProvider Instance { get; } = new MultiTrackingManagerProvider();
 

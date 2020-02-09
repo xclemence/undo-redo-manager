@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using Bogus;
 using UndoRedo.Base;
@@ -35,11 +36,11 @@ namespace UndoRedo
             this.managerProvider = managerProvider;
 
 
-            UndoCommand = new AsyncCommand(managerProvider.RevertMulti, () => trackingManagers.First().CanRevert);
-            RedoCommand = new AsyncCommand(managerProvider.RemakeMulti, () => trackingManagers.First().CanRemake);
+            UndoCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RevertMulti()), () => trackingManagers.First().CanRevert);
+            RedoCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RemakeMulti()), () => trackingManagers.First().CanRemake);
 
-            UndoAllCommand = new AsyncCommand(managerProvider.RevertAlltMulti, () => trackingManagers.First().CanRevert);
-            RedoAllCommand = new AsyncCommand(managerProvider.RemakeAllMulti, () => trackingManagers.First().CanRemake);
+            UndoAllCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RevertAlltMulti()), () => trackingManagers.First().CanRevert);
+            RedoAllCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RemakeAllMulti()), () => trackingManagers.First().CanRemake);
 
             GenerateDriversCommand = new AsyncCommand(GenerateFakeDrivers);
             GenerateCarsCommand = new AsyncCommand(GenerateFakeCars);

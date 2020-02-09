@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Data;
 using System.Windows.Input;
 using UndoRedo.Base;
 using UndoRedo.Tests;
@@ -47,8 +48,11 @@ namespace UndoRedo
 
         private void OpenTestPerf()
         {
-            var window = new SetterPerformanceWindow();
-            window.Show();
+            System.Windows.Application.Current.Dispatcher.Invoke(() => 
+            {
+                var window = new SetterPerformanceWindow();
+                window.Show();
+            });
         }
 
         public ICommand OpenTestPerfCommand { get; }

@@ -2,7 +2,7 @@
 
 namespace Xce.TrackingItem.TestModel.DataSet
 {
-    public class DataSetTrackingManagerProvider : TrackingManagerProvider
+    public class DataSetTrackingManagerProvider : BaseTrackingManagerProvider
     {
         public DataSetTrackingManagerProvider() => DataSet = new WorldDataSet(Manager);
 

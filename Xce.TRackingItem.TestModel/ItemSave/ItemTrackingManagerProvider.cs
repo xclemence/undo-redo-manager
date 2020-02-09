@@ -2,7 +2,7 @@
 
 namespace Xce.TrackingItem.TestModel.ItemSave
 {
-    public class ItemTrackingManagerProvider : TrackingManagerProvider
+    public class ItemTrackingManagerProvider : BaseTrackingManagerProvider
     {
         public static ItemTrackingManagerProvider Instance { get; } = new ItemTrackingManagerProvider();
     }
