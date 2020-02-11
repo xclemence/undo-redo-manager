@@ -22,6 +22,17 @@ namespace Xce.TrackingItem.Fody.TestModel
             }
         }
 
+        public int Value2
+        {
+            get => value;
+            set
+            {
+                trackingManager.AddAction(TrackingActionFactory.GetTrackingPropertyUpdateFunc(this, Value, value, TrackingValue));
+
+                this.value = value;
+            }
+        }
+
         private static void TrackingValue(ReferenceModel model, int value)
         {
             model.Value = value;

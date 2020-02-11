@@ -42,7 +42,7 @@ namespace Xce.TrackingItem.Fody
                 var tracerField = InjectField(type);
 
                 foreach (var property in properties)
-                    UpdateProperty(property, tracerField);
+                    UpdatePropertyWithLog(property, tracerField);
             }
 
         }
@@ -120,6 +120,62 @@ namespace Xce.TrackingItem.Fody
             //IL_0016: newobj instance void class [netstandard]System.Action`2<class Xce.TrackingItem.Fody.TestModel.ReferenceModel, int32>::.ctor(object, native int)
             //IL_001b: newobj instance void class [Xce.TrackingItem]Xce.TrackingItem.TrackingAction.TrackingPropertyUpdate`2<class Xce.TrackingItem.Fody.TestModel.ReferenceModel, int32>::.ctor(!1, !1, !0, class [netstandard]System.Action`2<!0, !1>)
             //IL_0020: callvirt instance void [Xce.TrackingItem]Xce.TrackingItem.TrackingManager::AddAction(class [Xce.TrackingItem]Xce.TrackingItem.TrackingAction.ITrackingAction)
+        }
+
+
+        private void UpdatePropertyWithLog(PropertyDefinition item, FieldDefinition field)
+        {
+            WriteInfo($"Procceed Property {item.Name}");
+
+            var instructions = item.SetMethod.Body.Instructions;
+
+            var localTracingMethod = AddTracePropertyMethod(item);
+
+            var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(Func<>).FullName));
+
+            var genericActionTypeDef = referenceProvider.GetTypeReference(typeof(Action<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
+            var actionContructor = referenceProvider.GetMethodReference(genericActionTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+
+            var logInstanceMethod = new GenericInstanceMethod(addActionMethod);
+
+            logInstanceMethod.GenericArguments.Add(item.DeclaringType);
+            logInstanceMethod.GenericArguments.Add(item.PropertyType);
+
+            var TrickingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
+
+            var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(TrickingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetTrackingPropertyUpdateFunc), 3, typeof(Action<,>).FullName));
+
+            var trackingActionFactoryMethod = new GenericInstanceMethod(trackingActionFactoryMethodNoGen);
+
+
+            trackingActionFactoryMethod.GenericArguments.Add(item.DeclaringType);
+            trackingActionFactoryMethod.GenericArguments.Add(item.PropertyType);
+
+            instructions.InsertFirst(Instruction.Create(OpCodes.Nop),
+                                     Instruction.Create(OpCodes.Ldarg_0),
+                                     Instruction.Create(OpCodes.Ldfld, field),
+                                     Instruction.Create(OpCodes.Ldarg_0),
+                                     Instruction.Create(OpCodes.Ldarg_0),
+                                     Instruction.Create(OpCodes.Call, item.GetMethod),
+                                     Instruction.Create(OpCodes.Ldarg_1),
+                                     Instruction.Create(OpCodes.Ldnull),
+                                     Instruction.Create(OpCodes.Ldftn, localTracingMethod),
+                                     Instruction.Create(OpCodes.Newobj, actionContructor),
+                                     Instruction.Create(OpCodes.Call, trackingActionFactoryMethod),
+                                     Instruction.Create(OpCodes.Callvirt, addActionMethod));
+
+            //IL_0000: nop
+		    //IL_0001: ldarg.0
+		    //IL_0002: ldfld class [Xce.TrackingItem]Xce.TrackingItem.TrackingManager Xce.TrackingItem.Fody.TestModel.ReferenceModel::trackingManager
+		    //IL_0007: ldarg.0
+		    //IL_0008: ldarg.0
+		    //IL_0009: call instance int32 Xce.TrackingItem.Fody.TestModel.ReferenceModel::get_Value()
+		    //IL_000e: ldarg.1
+		    //IL_000f: ldnull
+		    //IL_0010: ldftn void Xce.TrackingItem.Fody.TestModel.ReferenceModel::TrackingValue(class Xce.TrackingItem.Fody.TestModel.ReferenceModel, int32)
+		    //IL_0016: newobj instance void class [netstandard]System.Action`2<class Xce.TrackingItem.Fody.TestModel.ReferenceModel, int32>::.ctor(object, native int)
+		    //IL_001b: call class [netstandard]System.Func`1<class [Xce.TrackingItem]Xce.TrackingItem.TrackingAction.ITrackingAction> [Xce.TrackingItem]Xce.TrackingItem.TrackingActionFactory::GetTrackingPropertyUpdateFunc<class Xce.TrackingItem.Fody.TestModel.ReferenceModel, int32>(!!0, !!1, !!1, class [netstandard]System.Action`2<!!0, !!1>)
+		    //IL_0020: callvirt instance void [Xce.TrackingItem]Xce.TrackingItem.TrackingManager::AddAction(class [netstandard]System.Func`1<class [Xce.TrackingItem]Xce.TrackingItem.TrackingAction.ITrackingAction>)
         }
 
         private MethodDefinition AddTracePropertyMethod(PropertyDefinition item)

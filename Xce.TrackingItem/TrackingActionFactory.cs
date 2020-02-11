@@ -42,6 +42,11 @@ namespace Xce.TrackingItem
             return new TrackingPropertyUpdate<TObject, TValue>(field, value, item, setter);
         }
 
+        public static Func<ITrackingAction> GetTrackingPropertyUpdateFunc<TObject, TValue>(this TObject item, TValue field, TValue value, Action<TObject, TValue> setter)
+        {
+            return () => new TrackingPropertyUpdate<TObject, TValue>(field, value, item, setter);
+        }
+
         public static ITrackingAction GetTrackingPropertyUpdateV2<TObject, TValue>(this TObject item, TValue field, TValue value, string propertyName)
         {
             return new TrackingPropertyUpdate<TObject, TValue>(field, value, item, (x, y) => GetSetter<TObject, TValue>(propertyName)(x, y));
