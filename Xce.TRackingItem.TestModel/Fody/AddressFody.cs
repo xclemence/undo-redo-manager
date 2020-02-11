@@ -1,8 +1,12 @@
-﻿using Xce.TrackingItem.TestModel.Interfaces;
+﻿using System.ComponentModel;
+using Xce.TrackingItem.Attributes;
+using Xce.TrackingItem.TestModel.Base;
+using Xce.TrackingItem.TestModel.Interfaces;
 
-namespace Xce.TrackingItem.TestModel.Base
+namespace Xce.TrackingItem.TestModel.Fody
 {
-    public abstract class Address : AbsctractModel, IAddress
+    [Tracking]
+    public class AddressFody : AbsctractModel, IAddress
     {
         private string zipCode;
         private string city;

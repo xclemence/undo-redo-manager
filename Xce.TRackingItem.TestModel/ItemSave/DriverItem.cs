@@ -18,14 +18,14 @@ namespace Xce.TrackingItem.TestModel.ItemSave
 
         public DriverItem DeepCopy()
         {
-            using var scope = new StopTrackingScope(trackingManager);
-            return this.DeepCopyDriver<DriverItem, CarItem, AddressItem>();
+            using (var scope = new StopTrackingScope(trackingManager))
+                return this.DeepCopyDriver<DriverItem, CarItem, AddressItem>();
         }
 
         public void Set(DriverItem item)
         {
-            using var scope = new StopTrackingScope(trackingManager);
-            this.SetDriver<DriverItem, CarItem, AddressItem>(item);
+            using (var scope = new StopTrackingScope(trackingManager))
+                this.SetDriver<DriverItem, CarItem, AddressItem>(item);
         }
 
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
@@ -35,8 +35,8 @@ namespace Xce.TrackingItem.TestModel.ItemSave
 
             trackingManager.AddAction(() =>
             {
-                using var scope = new StopTrackingScope(trackingManager);
-                return this.GetTrackingItemUpdate();
+                using (var scope = new StopTrackingScope(trackingManager))
+                    return this.GetTrackingItemUpdate();
             });
         }
     }

@@ -24,20 +24,23 @@ namespace Xce.TrackingItem.TestModel.DataSet
 
         public AddressDataSet DeepCopy()
         {
-            using var scope = new StopTrackingScope(trackingManager);
+            using (var scope = new StopTrackingScope(trackingManager))
+            {
 
-            var copy = this.DeepCopyAddress();
-            copy.Id = this.Id;
+                var copy = this.DeepCopyAddress();
+                copy.Id = this.Id;
 
-            return copy;
+                return copy;
+            }
         }
 
         public void Set(AddressDataSet item)
         {
-            using var scope = new StopTrackingScope(trackingManager);
-
-            this.SetAddress(item);
-            this.Id = item.Id;
+            using (var scope = new StopTrackingScope(trackingManager))
+            {
+                this.SetAddress(item);
+                this.Id = item.Id;
+            }
         }
         
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
@@ -47,8 +50,8 @@ namespace Xce.TrackingItem.TestModel.DataSet
 
             trackingManager.AddAction(() =>
             {
-                using var scope = new StopTrackingScope(trackingManager);
-                return DataSetTrackingManagerProvider.Instance.DataSet.GetTrackingDatSetUpdate();
+                using (var scope = new StopTrackingScope(trackingManager))
+                    return DataSetTrackingManagerProvider.Instance.DataSet.GetTrackingDatSetUpdate();
             });
         }
     }

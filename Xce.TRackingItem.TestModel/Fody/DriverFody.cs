@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using Xce.TrackingItem.Attributes;
+using Xce.TrackingItem.TestModel.Base;
 using Xce.TrackingItem.TestModel.Interfaces;
 
-namespace Xce.TrackingItem.TestModel.Base
+namespace Xce.TrackingItem.TestModel.Fody
 {
-    public abstract class Driver<TCar, TAddr> : AbsctractModel, IDriver<TCar, TAddr>
-        where TCar : ICar
-        where TAddr : IAddress
+    [Tracking]
+    public class DriverFody : AbsctractModel, IDriver<CarFody, AddressFody>
     {
         private string firstName;
         private string lastName;
@@ -29,9 +30,11 @@ namespace Xce.TrackingItem.TestModel.Base
             set => SetProperty(this, ref phoneNumber, value);
         }
 
-        public ObservableCollection<TCar> Cars { get; set; } = new ObservableCollection<TCar>();
-        public ObservableCollection<TAddr> Addresses { get; set; } = new ObservableCollection<TAddr>();
+        [NoTracking]
+        public ObservableCollection<AddressFody> Addresses { get; set; } = new ObservableCollection<AddressFody>();
+        [NoTracking]
+        public ObservableCollection<CarFody> Cars { get; set; } = new ObservableCollection<CarFody>();
 
-        public virtual void FinishCreation() { }
+        public void FinishCreation() { }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Xce.TrackingItem.TestModel.Interfaces;
 
 namespace Xce.TrackingItem.TestModel.Base
 {
-    public abstract class AbsctractModel : INotifyPropertyChanged
+    public abstract class AbsctractModel : INotifyPropertyChanged, IAbsctractModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

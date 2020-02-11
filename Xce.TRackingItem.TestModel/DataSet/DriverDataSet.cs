@@ -24,20 +24,23 @@ namespace Xce.TrackingItem.TestModel.DataSet
 
         public DriverDataSet DeepCopy()
         {
-            using var scope = new StopTrackingScope(trackingManager);
+            using (var scope = new StopTrackingScope(trackingManager))
+            {
 
-            var copy = this.DeepCopyDriver<DriverDataSet, CarDataSet, AddressDataSet>();
-            copy.Id = Id;
+                var copy = this.DeepCopyDriver<DriverDataSet, CarDataSet, AddressDataSet>();
+                copy.Id = Id;
 
-            return copy;
+                return copy;
+            }
         }
 
         public void Set(DriverDataSet item)
         {
-            using var scope = new StopTrackingScope(trackingManager);
-
-            this.SetDriver<DriverDataSet, CarDataSet, AddressDataSet>(item);
-            Id = item.Id;
+            using (var scope = new StopTrackingScope(trackingManager))
+            {
+                this.SetDriver<DriverDataSet, CarDataSet, AddressDataSet>(item);
+                Id = item.Id;
+            }
         }
 
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
@@ -47,8 +50,8 @@ namespace Xce.TrackingItem.TestModel.DataSet
 
             trackingManager.AddAction(() =>
             {
-                using var scope = new StopTrackingScope(trackingManager);
-                return DataSetTrackingManagerProvider.Instance.DataSet.GetTrackingDatSetUpdate();
+                using (var scope = new StopTrackingScope(trackingManager))
+                    return DataSetTrackingManagerProvider.Instance.DataSet.GetTrackingDatSetUpdate();
             });
         }
     }

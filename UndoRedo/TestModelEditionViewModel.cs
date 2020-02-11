@@ -8,6 +8,7 @@ using Bogus;
 using UndoRedo.Base;
 using Xce.TrackingItem;
 using Xce.TrackingItem.TestModel.Base;
+using Xce.TrackingItem.TestModel.Interfaces;
 
 namespace UndoRedo
 {
@@ -17,9 +18,9 @@ namespace UndoRedo
     }
 
     public class TestModelEditionViewModel<TDriver, TCar, TAddr> : TestModelEditionViewModel
-        where TDriver : Driver<TCar, TAddr>, new()
-        where TCar : Car, new()
-        where TAddr : Address, new()
+        where TDriver : class, IDriver<TCar, TAddr>, new()
+        where TCar : class, ICar, new()
+        where TAddr : class, IAddress, new()
     {
         private readonly IList<TrackingManager> trackingManagers;
         private readonly ITrackingManagerProvider managerProvider;
@@ -100,7 +101,7 @@ namespace UndoRedo
         private void GenerateFakeCars() => GenerateFake(FakerProviders.GetFakerCar<TCar>(), GeneratorProperties.CarNumber);
 
         private void GenerateFakeDrivers() => 
-            GenerateFake(FakerProviders.getFakerDriver<TDriver, TCar, TAddr>(GeneratorProperties.CarNumber, GeneratorProperties.AddressNumber), GeneratorProperties.DriverNumber);
+            GenerateFake(FakerProviders.GetFakerDriver<TDriver, TCar, TAddr>(GeneratorProperties.CarNumber, GeneratorProperties.AddressNumber), GeneratorProperties.DriverNumber);
 
         private void GenerateFake<T>(Faker<T> faker, int itemNumber)
             where T: class

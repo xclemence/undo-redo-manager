@@ -20,6 +20,9 @@
                 <RadioButton Content="Demo" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.DemoModeKey}"
                          IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.DemoModeKey}, Mode=OneWay}"/>
 
+                <RadioButton Content="Fody" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.FodyModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.FodyModeKey}, Mode=OneWay}"/>
+
                 <RadioButton Content="Property" Command="{Binding SetModeCommand}" CommandParameter="{x:Static local:MainViewModel.PropertyModeKey}"
                          IsChecked="{Binding CurrentMode, Converter={x:Static local:IsEqualsConverter.Instance}, ConverterParameter={x:Static local:MainViewModel.PropertyModeKey}, Mode=OneWay}"/>
 

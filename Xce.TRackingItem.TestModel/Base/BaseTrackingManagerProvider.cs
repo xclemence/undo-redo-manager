@@ -17,7 +17,11 @@ namespace Xce.TrackingItem.TestModel.Base
 
     public abstract class BaseTrackingManagerProvider : ITrackingManagerProvider
     {
-        internal TrackingManager Manager { get; } = new TrackingManager();
+        protected BaseTrackingManagerProvider() => Manager = new TrackingManager();
+
+
+        protected internal TrackingManager Manager { get; set; } 
+
 
         public void RevertMulti()
         {

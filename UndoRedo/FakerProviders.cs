@@ -1,11 +1,12 @@
 ﻿using Bogus;
 using Xce.TrackingItem.TestModel.Base;
+using Xce.TrackingItem.TestModel.Interfaces;
 
 namespace UndoRedo
 {
     public static class FakerProviders
     {
-        public static Faker<T> GetFakerAddress<T>() where T : Address, new()
+        public static Faker<T> GetFakerAddress<T>() where T : class, IAddress, new()
         {
             return new Faker<T>().RuleFor(x => x.BuildingNumber, f => f.Address.BuildingNumber())
                                  .RuleFor(x => x.CardinalDirection, f => f.Address.CardinalDirection())
@@ -29,7 +30,7 @@ namespace UndoRedo
                                  .FinishWith((f, x) => x.Initialize());
         }
 
-        public static Faker<T> GetFakerCar<T>() where T : Car, new()
+        public static Faker<T> GetFakerCar<T>() where T : class, ICar, new()
         {
             return new Faker<T>().RuleFor(x => x.Fuel, f => f.Vehicle.Fuel())
                                  .RuleFor(x => x.Manufacturer, f => f.Vehicle.Manufacturer())
@@ -39,10 +40,10 @@ namespace UndoRedo
                                  .FinishWith((f, x) => x.Initialize());
         }
 
-        public static Faker<TDriver> getFakerDriver<TDriver, TCar, TAddress>(int carMaxNumber, int addressMaxNumber)
-            where TDriver : Driver<TCar, TAddress>, new()
-            where TCar : Car, new()
-            where TAddress : Address, new ()
+        public static Faker<TDriver> GetFakerDriver<TDriver, TCar, TAddress>(int carMaxNumber, int addressMaxNumber)
+            where TDriver : class, IDriver<TCar, TAddress>, new()
+            where TCar : class, ICar, new()
+            where TAddress : class, IAddress, new ()
         {
             var fakerCar = GetFakerCar<TCar>();
             var fakerAddr = GetFakerAddress<TAddress>();

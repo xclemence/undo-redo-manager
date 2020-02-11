@@ -27,25 +27,28 @@ namespace Xce.TrackingItem.TestModel.DataSet
 
         public WorldDataSet DeepCopy()
         {
-            using var scope = new StopTrackingScope(trackingManager);
-
-            var copy = new WorldDataSet(trackingManager)
+            using (var scope = new StopTrackingScope(trackingManager))
             {
-                Drivers = Drivers.DeepCopy(),
-                Cars = Cars.DeepCopy(),
-                Addresses = Addresses.DeepCopy()
-            };
+                var copy = new WorldDataSet(trackingManager)
+                {
+                    Drivers = Drivers.DeepCopy(),
+                    Cars = Cars.DeepCopy(),
+                    Addresses = Addresses.DeepCopy()
+                };
 
-            return copy;
+                return copy;
+            }
         }
 
         public void Set(WorldDataSet item)
         {
-            using var scope = new StopTrackingScope(trackingManager);
+            using (var scope = new StopTrackingScope(trackingManager))
+            {
 
-            Drivers.Set(item.Drivers);
-            Cars.Set(item.Cars);
-            Addresses.Set(item.Addresses);
+                Drivers.Set(item.Drivers);
+                Cars.Set(item.Cars);
+                Addresses.Set(item.Addresses);
+            }
         }
 
         public void Clear()

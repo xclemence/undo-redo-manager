@@ -18,14 +18,14 @@ namespace Xce.TrackingItem.TestModel.ItemSave
 
         public CarItem DeepCopy()
         {
-            using var scope = new StopTrackingScope(trackingManager);
-            return this.DeepCopyCar();
+            using (var scope = new StopTrackingScope(trackingManager))
+                return this.DeepCopyCar();
         }
 
         public void Set(CarItem item)
         {
-            using var scope = new StopTrackingScope(trackingManager);
-            this.SetCar(item);
+            using (var scope = new StopTrackingScope(trackingManager))
+                this.SetCar(item);
         }
 
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
@@ -35,8 +35,8 @@ namespace Xce.TrackingItem.TestModel.ItemSave
 
             trackingManager.AddAction(() =>
             {
-                using var scope = new StopTrackingScope(trackingManager);
-                return  this.GetTrackingItemUpdate();
+                using (var scope = new StopTrackingScope(trackingManager))
+                    return this.GetTrackingItemUpdate();
             });
         }
     }

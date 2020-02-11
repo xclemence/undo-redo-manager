@@ -1,8 +1,11 @@
-﻿using Xce.TrackingItem.TestModel.Interfaces;
+﻿using Xce.TrackingItem.Attributes;
+using Xce.TrackingItem.TestModel.Base;
+using Xce.TrackingItem.TestModel.Interfaces;
 
-namespace Xce.TrackingItem.TestModel.Base
+namespace Xce.TrackingItem.TestModel.Fody
 {
-    public abstract class Car : AbsctractModel, ICar
+    [Tracking]
+    public class CarFody : AbsctractModel, ICar
     {
         private string vin;
         private string manufacturer;
