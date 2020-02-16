@@ -8,7 +8,7 @@ namespace Xce.TrackingItem.Fody.TestModel
     {
         public int Value { get; set; }
 
-        [NoTracking]
+        [NoPropertyTracking]
         public object NoTracking { get; set; }
     }
 

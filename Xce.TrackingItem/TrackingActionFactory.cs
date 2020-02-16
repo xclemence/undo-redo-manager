@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using Xce.TrackingItem.Interfaces;
 using Xce.TrackingItem.TrackingAction;
 
@@ -63,5 +65,24 @@ namespace Xce.TrackingItem
         {
             return new TrackingDataSetUpdate<TDataSet>(currentDataSet);
         }
+
+        public static IEnumerable<ITrackingAction> GetCollectionChangedTrackingAction<TValue>(this IList<TValue> collection, NotifyCollectionChangedEventArgs e)
+        {
+            
+            if (e.NewItems != null)
+            {
+                var items = e.NewItems.Cast<TValue>().ToList();
+                yield return new TrackingCollectionUdpate<IList<TValue>, TValue>(collection, items, e.NewStartingIndex, TrackingCollectionUdpateMode.Add);
+            }
+
+            if (e.OldItems != null)
+            {
+                var items = e.OldItems.Cast<TValue>().ToList();
+                yield return new TrackingCollectionUdpate<IList<TValue>, TValue>(collection, items, e.OldStartingIndex, TrackingCollectionUdpateMode.Remove);
+            }
+        }
+
+        public static IList<ITrackingAction> GetCollectionChangedTrackingActionLIst<TValue>(this IList<TValue> collection, NotifyCollectionChangedEventArgs e) =>
+            GetCollectionChangedTrackingAction(collection, e).ToList();
     }
 }

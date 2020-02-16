@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Xce.TrackingItem.TrackingAction;
 
@@ -44,6 +45,12 @@ namespace Xce.TrackingItem
 
                 RevertedActions.Clear();
             }
+        }
+
+        public void AddActions(IList<ITrackingAction> actions) 
+        {
+            foreach (var item in actions)
+                AddAction(item);
         }
 
         public void Revert()

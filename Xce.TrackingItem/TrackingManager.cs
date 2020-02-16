@@ -29,6 +29,13 @@ namespace Xce.TrackingItem
             GetCurrentRegisterScope()?.AddAction(action);
         }
 
+        public void AddActions(IList<ITrackingAction> actions)
+        {
+            if (IsAction) return;
+            
+            GetCurrentRegisterScope()?.AddActions(actions);
+        }
+
         public void AddAction(Func<ITrackingAction> action)
         {
             if (IsAction) return;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using Xce.TrackingItem.TrackingAction;
 
 namespace Xce.TrackingItem.Fody.TestModel
@@ -10,7 +11,11 @@ namespace Xce.TrackingItem.Fody.TestModel
         public ReferenceModel()
         {
             trackingManager = TrackingManagerProvider.GetDefault();
+
+            TestCollection.CollectionChanged += OnTestCollectionCollectionChanged;
         }
+
+        private void OnTestCollectionCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => throw new NotImplementedException();
 
         public int Value
         {
@@ -37,6 +42,8 @@ namespace Xce.TrackingItem.Fody.TestModel
         {
             model.Value = value;
         }
+
+        public ObservableCollection<int> TestCollection { get; set; }
 
     }
 }

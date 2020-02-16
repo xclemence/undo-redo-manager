@@ -30,9 +30,10 @@ namespace Xce.TrackingItem.TestModel.Fody
             set => SetProperty(this, ref phoneNumber, value);
         }
 
-        [NoTracking]
+        [NoPropertyTracking, CollectionTracking]
         public ObservableCollection<AddressFody> Addresses { get; set; } = new ObservableCollection<AddressFody>();
-        [NoTracking]
+        
+        [NoPropertyTracking, CollectionTracking]
         public ObservableCollection<CarFody> Cars { get; set; } = new ObservableCollection<CarFody>();
 
         public void FinishCreation() { }

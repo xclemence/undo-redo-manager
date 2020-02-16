@@ -36,7 +36,7 @@ namespace Xce.TrackingItem.Fody
                 return typeCache[type.FullName] = moduleWeaver.ModuleDefinition.ImportReference(type);
         }
 
-        public MethodReference GetMethodReference(MethodDefinition method)
+        public MethodReference GetMethodReference(MethodReference method)
         {
             if (methodCache.ContainsKey(method.FullName))
                 return methodCache[method.FullName];

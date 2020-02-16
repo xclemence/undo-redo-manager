@@ -30,9 +30,6 @@ namespace Xce.TrackingItem.TestModel.ItemSave
         
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
         {
-            if (trackingManager.IsAction)
-                return;
-
             trackingManager.AddAction(() =>
             {
                 using (var scope = new StopTrackingScope(trackingManager))

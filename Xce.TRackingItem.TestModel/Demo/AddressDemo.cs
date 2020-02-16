@@ -6,10 +6,7 @@ namespace Xce.TrackingItem.TestModel.Demo
     {
         private readonly TrackingManager trackingManager = DemoTrackingManagerProvider.Instance.Manager;
 
-        protected override void OnBeforeSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
-        {
-            if (!trackingManager.IsAction)
-                trackingManager.AddAction(() =>  item.GetTrackingPropertyUpdateV2(field, value, callerName));
-        }
+        protected override void OnBeforeSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName) => 
+           trackingManager.AddAction(() =>  item.GetTrackingPropertyUpdateV2(field, value, callerName));
     }
 }

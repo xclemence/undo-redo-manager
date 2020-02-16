@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -19,32 +21,218 @@ namespace Xce.TrackingItem.Fody
             referenceProvider = new ReferenceProvider(this);
         }
 
-        private IEnumerable<(TypeDefinition type, List<PropertyDefinition> properties)> GetProperties()
+        private IEnumerable<TypeDefinition> GetTrackingTypes()
         {
-            var types = ModuleDefinition.Types.Where(x => x.IsClass && x.HasCustomAttributes && x.CustomAttributes.Any(a => a.AttributeType.Name == nameof(TrackingAttribute)));
+            return ModuleDefinition.Types.Where(x => x.IsClass && x.HasCustomAttributes && x.CustomAttributes.Any(a => a.AttributeType.Name == nameof(TrackingAttribute)));
 
-            return types.SelectMany(x => x.Properties, (x, y) => (type: x, property: y))
-                             .Where(x => x.property.SetMethod != null && !x.property.CustomAttributes.Any(a => a.AttributeType.Name == nameof(NoTrackingAttribute)))
-                             .GroupBy(x => x.type, x => x.property)
-                             .Select(x => (type: x.Key, properties: x.ToList()));
+        }
+        private IEnumerable<PropertyDefinition> GetTrackingProperties(TypeDefinition type)
+        {
+            return type.Properties
+                             .Where(x => x.SetMethod != null && !x.CustomAttributes.Any(a => a.AttributeType.Name == nameof(NoPropertyTrackingAttribute)));
         }
 
+        private IEnumerable<PropertyDefinition> GetCollectionProperties(TypeDefinition type)
+        {
+            return type.Properties.Where(x => x.GetMethod != null && x.CustomAttributes.Any(a => a.AttributeType.Name == nameof(CollectionTrackingAttribute)));
+        }
 
         public override void Execute()
         {
             WriteInfo($"Start Fody Xce Tracking");
 
-            var results = GetProperties();
-
-            foreach (var (type, properties) in results) 
+            foreach (var type in GetTrackingTypes())
             {
                 WriteInfo($"Procceed Type {type.FullName}");
                 var tracerField = InjectField(type);
 
-                foreach (var property in properties)
+                foreach (var property in GetTrackingProperties(type))
                     UpdatePropertyWithLog(property, tracerField);
+
+                var collectionProperties = GetCollectionProperties(type);
+
+                foreach (var property in collectionProperties)
+                    AddCollectionChanged(type, property, tracerField);
             }
 
+        }
+
+        private void AddCollectionChanged(TypeDefinition type, PropertyDefinition property, FieldDefinition fieldTracking)
+        {
+            var collectionChangedMethod = AddCollectionTrackingMethod(type, property, fieldTracking);
+            AddCollectionChangedConstructor(type, property, collectionChangedMethod);
+            AddCollectionFinaliser(type, property, collectionChangedMethod);
+        }
+
+        private void AddCollectionFinaliser(TypeDefinition type, PropertyDefinition property, MethodDefinition collectionChangedMethod) 
+        {
+            var (method, insertPosition) = AddFinalizer(type);
+
+            var instructions = method.Body.Instructions;
+
+            var collectionChangedEventHandlerTypeDef = referenceProvider.GetTypeReference(typeof(NotifyCollectionChangedEventHandler));
+            var collectionChangedEventHandlerCtor = referenceProvider.GetMethodReference(collectionChangedEventHandlerTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName));
+
+            var addMethodNoGen = property.PropertyType.Resolve().FindMethod("remove_CollectionChanged", typeof(NotifyCollectionChangedEventHandler).FullName);
+
+            MethodReference addCollectionChangedMethod;
+
+            if (property.PropertyType is GenericInstanceType genericInstanceType)
+            {
+                var methodReferenceGen = addMethodNoGen.MakeHostInstanceGeneric(genericInstanceType.GenericArguments.ToArray());
+                addCollectionChangedMethod = referenceProvider.GetMethodReference(methodReferenceGen);
+            }
+            else
+            {
+                addCollectionChangedMethod = referenceProvider.GetMethodReference(addMethodNoGen);
+            }
+
+            instructions.InsertList(insertPosition,
+                                    Instruction.Create(OpCodes.Ldarg_0),
+                                    Instruction.Create(OpCodes.Call, property.GetMethod),
+                                    Instruction.Create(OpCodes.Ldarg_0),
+                                    Instruction.Create(OpCodes.Ldftn, collectionChangedMethod),
+                                    Instruction.Create(OpCodes.Newobj, collectionChangedEventHandlerCtor),
+                                    Instruction.Create(OpCodes.Callvirt, addCollectionChangedMethod),
+                                    Instruction.Create(OpCodes.Nop));
+
+            // IL_0001: nop
+			// IL_0002: ldarg.0
+			// IL_0003: call instance class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32> Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel2::get_TestCollection()
+			// IL_0008: ldarg.0
+			// IL_0009: ldftn instance void Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel2::OnTestCollectionCollectionChanged(object, class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventArgs)
+			// IL_000f: newobj instance void [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler::.ctor(object, native int)
+			// IL_0014: callvirt instance void class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32>::remove_CollectionChanged(class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler)
+            // IL_002a: nop
+        }
+
+        public (MethodDefinition method, int insertPosition) AddFinalizer(TypeDefinition type)
+        {
+            var existingFinalizeMethod = type.Methods.FirstOrDefault(x => !x.IsStatic && x.Name == "Finalize");
+            if (existingFinalizeMethod != null)
+            {
+                return (existingFinalizeMethod, 1);
+            }
+
+            var objectTypeDefinition = referenceProvider.GetTypeReference(typeof(object));
+            var objectFinalizeReference = referenceProvider.GetMethodReference(objectTypeDefinition.Resolve().FindMethod("Finalize"));
+
+
+            var finalizeMethod = new MethodDefinition("Finalize", MethodAttributes.HideBySig | MethodAttributes.Family | MethodAttributes.Virtual, TypeSystem.VoidReference);
+            var instructions = finalizeMethod.Body.Instructions;
+
+            var ret = Instruction.Create(OpCodes.Ret);
+
+            var tryStart = Instruction.Create(OpCodes.Nop);
+            instructions.Add(tryStart);
+
+            instructions.Add(Instruction.Create(OpCodes.Leave, ret));
+            var tryEnd = Instruction.Create(OpCodes.Ldarg_0);
+            instructions.Add(tryEnd);
+            instructions.Add(Instruction.Create(OpCodes.Call, objectFinalizeReference));
+            instructions.Add(Instruction.Create(OpCodes.Endfinally));
+            instructions.Add(ret);
+
+            var finallyHandler = new ExceptionHandler(ExceptionHandlerType.Finally)
+            {
+                TryStart = tryStart,
+                TryEnd = tryEnd,
+                HandlerStart = tryEnd,
+                HandlerEnd = ret
+            };
+
+            finalizeMethod.Body.ExceptionHandlers.Add(finallyHandler);
+            type.Methods.Add(finalizeMethod);
+
+            return (finalizeMethod, 1);
+        }
+
+
+        private MethodDefinition AddCollectionTrackingMethod(TypeDefinition type, PropertyDefinition property, FieldDefinition fieldTracking)
+        {
+            var method = new MethodDefinition($"TrackingCollection_{property.Name}", MethodAttributes.Private, TypeSystem.VoidReference);
+
+            var itemParameter = new ParameterDefinition(referenceProvider.GetTypeReference(typeof(object)));
+            var valueParameter = new ParameterDefinition(referenceProvider.GetTypeReference(typeof(NotifyCollectionChangedEventArgs)));
+
+            method.Parameters.Add(itemParameter);
+            method.Parameters.Add(valueParameter);
+
+            var TrickingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
+            var methodDefinition = TrickingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetCollectionChangedTrackingActionLIst), typeof(IList<>).FullName, typeof(NotifyCollectionChangedEventArgs).FullName);
+            var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(methodDefinition);
+            var trackingActionFactoryMethod = new GenericInstanceMethod(trackingActionFactoryMethodNoGen);
+
+            trackingActionFactoryMethod.GenericArguments.Add((property.PropertyType as GenericInstanceType).GenericArguments.First());
+
+            var addActionMethod = ModuleDefinition.ImportReference(fieldTracking.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddActions), typeof(IList<>).FullName));
+
+            var instructions = method.Body.Instructions;
+
+            instructions.InsertFirst(Instruction.Create(OpCodes.Ldarg_0),
+                                     Instruction.Create(OpCodes.Ldfld, fieldTracking),
+                                     Instruction.Create(OpCodes.Ldarg_0),
+                                     Instruction.Create(OpCodes.Call, property.GetMethod),
+                                     Instruction.Create(OpCodes.Ldarg_2),
+                                     Instruction.Create(OpCodes.Call, trackingActionFactoryMethod),
+                                     Instruction.Create(OpCodes.Callvirt, addActionMethod),
+                                     Instruction.Create(OpCodes.Nop),
+                                     Instruction.Create(OpCodes.Ret));
+
+            property.DeclaringType.Methods.Add(method);
+
+            return method;
+
+           // IL_0000: ldarg.0
+		   // IL_0001: ldfld class [Xce.TrackingItem]Xce.TrackingItem.TrackingManager Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel::trackingManager
+		   // IL_0006: ldarg.0
+		   // IL_0007: call instance class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32> Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel::get_TestCollection()
+		   // IL_000c: ldarg.2
+		   // IL_000d: call class [netstandard]System.Collections.Generic.IList`1<class [Xce.TrackingItem]Xce.TrackingItem.TrackingAction.ITrackingAction> [Xce.TrackingItem]Xce.TrackingItem.TrackingActionFactory::GetCollectionChangedTrackingActionLIst<int32>(class [netstandard]System.Collections.Generic.IList`1<!!0>, class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventArgs)
+		   // IL_0012: callvirt instance void [Xce.TrackingItem]Xce.TrackingItem.TrackingManager::AddActions(class [netstandard]System.Collections.Generic.IList`1<class [Xce.TrackingItem]Xce.TrackingItem.TrackingAction.ITrackingAction>)
+		   // IL_0017: nop
+		   // IL_0018: ret
+        }
+
+        private void AddCollectionChangedConstructor(TypeDefinition type, PropertyDefinition property, MethodDefinition collectionChangedMethod)
+        {
+            var instructions = type.GetConstructors().First().Body.Instructions;
+
+            var insertPosition = instructions.FindRetPosition();
+
+            var collectionChangedEventHandlerTypeDef = referenceProvider.GetTypeReference(typeof(NotifyCollectionChangedEventHandler));
+            var collectionChangedEventHandlerCtor = referenceProvider.GetMethodReference(collectionChangedEventHandlerTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName));
+
+            var addMethodNoGen = property.PropertyType.Resolve().FindMethod("add_CollectionChanged", typeof(NotifyCollectionChangedEventHandler).FullName);
+
+            MethodReference addCollectionChangedMethod;
+
+            if (property.PropertyType is GenericInstanceType genericInstanceType)
+            {
+                var methodReferenceGen = addMethodNoGen.MakeHostInstanceGeneric(genericInstanceType.GenericArguments.ToArray());
+                addCollectionChangedMethod = referenceProvider.GetMethodReference(methodReferenceGen);
+            }
+            else
+            {
+                addCollectionChangedMethod = referenceProvider.GetMethodReference(addMethodNoGen);
+            }
+
+            instructions.InsertList(insertPosition,
+                                    Instruction.Create(OpCodes.Ldarg_0),
+                                    Instruction.Create(OpCodes.Call, property.GetMethod),
+                                    Instruction.Create(OpCodes.Ldarg_0),
+                                    Instruction.Create(OpCodes.Ldftn, collectionChangedMethod),
+                                    Instruction.Create(OpCodes.Newobj, collectionChangedEventHandlerCtor),
+                                    Instruction.Create(OpCodes.Callvirt, addCollectionChangedMethod),
+                                    Instruction.Create(OpCodes.Nop));
+
+            //IL_0013: ldarg.0
+            //IL_0014: call instance class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32> Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel::get_TestCollection()
+            //IL_0019: ldarg.0
+            //IL_001a: ldftn instance void Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel::OnTestCollectionCollectionChanged(object, class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventArgs)
+            //IL_0020: newobj instance void [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler::.ctor(object, native int)
+            //IL_0025: callvirt instance void class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32>::add_CollectionChanged(class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler)
+            //IL_002a: nop
         }
 
         private FieldDefinition InjectField(TypeDefinition type)
@@ -142,11 +330,8 @@ namespace Xce.TrackingItem.Fody
             logInstanceMethod.GenericArguments.Add(item.PropertyType);
 
             var TrickingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
-
             var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(TrickingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetTrackingPropertyUpdateFunc), 3, typeof(Action<,>).FullName));
-
             var trackingActionFactoryMethod = new GenericInstanceMethod(trackingActionFactoryMethodNoGen);
-
 
             trackingActionFactoryMethod.GenericArguments.Add(item.DeclaringType);
             trackingActionFactoryMethod.GenericArguments.Add(item.PropertyType);
