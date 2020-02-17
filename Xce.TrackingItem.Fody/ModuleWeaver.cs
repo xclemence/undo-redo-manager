@@ -7,6 +7,7 @@ using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using Mono.Collections.Generic;
 using Xce.TrackingItem.Attributes;
 using Xce.TrackingItem.TrackingAction;
 
@@ -62,48 +63,6 @@ namespace Xce.TrackingItem.Fody
             var collectionChangedMethod = AddCollectionTrackingMethod(type, property, fieldTracking);
             AddCollectionChangedConstructor(type, property, collectionChangedMethod);
             AddCollectionFinaliser(type, property, collectionChangedMethod);
-        }
-
-        private void AddCollectionFinaliser(TypeDefinition type, PropertyDefinition property, MethodDefinition collectionChangedMethod) 
-        {
-            var (method, insertPosition) = AddFinalizer(type);
-
-            var instructions = method.Body.Instructions;
-
-            var collectionChangedEventHandlerTypeDef = referenceProvider.GetTypeReference(typeof(NotifyCollectionChangedEventHandler));
-            var collectionChangedEventHandlerCtor = referenceProvider.GetMethodReference(collectionChangedEventHandlerTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName));
-
-            var addMethodNoGen = property.PropertyType.Resolve().FindMethod("remove_CollectionChanged", typeof(NotifyCollectionChangedEventHandler).FullName);
-
-            MethodReference addCollectionChangedMethod;
-
-            if (property.PropertyType is GenericInstanceType genericInstanceType)
-            {
-                var methodReferenceGen = addMethodNoGen.MakeHostInstanceGeneric(genericInstanceType.GenericArguments.ToArray());
-                addCollectionChangedMethod = referenceProvider.GetMethodReference(methodReferenceGen);
-            }
-            else
-            {
-                addCollectionChangedMethod = referenceProvider.GetMethodReference(addMethodNoGen);
-            }
-
-            instructions.InsertList(insertPosition,
-                                    Instruction.Create(OpCodes.Ldarg_0),
-                                    Instruction.Create(OpCodes.Call, property.GetMethod),
-                                    Instruction.Create(OpCodes.Ldarg_0),
-                                    Instruction.Create(OpCodes.Ldftn, collectionChangedMethod),
-                                    Instruction.Create(OpCodes.Newobj, collectionChangedEventHandlerCtor),
-                                    Instruction.Create(OpCodes.Callvirt, addCollectionChangedMethod),
-                                    Instruction.Create(OpCodes.Nop));
-
-            // IL_0001: nop
-			// IL_0002: ldarg.0
-			// IL_0003: call instance class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32> Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel2::get_TestCollection()
-			// IL_0008: ldarg.0
-			// IL_0009: ldftn instance void Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel2::OnTestCollectionCollectionChanged(object, class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventArgs)
-			// IL_000f: newobj instance void [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler::.ctor(object, native int)
-			// IL_0014: callvirt instance void class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32>::remove_CollectionChanged(class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler)
-            // IL_002a: nop
         }
 
         public (MethodDefinition method, int insertPosition) AddFinalizer(TypeDefinition type)
@@ -200,10 +159,41 @@ namespace Xce.TrackingItem.Fody
 
             var insertPosition = instructions.FindRetPosition();
 
+            AddCollectionChangeEventHandler(property, collectionChangedMethod, instructions, insertPosition, "add_CollectionChanged");
+
+            //IL_0013: ldarg.0
+            //IL_0014: call instance class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32> Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel::get_TestCollection()
+            //IL_0019: ldarg.0
+            //IL_001a: ldftn instance void Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel::OnTestCollectionCollectionChanged(object, class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventArgs)
+            //IL_0020: newobj instance void [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler::.ctor(object, native int)
+            //IL_0025: callvirt instance void class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32>::add_CollectionChanged(class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler)
+            //IL_002a: nop
+        }
+
+        private void AddCollectionFinaliser(TypeDefinition type, PropertyDefinition property, MethodDefinition collectionChangedMethod)
+        {
+            var (method, insertPosition) = AddFinalizer(type);
+
+            var instructions = method.Body.Instructions;
+
+            AddCollectionChangeEventHandler(property, collectionChangedMethod, instructions, insertPosition, "remove_CollectionChanged");
+
+            // IL_0001: nop
+            // IL_0002: ldarg.0
+            // IL_0003: call instance class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32> Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel2::get_TestCollection()
+            // IL_0008: ldarg.0
+            // IL_0009: ldftn instance void Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel2::OnTestCollectionCollectionChanged(object, class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventArgs)
+            // IL_000f: newobj instance void [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler::.ctor(object, native int)
+            // IL_0014: callvirt instance void class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32>::remove_CollectionChanged(class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler)
+            // IL_002a: nop
+        }
+
+        private void AddCollectionChangeEventHandler(PropertyDefinition property, MethodDefinition collectionChangedMethod, Collection<Instruction> instructions, int insertPosition, string eventHandlerMethod)
+        {
             var collectionChangedEventHandlerTypeDef = referenceProvider.GetTypeReference(typeof(NotifyCollectionChangedEventHandler));
             var collectionChangedEventHandlerCtor = referenceProvider.GetMethodReference(collectionChangedEventHandlerTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName));
 
-            var addMethodNoGen = property.PropertyType.Resolve().FindMethod("add_CollectionChanged", typeof(NotifyCollectionChangedEventHandler).FullName);
+            var addMethodNoGen = property.PropertyType.Resolve().FindMethod(eventHandlerMethod, typeof(NotifyCollectionChangedEventHandler).FullName);
 
             MethodReference addCollectionChangedMethod;
 
@@ -225,14 +215,6 @@ namespace Xce.TrackingItem.Fody
                                     Instruction.Create(OpCodes.Newobj, collectionChangedEventHandlerCtor),
                                     Instruction.Create(OpCodes.Callvirt, addCollectionChangedMethod),
                                     Instruction.Create(OpCodes.Nop));
-
-            //IL_0013: ldarg.0
-            //IL_0014: call instance class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32> Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel::get_TestCollection()
-            //IL_0019: ldarg.0
-            //IL_001a: ldftn instance void Xce.TrackingItem.Fody.TestModel.ReferenceCollectionModel::OnTestCollectionCollectionChanged(object, class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventArgs)
-            //IL_0020: newobj instance void [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler::.ctor(object, native int)
-            //IL_0025: callvirt instance void class [netstandard]System.Collections.ObjectModel.ObservableCollection`1<int32>::add_CollectionChanged(class [netstandard]System.Collections.Specialized.NotifyCollectionChangedEventHandler)
-            //IL_002a: nop
         }
 
         private FieldDefinition InjectField(TypeDefinition type)
