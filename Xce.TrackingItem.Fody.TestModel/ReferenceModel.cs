@@ -32,9 +32,12 @@ namespace Xce.TrackingItem.Fody.TestModel
             get => value;
             set
             {
-                trackingManager.AddAction(TrackingActionFactory.GetTrackingPropertyUpdateFunc(this, Value, value, TrackingValue));
-
                 this.value = value;
+
+                if(Value2 != value)
+                {
+                    trackingManager.AddAction(TrackingActionFactory.GetTrackingPropertyUpdateFunc(this, Value, value, TrackingValue));
+                }
             }
         }
 

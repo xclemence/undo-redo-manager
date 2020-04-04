@@ -33,8 +33,9 @@ namespace Xce.TrackingItem.Fody
             if (typeCache.ContainsKey(type.FullName))
                 return typeCache[type.FullName];
         
-                return typeCache[type.FullName] = moduleWeaver.ModuleDefinition.ImportReference(type);
+            return typeCache[type.FullName] = moduleWeaver.ModuleDefinition.ImportReference(type);
         }
+
 
         public MethodReference GetMethodReference(MethodReference method)
         {
@@ -42,6 +43,15 @@ namespace Xce.TrackingItem.Fody
                 return methodCache[method.FullName];
 
             return methodCache[method.FullName] = moduleWeaver.ModuleDefinition.ImportReference(method);
+        }
+
+        public MethodReference GetMethodReference(GenericInstanceMethod method, IGenericParameterProvider generic)
+        {
+            // test if fullName of generic method contrains generics parameters !!.
+            if (methodCache.ContainsKey(method.FullName))
+                return methodCache[method.FullName];
+
+            return methodCache[method.FullName] = moduleWeaver.ModuleDefinition.ImportReference(method, generic);
         }
     }
 }

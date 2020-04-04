@@ -16,10 +16,14 @@ namespace Xce.TrackingItem.Fody
     public class ModuleWeaver : BaseModuleWeaver
     {
         private readonly ReferenceProvider referenceProvider;
+        private readonly EqualsMethodAppender equalsMethodAppender;
+        private readonly EqualsMethodProvider equalsMethodProvider;
 
         public ModuleWeaver()
         {
             referenceProvider = new ReferenceProvider(this);
+            equalsMethodProvider = new EqualsMethodProvider(referenceProvider);
+            equalsMethodAppender = new EqualsMethodAppender(equalsMethodProvider);
         }
 
         private IEnumerable<TypeDefinition> GetTrackingTypes()
@@ -318,19 +322,35 @@ namespace Xce.TrackingItem.Fody
             trackingActionFactoryMethod.GenericArguments.Add(item.DeclaringType);
             trackingActionFactoryMethod.GenericArguments.Add(item.PropertyType);
 
-            instructions.InsertFirst(Instruction.Create(OpCodes.Nop),
-                                     Instruction.Create(OpCodes.Ldarg_0),
-                                     Instruction.Create(OpCodes.Ldfld, field),
-                                     Instruction.Create(OpCodes.Ldarg_0),
-                                     Instruction.Create(OpCodes.Ldarg_0),
-                                     Instruction.Create(OpCodes.Call, item.GetMethod),
-                                     Instruction.Create(OpCodes.Ldarg_1),
-                                     Instruction.Create(OpCodes.Ldnull),
-                                     Instruction.Create(OpCodes.Ldftn, localTracingMethod),
-                                     Instruction.Create(OpCodes.Newobj, actionContructor),
-                                     Instruction.Create(OpCodes.Call, trackingActionFactoryMethod),
-                                     Instruction.Create(OpCodes.Callvirt, addActionMethod));
+            var getterMethod = item.GetMethod.GetGeneric();
 
+            var firstInstruction = item.SetMethod.Body.Instructions.FirstOrDefault();
+
+            if (firstInstruction == null)
+            {
+                firstInstruction = Instruction.Create(OpCodes.Ret);
+                item.SetMethod.Body.Instructions.Add(firstInstruction);
+            }
+
+            equalsMethodAppender.InjectEqualityCheck(0, instructions, Instruction.Create(OpCodes.Call, getterMethod), item.PropertyType, firstInstruction);
+
+            var index = instructions.IndexOf(firstInstruction);
+
+            instructions.InsertList(index, 
+                                    Instruction.Create(OpCodes.Nop),
+                                    Instruction.Create(OpCodes.Ldarg_0),
+                                    Instruction.Create(OpCodes.Ldfld, field),
+                                    Instruction.Create(OpCodes.Ldarg_0),
+                                    Instruction.Create(OpCodes.Ldarg_0),
+                                    Instruction.Create(OpCodes.Call, getterMethod),
+                                    Instruction.Create(OpCodes.Ldarg_1),
+                                    Instruction.Create(OpCodes.Ldnull),
+                                    Instruction.Create(OpCodes.Ldftn, localTracingMethod),
+                                    Instruction.Create(OpCodes.Newobj, actionContructor),
+                                    Instruction.Create(OpCodes.Call, trackingActionFactoryMethod),
+                                    Instruction.Create(OpCodes.Callvirt, addActionMethod));
+            
+            // /!\ Code without Equality check (too specific)
             //IL_0000: nop
 		    //IL_0001: ldarg.0
 		    //IL_0002: ldfld class [Xce.TrackingItem]Xce.TrackingItem.TrackingManager Xce.TrackingItem.Fody.TestModel.ReferenceModel::trackingManager
@@ -355,8 +375,9 @@ namespace Xce.TrackingItem.Fody
             method.Parameters.Add(itemParameter);
             method.Parameters.Add(valueParameter);
 
-            var setterMethod = ModuleDefinition.ImportReference(item.SetMethod);
             var instructions = method.Body.Instructions;
+
+            var setterMethod = ModuleDefinition.ImportReference(item.SetMethod);
 
             instructions.InsertFirst(Instruction.Create(OpCodes.Ldarg_0),
                                      Instruction.Create(OpCodes.Ldarg_1),
