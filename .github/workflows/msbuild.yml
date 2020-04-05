@@ -13,9 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup MSBuild
-      id: setup_msbuild
-      uses: ./
+      uses: microsoft/setup-msbuild@v1
       with:
-        vs-version: "[16.4,16.6]"   
+        vs-version: "[16.4,16.5]"
     - name: Build sources
       run: msbuild UndoRedo.sln
