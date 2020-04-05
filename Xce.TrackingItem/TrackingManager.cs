@@ -4,6 +4,12 @@ using Xce.TrackingItem.TrackingAction;
 
 namespace Xce.TrackingItem
 {
+    public static class TrackingManagerProvider
+    {
+        private static TrackingManager trackingManager = new TrackingManager();
+        public static TrackingManager GetDefault() => trackingManager;
+    }
+
     public class TrackingManager : IDisposable
     {
         private readonly Stack<TrackingScope> trackingScopes = new Stack<TrackingScope>();
@@ -16,8 +22,26 @@ namespace Xce.TrackingItem
 
         public bool IsAction { get; set; }
 
-        public void AddAction(ITrackingAction action) => GetCurrentRegisterScope()?.AddAction(action);
-        public void AddAction(Func<ITrackingAction> action) => GetCurrentRegisterScope()?.AddAction(action);
+        public void AddAction(ITrackingAction action)
+        {
+            if (IsAction) return;
+
+            GetCurrentRegisterScope()?.AddAction(action);
+        }
+
+        public void AddActions(IList<ITrackingAction> actions)
+        {
+            if (IsAction) return;
+            
+            GetCurrentRegisterScope()?.AddActions(actions);
+        }
+
+        public void AddAction(Func<ITrackingAction> action)
+        {
+            if (IsAction) return;
+
+            GetCurrentRegisterScope()?.AddAction(action);
+        }
 
         public bool CanRevert=> (GetCurrentRegisterScope()?.LastActions.Count ?? 0) != 0;
         public bool CanRemake => (GetCurrentRegisterScope()?.RevertedActions.Count ?? 0) != 0;

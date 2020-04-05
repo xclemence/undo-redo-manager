@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Xce.TrackingItem.TestModel</AssemblyName>
+    <RootNamespace>Xce.TrackingItem.TestModel</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="6.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <WeaverFiles Include="$(SolutionDir)Xce.TrackingItem.Fody\bin\$(Configuration)\netstandard2.0\Xce.TrackingItem.Fody.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xce.TrackingItem.Attributes\Xce.TrackingItem.Attributes.csproj" />
+    <ProjectReference Include="..\Xce.TrackingItem.Fody\Xce.TrackingItem.Fody.csproj" />
+    <ProjectReference Include="..\Xce.TrackingItem\Xce.TrackingItem.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -3,11 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UndoRedo", "UndoRedo\UndoRedo.csproj", "{C5782E9C-BD5A-4D90-98AA-FBDAB25BAF3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.UndoRedo", "Xce.UndoRedo\Xce.UndoRedo.csproj", "{C5782E9C-BD5A-4D90-98AA-FBDAB25BAF3C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.TrackingItem", "Xce.TrackingItem\Xce.TrackingItem.csproj", "{C3A044CC-4D04-422D-A7DC-309AB6F4087B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.TrackingItem.TestModel", "Xce.TRackingItem.TestModel\Xce.TrackingItem.TestModel.csproj", "{4B860F35-C65D-430C-B5F1-47184F656A26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.UndoRedo.Models", "Xce.UndoRedo.Models\Xce.UndoRedo.Models.csproj", "{4B860F35-C65D-430C-B5F1-47184F656A26}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.TrackingItem.Attributes", "Xce.TrackingItem.Attributes\Xce.TrackingItem.Attributes.csproj", "{D2877840-EF1F-4F5B-8B54-302176F224D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.TrackingItem.Fody", "Xce.TrackingItem.Fody\Xce.TrackingItem.Fody.csproj", "{F6402BD7-26BA-4649-9877-915B16F8FE10}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.TrackingItem.Fody.TestModel", "Fody.Test\Xce.TrackingItem.Fody.TestModel\Xce.TrackingItem.Fody.TestModel.csproj", "{3449374B-2C96-45B2-BBEA-370374B0F2C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xce.TrackingItem.Fody.UnitTests", "Fody.Test\Xce.TrackingItem.Fody.UnitTests\Xce.TrackingItem.Fody.UnitTests.csproj", "{E65E1F5B-BAF0-4FFE-ADF3-4F9532BE6A3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fody.Test", "Fody.Test", "{F9A6741B-8938-48AD-B27B-012E5293ADC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +37,29 @@ Global
 		{4B860F35-C65D-430C-B5F1-47184F656A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B860F35-C65D-430C-B5F1-47184F656A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B860F35-C65D-430C-B5F1-47184F656A26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2877840-EF1F-4F5B-8B54-302176F224D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2877840-EF1F-4F5B-8B54-302176F224D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2877840-EF1F-4F5B-8B54-302176F224D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2877840-EF1F-4F5B-8B54-302176F224D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6402BD7-26BA-4649-9877-915B16F8FE10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6402BD7-26BA-4649-9877-915B16F8FE10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6402BD7-26BA-4649-9877-915B16F8FE10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6402BD7-26BA-4649-9877-915B16F8FE10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3449374B-2C96-45B2-BBEA-370374B0F2C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3449374B-2C96-45B2-BBEA-370374B0F2C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3449374B-2C96-45B2-BBEA-370374B0F2C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3449374B-2C96-45B2-BBEA-370374B0F2C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E65E1F5B-BAF0-4FFE-ADF3-4F9532BE6A3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E65E1F5B-BAF0-4FFE-ADF3-4F9532BE6A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E65E1F5B-BAF0-4FFE-ADF3-4F9532BE6A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E65E1F5B-BAF0-4FFE-ADF3-4F9532BE6A3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3449374B-2C96-45B2-BBEA-370374B0F2C2} = {F9A6741B-8938-48AD-B27B-012E5293ADC5}
+		{E65E1F5B-BAF0-4FFE-ADF3-4F9532BE6A3F} = {F9A6741B-8938-48AD-B27B-012E5293ADC5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {95A617EB-CD23-49E1-9F2A-55BF992F4C60}

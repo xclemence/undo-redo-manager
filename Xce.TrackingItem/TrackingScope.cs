@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Xce.TrackingItem.TrackingAction;
 
@@ -10,7 +11,7 @@ namespace Xce.TrackingItem
         private readonly object actionLocker = new object();
         private readonly Action<TrackingScope> onDispose;
 
-        internal TrackingScope(TrackingScope parent, Action<TrackingScope> onDispose)
+        public TrackingScope(TrackingScope parent, Action<TrackingScope> onDispose)
         {
             Parent = parent;
             this.onDispose = onDispose;
@@ -44,6 +45,12 @@ namespace Xce.TrackingItem
 
                 RevertedActions.Clear();
             }
+        }
+
+        public void AddActions(IList<ITrackingAction> actions) 
+        {
+            foreach (var item in actions)
+                AddAction(item);
         }
 
         public void Revert()
