@@ -1,6 +1,5 @@
-# This is a basic workflow to help you get started with Actions
+name: Ms Build
 
-name: CI
 on:
   push:
     branches: [ master ]
@@ -13,11 +12,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
     - name: Setup MSBuild
       id: setup_msbuild
       uses: ./
       with:
-        vs-version: "[16.4,16.6]"
-    
-    - name: msbuild UndoRedo.sln
+        vs-version: "[16.4,16.6]"   
+    - name: Build sources
+      run: msbuild UndoRedo.sln
