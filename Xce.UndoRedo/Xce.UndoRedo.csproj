@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xce.UndoRedo.Models\Xce.UndoRedo.Models.csproj" />
     <ProjectReference Include="..\Xce.TrackingItem\Xce.TrackingItem.csproj" />
+    <ProjectReference Include="..\Xce.UndoRedo.Models\Xce.UndoRedo.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
