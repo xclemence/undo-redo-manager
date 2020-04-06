@@ -19,16 +19,13 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 3.1.200
     
     - name: Restore nuget packages
       run: dotnet restore
     
-    - name: Build test app
-      run: msbuild Xce.UndoRedo/Xce.UndoRedo.csproj
+    - name: Build sources
+      run: msbuild UndoRedo.sln
     
-    - name: Build unit tests
-      run: msbuild Fody.Test/Xce.TrackingItem.Fody.UnitTests/Xce.TrackingItem.Fody.UnitTests.csproj
-
     - name: Run unit tests
       run: dotnet test
