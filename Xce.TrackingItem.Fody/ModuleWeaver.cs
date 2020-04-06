@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 using Xce.TrackingItem.Attributes;
+using Xce.TrackingItem.Fody.Extensions;
 using Xce.TrackingItem.TrackingAction;
 
 namespace Xce.TrackingItem.Fody
@@ -22,19 +22,21 @@ namespace Xce.TrackingItem.Fody
         public ModuleWeaver()
         {
             referenceProvider = new ReferenceProvider(this);
-            equalsMethodProvider = new EqualsMethodProvider(referenceProvider);
+            equalsMethodProvider = new EqualsMethodProvider(referenceProvider, WriteWarning);
             equalsMethodAppender = new EqualsMethodAppender(equalsMethodProvider);
         }
 
         private IEnumerable<TypeDefinition> GetTrackingTypes()
         {
-            return ModuleDefinition.Types.Where(x => x.IsClass && x.HasCustomAttributes && x.CustomAttributes.Any(a => a.AttributeType.Name == nameof(TrackingAttribute)));
+            return ModuleDefinition.Types.Where(x => x.IsClass && 
+                                                     x.HasCustomAttributes &&
+                                                     x.CustomAttributes.Any(a => a.AttributeType.Name == nameof(TrackingAttribute)));
 
         }
         private IEnumerable<PropertyDefinition> GetTrackingProperties(TypeDefinition type)
         {
-            return type.Properties
-                             .Where(x => x.SetMethod != null && !x.CustomAttributes.Any(a => a.AttributeType.Name == nameof(NoPropertyTrackingAttribute)));
+            return type.Properties.Where(x => x.SetMethod != null && 
+                                              !x.CustomAttributes.Any(a => a.AttributeType.Name == nameof(NoPropertyTrackingAttribute)));
         }
 
         private IEnumerable<PropertyDefinition> GetCollectionProperties(TypeDefinition type)
@@ -59,7 +61,6 @@ namespace Xce.TrackingItem.Fody
                 foreach (var property in collectionProperties)
                     AddCollectionChanged(type, property, tracerField);
             }
-
         }
 
         private void AddCollectionChanged(TypeDefinition type, PropertyDefinition property, FieldDefinition fieldTracking)
@@ -204,11 +205,11 @@ namespace Xce.TrackingItem.Fody
             if (property.PropertyType is GenericInstanceType genericInstanceType)
             {
                 var methodReferenceGen = addMethodNoGen.MakeHostInstanceGeneric(genericInstanceType.GenericArguments.ToArray());
-                addCollectionChangedMethod = referenceProvider.GetMethodReference(methodReferenceGen);
+                addCollectionChangedMethod = referenceProvider.GetMethodReference(methodReferenceGen).MakeGeneric();
             }
             else
             {
-                addCollectionChangedMethod = referenceProvider.GetMethodReference(addMethodNoGen);
+                addCollectionChangedMethod = referenceProvider.GetMethodReference(addMethodNoGen).MakeGeneric();
             }
 
             instructions.InsertList(insertPosition,
@@ -228,7 +229,7 @@ namespace Xce.TrackingItem.Fody
             var trackingField = new FieldDefinition("trackingManager", FieldAttributes.Private, trackingManagerRefrence);
 
             var trackingProviderTypeDef = referenceProvider.GetTypeReference(typeof(TrackingManagerProvider));
-            var tackingManagerProviderMethod = referenceProvider.GetMethodReference(trackingProviderTypeDef.Resolve().FindMethod(nameof(TrackingManagerProvider.GetDefault)));
+            var tackingManagerProviderMethod = referenceProvider.GetMethodReference(trackingProviderTypeDef.Resolve().FindMethod(nameof(TrackingManagerProvider.GetDefault))).MakeGeneric();
             
             var instructions = type.GetConstructors().First().Body.Instructions;
 
@@ -296,7 +297,6 @@ namespace Xce.TrackingItem.Fody
             //IL_0020: callvirt instance void [Xce.TrackingItem]Xce.TrackingItem.TrackingManager::AddAction(class [Xce.TrackingItem]Xce.TrackingItem.TrackingAction.ITrackingAction)
         }
 
-
         private void UpdatePropertyWithLog(PropertyDefinition item, FieldDefinition field)
         {
             WriteInfo($"Procceed Property {item.Name}");
@@ -308,6 +308,7 @@ namespace Xce.TrackingItem.Fody
             var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(Func<>).FullName));
 
             var genericActionTypeDef = referenceProvider.GetTypeReference(typeof(Action<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
+
             var actionContructor = referenceProvider.GetMethodReference(genericActionTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var logInstanceMethod = new GenericInstanceMethod(addActionMethod);
@@ -317,12 +318,14 @@ namespace Xce.TrackingItem.Fody
 
             var TrickingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
             var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(TrickingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetTrackingPropertyUpdateFunc), 3, typeof(Action<,>).FullName));
+            
+            
             var trackingActionFactoryMethod = new GenericInstanceMethod(trackingActionFactoryMethodNoGen);
 
             trackingActionFactoryMethod.GenericArguments.Add(item.DeclaringType);
             trackingActionFactoryMethod.GenericArguments.Add(item.PropertyType);
 
-            var getterMethod = item.GetMethod.GetGeneric();
+            var getterMethod = item.GetMethod.MakeGeneric();
 
             var firstInstruction = item.SetMethod.Body.Instructions.FirstOrDefault();
 
@@ -405,6 +408,7 @@ namespace Xce.TrackingItem.Fody
             yield return "System.ObjectModel";
             yield return "System.Threading";
             yield return "Xce.TrackingItem";
+            yield return "Xce.TrackingItem.Attributes";
         }
     }
 }

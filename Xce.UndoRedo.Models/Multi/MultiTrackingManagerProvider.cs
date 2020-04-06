@@ -2,6 +2,7 @@
 using Xce.TrackingItem;
 using Xce.UndoRedo.Models.Base;
 using Xce.UndoRedo.Models.DataSet;
+using Xce.UndoRedo.Models.Fody;
 using Xce.UndoRedo.Models.ItemSave;
 using Xce.UndoRedo.Models.PropertySave;
 
@@ -19,6 +20,7 @@ namespace Xce.UndoRedo.Models.Multi
                 yield return PropertyTrackingManagerProvider.Instance.Manager;
                 yield return ItemTrackingManagerProvider.Instance.Manager;
                 yield return DataSetTrackingManagerProvider.Instance.Manager;
+                yield return FodyTrackingManagerProvider.Instance.Manager;
             }
         }
     }

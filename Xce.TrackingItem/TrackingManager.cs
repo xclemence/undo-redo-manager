@@ -4,12 +4,6 @@ using Xce.TrackingItem.TrackingAction;
 
 namespace Xce.TrackingItem
 {
-    public static class TrackingManagerProvider
-    {
-        private static TrackingManager trackingManager = new TrackingManager();
-        public static TrackingManager GetDefault() => trackingManager;
-    }
-
     public class TrackingManager : IDisposable
     {
         private readonly Stack<TrackingScope> trackingScopes = new Stack<TrackingScope>();

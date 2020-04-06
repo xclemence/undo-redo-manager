@@ -15,7 +15,6 @@ namespace Xce.UndoRedo.Models.Base
                 if (i < target.Count && source[i].Id == target[i].Id)
                     target[i].Set(source[i]);
             }
-
         }
     }
 }

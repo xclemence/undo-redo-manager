@@ -44,8 +44,18 @@ namespace Xce.UndoRedo.Base
     public class SelectionManager : PropertyObject
     {
         private readonly Action onSelectionChanged;
+        private object selectedItem;
+
+        public SelectionManager(Action onSelectionChanged) =>
+            this.onSelectionChanged = onSelectionChanged ?? throw new ArgumentNullException(nameof(onSelectionChanged));
 
         internal IList<ItemManager> ItemManagers { get; } = new List<ItemManager>();
+
+        public object SelectedItem
+        {
+            get => selectedItem;
+            set => Set(ref selectedItem, value);
+        }
 
         public object this[int key]
         {
@@ -57,24 +67,12 @@ namespace Xce.UndoRedo.Base
 
                 ItemManagers[key].SelectedItem = value;
 
-                
+
                 SelectedItem = value == null ? null : ItemManagers[key];
 
                 onSelectionChanged?.Invoke();
             }
         }
-
-        private object selectedItem;
-
-        public SelectionManager(Action onSelectionChanged) =>
-            this.onSelectionChanged = onSelectionChanged ?? throw new ArgumentNullException(nameof(onSelectionChanged));
-
-        public object SelectedItem
-        {
-            get => selectedItem;
-            set => Set(ref selectedItem, value);
-        }
-
 
         public int AddNewItem()
         {
@@ -95,7 +93,12 @@ namespace Xce.UndoRedo.Base
     /// </summary>
     public partial class EditionPanel : UserControl, INotifyPropertyChanged
     {
-        
+        public static readonly DependencyProperty EditObjectProperty =
+                DependencyProperty.Register(nameof(EditObject), typeof(object), typeof(EditionPanel), new PropertyMetadata(null, OnObjectChanged));
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
         public EditionPanel()
         {
             InitializeComponent();
@@ -109,10 +112,7 @@ namespace Xce.UndoRedo.Base
             set { SetValue(EditObjectProperty, value); }
         }
 
-        public static readonly DependencyProperty EditObjectProperty =
-            DependencyProperty.Register(nameof(EditObject), typeof(object), typeof(EditionPanel), new PropertyMetadata(null, OnObjectChanged));
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public SelectionManager SelectionManager { get; }
 
         private static void OnObjectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -138,8 +138,6 @@ namespace Xce.UndoRedo.Base
                     control.AddPropertyItem(item);
             }
         }
-
-        public SelectionManager SelectionManager { get; }
 
         private void AddCollectionItem(PropertyInfo item, object parent)
         {
@@ -167,7 +165,7 @@ namespace Xce.UndoRedo.Base
             }
             catch
             {
-                // DO nothing
+                // Do nothing
             }
             
             dataGrid.SetBinding(Selector.SelectedItemProperty, selectionBinding);

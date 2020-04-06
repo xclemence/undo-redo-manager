@@ -9,10 +9,9 @@ namespace Xce.UndoRedo.Tests
 
         public string Name { get; set; }
 
-
         public PropertyInfo TestFindPropertyInfoReflexion(string callerName) => GetType().GetProperty(callerName);
 
-        public PropertyInfo TestFindPropertyInfoExpression<T>(Expression<Func<T>> expression)
+        public static PropertyInfo TestFindPropertyInfoExpression<T>(Expression<Func<T>> expression)
         {
             var body = (MemberExpression)expression.Body;
             return (PropertyInfo)body.Member;
@@ -38,17 +37,14 @@ namespace Xce.UndoRedo.Tests
 
         public MethodInfo TestFindSetterAndCreateMethodInfo(string callerName) => TestFindPropertyInfoReflexion(callerName).GetSetMethod();
 
-
         public Action<ObjectReflexion, string> TestFindSetterCreateActionInvoke(string callerName)
         {
             var methodInfo = TestFindPropertyInfoReflexion(callerName).GetSetMethod();
             return (x, y) => methodInfo.Invoke(x, new[] { y });
         }
 
-        public Action<ObjectReflexion, T> TestFindSetterFullAction<T>(string callerName)
-        {
-            return (x, t) => x.GetType().GetProperty(callerName).GetSetMethod().CreateDelegate(typeof(Action<ObjectReflexion, T>));
-        }
+        public static Action<ObjectReflexion, T> TestFindSetterFullAction<T>(string callerName) => 
+            (x, t) => x.GetType().GetProperty(callerName).GetSetMethod().CreateDelegate(typeof(Action<ObjectReflexion, T>));
 
         public void TestSet(PropertyInfo info, string value) => info.SetValue(this, value);
     }

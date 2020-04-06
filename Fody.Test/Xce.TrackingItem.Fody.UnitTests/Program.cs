@@ -7,7 +7,7 @@ namespace Xce.TrackingItem.Fody.UnitTests
         static void Main(string[] args)
         {
             var weavingTask = new ModuleWeaver();
-            var testResult = weavingTask.ExecuteTestRun("Xce.TrackingItem.Fody.TestModel.dll", false);
+            weavingTask.ExecuteTestRun("Xce.TrackingItem.Fody.TestModel.dll", false);
         }
     }
 }

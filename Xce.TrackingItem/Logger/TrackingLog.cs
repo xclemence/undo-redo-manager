@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Xce.TrackingItem
+namespace Xce.TrackingItem.Logger
 {
     public class TrackingLog
     {

@@ -13,7 +13,7 @@ namespace Xce.UndoRedo.Tests
             var testObject = new ObjectReflexion();
 
             yield return ("PropertyInfo With Reflexion", ExecuteTest(() => testObject.TestFindPropertyInfoReflexion(nameof(ObjectReflexion.Name))));
-            yield return ("PropertyInfo With Expression", ExecuteTest(() => testObject.TestFindPropertyInfoExpression(() => testObject.Name)));
+            yield return ("PropertyInfo With Expression", ExecuteTest(() => ObjectReflexion.TestFindPropertyInfoExpression(() => testObject.Name)));
             yield return ("MathodInfo with Reflexion", ExecuteTest(() => testObject.TestFindSetterAndCreateMethodInfo(nameof(ObjectReflexion.Name))));
             
             yield return ("Delegate From Delegate", ExecuteTest(() => ObjectReflexion.TestFindSetterAndCreateDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name))));
@@ -21,7 +21,7 @@ namespace Xce.UndoRedo.Tests
             yield return ("Delegate Lazy", ExecuteTest(() => ObjectReflexion.TestFindSetterLazyDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name))));
 
             yield return ("Action From MethodInfo (capture)", ExecuteTest(() => testObject.TestFindSetterCreateActionInvoke(nameof(ObjectReflexion.Name))));
-            yield return ("Action From MethodInfo (no capture)", ExecuteTest(() => testObject.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name))));
+            yield return ("Action From MethodInfo (no capture)", ExecuteTest(() => ObjectReflexion.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name))));
 
             yield return ("-------------------------------", TimeSpan.Zero);
             
@@ -37,7 +37,7 @@ namespace Xce.UndoRedo.Tests
             var setterDelegateFromMethod = testObject.TestFindSetterAndCreateDelegateFromInfo<string>(nameof(ObjectReflexion.Name));
             
             var setterActionContext = testObject.TestFindSetterCreateActionInvoke(nameof(ObjectReflexion.Name));
-            var setterActionNoContext = testObject.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name));
+            var setterActionNoContext = ObjectReflexion.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name));
 
             yield return ("Set Delegate", ExecuteTest(() => setterDelegate(testObject, "machin")));
 

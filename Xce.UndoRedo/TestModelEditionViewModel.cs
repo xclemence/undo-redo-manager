@@ -97,7 +97,6 @@ namespace Xce.UndoRedo
 
         private void GenerateFakeAddresses() => GenerateFake(FakerProviders.GetFakerAddress<TAddr>(), GeneratorProperties.AddressNumber);
 
-
         private void GenerateFakeCars() => GenerateFake(FakerProviders.GetFakerCar<TCar>(), GeneratorProperties.CarNumber);
 
         private void GenerateFakeDrivers() => 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
+using Xce.TrackingItem.Fody.Extensions;
 
 namespace Xce.TrackingItem.Fody
 {
@@ -10,10 +11,12 @@ namespace Xce.TrackingItem.Fody
         private readonly IDictionary<string, MethodReference> methodCache = new Dictionary<string, MethodReference>();
 
         private readonly ReferenceProvider referenceProvider;
+        private readonly Action<string> warningLogger;
 
-        public EqualsMethodProvider(ReferenceProvider referenceProvider)
+        public EqualsMethodProvider(ReferenceProvider referenceProvider, Action<string> warningLogger)
         {
             this.referenceProvider = referenceProvider;
+            this.warningLogger = warningLogger;
         }
 
         public MethodReference GetObjectEqualsMethod()
@@ -98,16 +101,14 @@ namespace Xce.TrackingItem.Fody
             try
             {
                 typeDefinition = typeReference.Resolve();
+
+                if (typeDefinition.IsInterface)
+                    return null;
+
             }
             catch (Exception ex)
             {
-                //EmitWarning($"Ignoring static equality of type {typeReference.FullName} => {ex.Message}");
-                return null;
-            }
-
-            if (typeDefinition.IsInterface)
-            {
-                return null;
+                warningLogger($"Ignoring static equality of type {typeReference.FullName} => {ex.Message}");
             }
 
             return FindNamedMethod(typeReference);
@@ -129,7 +130,7 @@ namespace Xce.TrackingItem.Fody
             foreach (var argument in genericInstanceType.GenericArguments)
                 genericType.GenericArguments.Add(argument);
 
-            return equalsMethod.MakeGeneric(genericType);
+            return equalsMethod.MakeGeneric();
         }
 
         private MethodReference FindEqualsNamedMethod(TypeDefinition typeDefinition, string methodName, TypeReference parameterType)
@@ -143,9 +144,7 @@ namespace Xce.TrackingItem.Fody
                                      MatchParameter(x.Parameters[1], parameterType));
 
             if (reference != null)
-            {
                 return referenceProvider.GetMethodReference(reference);
-            }
 
             return null;
         }

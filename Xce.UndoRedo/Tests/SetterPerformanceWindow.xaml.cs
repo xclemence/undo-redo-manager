@@ -4,9 +4,6 @@ using System.Windows.Input;
 
 namespace Xce.UndoRedo.Tests
 {
-    /// <summary>
-    /// Interaction logic for SetterPerformanceView.xaml
-    /// </summary>
     public partial class SetterPerformanceWindow
     {
         public SetterPerformanceWindow()

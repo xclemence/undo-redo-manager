@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Reflection.Emit;
 using Mono.Cecil.Cil;
 
-namespace Xce.TrackingItem.Fody
+namespace Xce.TrackingItem.Fody.Extensions
 {
     public static class InstructionExtensions
     {

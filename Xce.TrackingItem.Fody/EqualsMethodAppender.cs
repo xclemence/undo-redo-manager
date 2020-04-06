@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Xce.TrackingItem.Fody.Extensions;
 
 namespace Xce.TrackingItem.Fody
 {
     public static class TypeReferenceExtensions
     {
         private static IList<string> CeqStructNames { get; } = new List<string>
-                             {
-                                 typeof (int).Name,
-                                 typeof (uint).Name,
-                                 typeof (long).Name,
-                                 typeof (ulong).Name,
-                                 typeof (float).Name,
-                                 typeof (double).Name,
-                                 typeof (bool).Name,
-                                 typeof (short).Name,
-                                 typeof (ushort).Name,
-                                 typeof (byte).Name,
-                                 typeof (sbyte).Name,
-                                 typeof (char).Name,
-            };
+        {
+            typeof (int).Name,
+            typeof (uint).Name,
+            typeof (long).Name,
+            typeof (ulong).Name,
+            typeof (float).Name,
+            typeof (double).Name,
+            typeof (bool).Name,
+            typeof (short).Name,
+            typeof (ushort).Name,
+            typeof (byte).Name,
+            typeof (sbyte).Name,
+            typeof (char).Name,
+        };
 
         public static bool SupportsCeq(this TypeReference typeReference)
         {

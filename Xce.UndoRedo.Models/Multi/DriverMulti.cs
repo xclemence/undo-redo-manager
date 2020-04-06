@@ -2,6 +2,7 @@
 using Xce.TrackingItem;
 using Xce.UndoRedo.Models.Base;
 using Xce.UndoRedo.Models.DataSet;
+using Xce.UndoRedo.Models.Fody;
 using Xce.UndoRedo.Models.ItemSave;
 using Xce.UndoRedo.Models.PropertySave;
 
@@ -14,6 +15,7 @@ namespace Xce.UndoRedo.Models.Multi
             new DriverProperty(),
             new DriverItem(),
             new DriverDataSet(),
+            new DriverFody()
         };
 
         private readonly TrackingManager trackingManager = MultiTrackingManagerProvider.Instance.Manager;

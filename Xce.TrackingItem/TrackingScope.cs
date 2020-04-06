@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using Xce.TrackingItem.Logger;
 using Xce.TrackingItem.TrackingAction;
 
 namespace Xce.TrackingItem
