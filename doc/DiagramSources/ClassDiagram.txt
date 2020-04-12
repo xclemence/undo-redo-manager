@@ -1,9 +1,36 @@
 classDiagram
-TrackingItemManagent o-- "*" ITrackinAction
-ITrackinAction <|-- PropertyChangedTrackingAction
-ITrackinAction <|-- CollectionChangedTrackingAction
+TrackingManager *-- TrackingScope
+TrackingScope o-- "*" ITrackinAction
+ITrackinAction <|-- TrackingPropertyUpdate
+ITrackinAction <|-- TrackingCollectionUdpate
+ITrackinAction *-- "*" TrackingMultiUpdate
+TrackingMultiUpdate --|> ITrackinAction
+ITrackinAction <|-- TrackingDataSetUpdate
+ITrackinAction <|-- TrackingItemUpdate
 <<interface>> ITrackinAction
 class ITrackinAction {
   Apply()
   Revert()
+}
+class TrackingPropertyUpdate {
+  - oldValue
+  - newValue
+  - referenceObject
+  - setterMethod
+}
+class TrackingCollectionUdpate {
+ - collection
+ - actionType: add or remove
+}
+
+class TrackingItemUpdate {
+ - referenceItem
+ - newItem
+ - oldItem
+}
+
+class TrackingDataSetUpdate {
+ - referenceDataSet
+ - newDataSet
+ - oldDataSet
 }

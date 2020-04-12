@@ -20,7 +20,6 @@ namespace Xce.UndoRedo.Models.Multi
                 yield return PropertyTrackingManagerProvider.Instance.Manager;
                 yield return ItemTrackingManagerProvider.Instance.Manager;
                 yield return DataSetTrackingManagerProvider.Instance.Manager;
-                yield return FodyTrackingManagerProvider.Instance.Manager;
             }
         }
     }

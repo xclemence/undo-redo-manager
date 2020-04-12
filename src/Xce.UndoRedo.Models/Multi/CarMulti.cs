@@ -14,8 +14,7 @@ namespace Xce.UndoRedo.Models.Multi
         {
             new CarProperty(),
             new CarItem(),
-            new CarDataSet(),
-            new CarFody()
+            new CarDataSet()
         };
 
         private readonly TrackingManager trackingManager = MultiTrackingManagerProvider.Instance.Manager;
