@@ -38,9 +38,9 @@ Due to general state, it's not possible to keep the change who generate state.
 ### Tracking by Item
 
 Item Tracking is keep a snapshot of entity when an action occluded on it. and save it in tracking action. This method is the middle between data set and property. For this method we need methods to duplicate and restore entities states. 
-Save Entities instead of Work, need less memory and is more efficient.
+Save Entities instead of World, need less memory and is more efficient.
 
-TO enhance performance, we can save items copies in cache, but the items cache is very complicate to manage specially to know when invalidate cache.
+To enhance performance, we can save items copies in cache, but the items cache is very complicate to manage specially to know when invalidate cache.
 
 ### Tracking Collection
 Property and item tracking managed only changes on internal states, they not track collection changed.
@@ -58,8 +58,7 @@ Base code
 [Tracking]
 public class TestModel
 {
-    public int Value { get; set; }
-
+  public int Value { get; set; }
 }
 ```
 Generated code
@@ -67,35 +66,33 @@ Generated code
 [Tracking]
 public class BaseModel
 {
-	private TrackingManager trackingManager;
+  private TrackingManager trackingManager;
 
-	public int Value
-	{
-		[CompilerGenerated]
-		get
-		{
-			return Value;
-		}
-		[CompilerGenerated]
-		set
-		{
-			if (Value != value)
-			{
-				trackingManager.AddAction(this.GetTrackingPropertyUpdateFunc(Value, value, new Action<BaseModel, int>(TrackingItemSetter_Value)));
-			}
-			Value = value;
-		}
-	}
-
-	public BaseModel()
-	{
-		trackingManager = TrackingManagerProvider.GetDefault();
-	}
-
-	private static void TrackingItemSetter_Value(BaseModel P_0, int P_1)
-	{
-		P_0.Value = P_1;
-	}
+  public int Value
+  {
+    [CompilerGenerated]
+    get
+    {
+      return Value;
+    }
+    [CompilerGenerated]
+    set
+    {
+      if (Value != value)
+      {
+        trackingManager.AddAction(this.GetTrackingPropertyUpdateFunc(Value, value, new Action<BaseModel, int>(TrackingItemSetter_Value)));
+      }
+      Value = value;
+    }
+  }  
+  public BaseModel()
+  {
+      trackingManager = TrackingManagerProvider.GetDefault();
+  }  
+  private static void TrackingItemSetter_Value(BaseModel P_0, int P_1)
+  {
+      P_0.Value = P_1;
+  }
 }
 
 ```
@@ -121,7 +118,7 @@ public class BaseModel
 
 ## Analyse details
 
-To test performance of methods, an application has been develop to make actions on simple model (driver, address, car), the test include only changes on properties.
+To test performance of methods, an application has been develop to make actions on simple model (driver, address, car). Test include only changes on properties.
 
 ### performance results
 Test parameters:
@@ -132,9 +129,9 @@ Test parameters:
 
 | Operation | Number | Property   | Item       | DataSet    | Fody       |
 |-----------|--------|------------|------------|------------|------------|
-| Creation  | 19272  | 00.1454487 | 00.2377482 | 39.9245249 | 00.0538056 |
-| Revert    | 19272  | 00.0316663 | 00.0428675 | 16.2472283 | 00.0138809 |
-| Apply     | 19272  | 00.0315690 | 00.0434608 | 16.3403993 | 00.0212801 |
+| Creation  | 19272  | 00.1454487 | 00.2377482 | 39.9245249 | **00.0538056** |
+| Revert    | 19272  | 00.0316663 | 00.0428675 | 16.2472283 | **00.0138809** |
+| Apply     | 19272  | 00.0315690 | 00.0434608 | 16.3403993 | **00.0212801** |
 
 
 ### Interface of Test application 
