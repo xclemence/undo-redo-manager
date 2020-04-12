@@ -1,0 +1,8 @@
+classDiagram
+ITrackinAction *-- "*" MultiTrackingAction
+MultiTrackingAction --|> ITrackinAction
+<<interface>> ITrackinAction
+class ITrackinAction {
+  Apply()
+  Revert()
+}

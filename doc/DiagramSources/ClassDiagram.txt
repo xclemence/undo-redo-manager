@@ -1,0 +1,9 @@
+classDiagram
+TrackingItemManagent o-- "*" ITrackinAction
+ITrackinAction <|-- PropertyChangedTrackingAction
+ITrackinAction <|-- CollectionChangedTrackingAction
+<<interface>> ITrackinAction
+class ITrackinAction {
+  Apply()
+  Revert()
+}
