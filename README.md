@@ -3,57 +3,73 @@
 ![Ms Build](https://github.com/xclemence/undo-redo-manager/workflows/Ms%20Build/badge.svg?branch=master)
 ![.NET Core](https://github.com/xclemence/undo-redo-manager/workflows/.NET%20Core/badge.svg?branch=master)
 
-Undo Redo, the best feature that every software should have. But, it is not simple to implement a good undo redo management. You should chose the good strategy to combine performance and maintainability. Specially about the granularity of object persistences.
+Undo Redo, the best feature that every software should have. But, it is not simple to implement good undo-redo management. You should choose a good strategy to combine performance and maintainability (especially about the granularity of object persistence).
 
-This project is an analyze to compare three type of persistences for undo redo management.
+This project is an analysis to compare three types of persistence for undo-redo management.
 
 ## Tacking manager
-Undo redo concept need mechanism to revert and apply changes on simple object. It's very similar to track all actions (with all informations mandatory to revert/apply changes) and save them in list. All tracking item should be standalone to managed revert/apply.
+Undo redo concepts need a mechanism to revert and apply changes to a simple object. It's very similar to track all actions (with all information mandatory to revert/apply changes) and save them in a list.
+All tracking items should be standalone to manage revert/apply.
 
-With this design, the type of undo redo is managed by implementation of ITrackinAction, we can make a PropertyChangedTrackingAction to track action of properties or make an ItemTracikingAction to track action on item or something else.
+With this design, the type of undo-redo is managed by the implementation of ITrackinAction. We can make a PropertyChangedTrackingAction to track actions on properties or make an ItemTracikingAction to track activity on an item or something else.
 
 ### Tracking Scope
 
-Sometime we need group some changes inside one action. For that, the tracking scope provide a way to save all actions inside the scope. At this end, new MultiTractionAction was create with all changes (list of ITrackingAction).
+Track changes by property is the more atomic mechanism. The idea is to keep information on updated property to change this value (by property setter) during revert / apply.
 
-Tracking Manager handle a base scope to managed action on top level and provide a method to generate new scope (to start new scope tracking)?
+Information mandatory for tracking action:
+* Reference to item
+* Method to call property setter
+* New value (used during apply)
+* Old value (used during revert)
 
-### Tracking by property
+To avoid a lot of code without business logic, we use reflection to define a method to call the setter method. This point is more important for performances.
+Some try are implemented in the test app to find the best solution.
 
-Track changes by property is the more atomic mechanism. the idea is keep a reference to updated item and setter method info to managed revert/apply.
-To avoid lot of code without business logic, we use reflection to define found setter method. This point is the more important point for good performances.
-Some try are implemented in test app to find the best solution.
-
-To improve performance and avoid make refection analyses each call, we can easy make a cache with all method info used.
+To improve performance and avoid make refection analyses each call, we can easily make a cache with all method info used.
 
 ### Tracking by Data set
 
-Tracking by data set consist to save a snapshot of an Entry Point (world with all items to include in undo redo) ans apply the snapshot on current world. For that, we need method to duplication the world and save it and another method reset the world state.
-The cache with this method is embedded. Indeed, snapshot is the cache.
+Tracking by data set consist to save a snapshot of a Data set (world with all items to include in undo-redo) and apply the good snapshot on the current world. For that, we need one method to duplication the world and another to reset the world state.
 
-To be honest, this method is not very compatible with standalone tracking item, but the compatibility is enough to compare with other solutions.
+The cache with this method is embedded. Indeed, a snapshot is an instance of a cache object.
 
-Due to general state, it's not possible to keep the change who generate state.
+To be honest, this method is not very compatible with standalone tracking item, but it's enough to compare with other solutions
+
+Due to the general state, it's not possible to know the change that generates state.
 
 ### Tracking by Item
 
-Item Tracking is keep a snapshot of entity when an action occluded on it. and save it in tracking action. This method is the middle between data set and property. For this method we need methods to duplicate and restore entities states. 
-Save Entities instead of World, need less memory and is more efficient.
+Item Tracking is kept a snapshot of the entity when an action occluded on it. This method is the middle between data set and property. To work,  We need the same methods as Data set to duplicate and restore items states.
 
-To enhance performance, we can save items copies in cache, but the items cache is very complicate to manage specially to know when invalidate cache.
+Save Entities instead of the World need less memory and is more efficient.
+
+Information mandatory for tracking action:
+* Reference to item
+* Deep copy of old item state (for revert)
+* Deep copy of current item state (for apply)
+
+
+To enhance performance, we can save items copies in a cache. But the items cache is very complicated to manage especially to know when invalidate cache.
 
 ### Tracking Collection
-Property and item tracking managed only changes on internal states, they not track collection changed.
+Property and item tracking manage only changes on internal states, they do not track collection changes.  Collection is not difficult to track, we need to add a specific tracking action when the collection is updated.
 
-### global diagram 
+Information mandatory for tracking action:
+* Reference to collection
+* Action on collection (add or remove)
+* updated items
+* Position of first item
+
+### Global diagram 
 
 <img src="doc/ClassDiagram.svg"/>
 
 ## Fody Usage
 [Fody](https://github.com/Fody/Fody) is a great extensible tool for weaving .net assemblies.
-With this tool, it is possible to develop a plug in to avoid reflection usage in property tracking. We can generate in compilation time some method to replace setter method info
+With this tool, it is possible to develop a plug in to avoid reflection usage in property tracking. We can generate in compilation time some method to replace setter method info.
 
-Base code
+Base code:
 ```cs
 [Tracking]
 public class TestModel
@@ -61,7 +77,7 @@ public class TestModel
   public int Value { get; set; }
 }
 ```
-Generated code
+Generated code:
 ```cs
 [Tracking]
 public class BaseModel
@@ -97,7 +113,7 @@ public class BaseModel
 
 ```
 
-## Analyze Results
+## Analysis Results
 
 ###  Persistence Requirements
 |           Property          |          Item                    |     Data Set                     |                 Fody                |
@@ -111,14 +127,15 @@ public class BaseModel
 |               |          Property          |          Item                                              |                              Data Set                              |             Fody             |
 |---------------|:--------------------------:|:----------------------------------------------------------:|:------------------------------------------------------------------:|:----------------------------:|
 | Advantages    | Simple, atomic             |                                                            | Save always global state, No logic between state                   | No code to manage undo redo  |
-| Disadvantages | Performance of reflection  | Cache is very difficult to managed specially invalidation  | Space to save all sates, No information about changes(global view) | Code of Fody plug in complex |
-| Optimization  | Cache of method infos      | Item cache                                                 | Entry point                                                        | N/A (specific code)          |
-| Performance   | Good                       | depends of item size                                       | depends of entry point size                                        | Good                         |
-| Complexity    | Simple                     | very complex                                               | Simple                                                             | Medium                       |
+| Disadvantages | Performance of reflection  | Cache is very difficult to manage especially invalidation  | Space to save all sates, No information about changes(global view) | Code of Fody plug in complex |
+| Optimization  | Cache of method infos      | Cache of Item                                              | Cache of World                                                     | N/A (specific code)          |
+| Performance   | Good                       | Depends of item size                                       | Depends of Wold size                                               | Good                         |
+| Complexity    | Simple                     | Very complex                                               | Simple                                                             | Medium                       |
 
-## Analyse details
 
-To test performance of methods, an application has been develop to make actions on simple model (driver, address, car). Test include only changes on properties.
+## Analysis details
+
+To test the performance of methods, an application has been developed to take action on a simple model (driver, address, car). Tests include only changes in properties.
 
 ### performance results
 Test parameters:
