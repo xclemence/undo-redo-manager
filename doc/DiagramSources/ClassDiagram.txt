@@ -18,7 +18,7 @@ class TrackingPropertyUpdate {
   - referenceObject
   - setterMethod
 }
-class TrackingCollectionUdpate {
+class TrackingCollectionUpdate {
  - collection
  - actionType: add or remove
 }
