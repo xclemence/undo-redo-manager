@@ -14,7 +14,30 @@ namespace Xce.UndoRedo
 {
     public abstract class TestModelEditionViewModel : PropertyObject, IDisposable
     {
-        public abstract void Dispose();
+        //public abstract void Dispose();
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected abstract void OnDisposeManaged();
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    OnDisposeManaged();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
     }
 
     public class TestModelEditionViewModel<TDriver, TCar, TAddr> : TestModelEditionViewModel
@@ -167,12 +190,11 @@ namespace Xce.UndoRedo
         
         private void EnableTracking() => CleanUp(ref stopTrackingScopes);
 
-        public override void Dispose()
+        protected override void OnDisposeManaged()
         {
             EnableTracking();
             StopTrackingScope();
             managerProvider.Clear();
-            GC.SuppressFinalize(this);
         }
     }
 }
