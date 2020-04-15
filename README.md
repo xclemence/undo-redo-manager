@@ -11,7 +11,7 @@ This project is an analysis to compare three types of persistence for undo-redo 
 Undo redo concepts need a mechanism to revert and apply changes to a simple object. It's very similar to track all actions (with all information mandatory to revert/apply changes) and save them in a list.
 All tracking items should be standalone to manage revert/apply.
 
-With this design, the type of undo-redo is managed by the implementation of ITrackinAction. We can make a PropertyChangedTrackingAction to track actions on properties or make an ItemTracikingAction to track activity on an item or something else.
+With this design, the type of undo-redo is managed by the implementation of ITrackingAction. We can make a PropertyChangedTrackingAction to track actions on properties or make an ItemTrackingAction to track activity on an item or something else.
 
 ### Tracking Scope
 

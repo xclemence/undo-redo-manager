@@ -1,14 +1,14 @@
 classDiagram
 TrackingManager *-- TrackingScope
-TrackingScope o-- "*" ITrackinAction
-ITrackinAction <|-- TrackingPropertyUpdate
-ITrackinAction <|-- TrackingCollectionUdpate
-ITrackinAction *-- "*" TrackingMultiUpdate
-TrackingMultiUpdate --|> ITrackinAction
-ITrackinAction <|-- TrackingDataSetUpdate
-ITrackinAction <|-- TrackingItemUpdate
-<<interface>> ITrackinAction
-class ITrackinAction {
+TrackingScope o-- "*" ITrackingAction
+ITrackingAction <|-- TrackingPropertyUpdate
+ITrackingAction <|-- TrackingCollectionUpdate
+ITrackingAction *-- "*" TrackingMultiUpdate
+TrackingMultiUpdate --|> ITrackingAction
+ITrackingAction <|-- TrackingDataSetUpdate
+ITrackingAction <|-- TrackingItemUpdate
+<<interface>> ITrackingAction
+class ITrackingAction {
   Apply()
   Revert()
 }
@@ -33,4 +33,10 @@ class TrackingDataSetUpdate {
  - referenceDataSet
  - newDataSet
  - oldDataSet
+}
+
+---------------
+
+{
+  "theme": "neutral"
 }
