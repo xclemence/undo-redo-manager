@@ -15,8 +15,7 @@ namespace Xce.UndoRedo.Models.Multi
         {
             new DriverProperty(),
             new DriverItem(),
-            new DriverDataSet(),
-            new DriverFody()
+            new DriverDataSet()
         };
 
         private readonly TrackingManager trackingManager = MultiTrackingManagerProvider.Instance.Manager;

@@ -15,8 +15,7 @@ namespace Xce.UndoRedo.Models.Multi
         {
             new AddressProperty(),
             new AddressItem(),
-            new AddressDataSet(),
-            new AddressFody()
+            new AddressDataSet()
         };
 
         private readonly TrackingManager trackingManager = MultiTrackingManagerProvider.Instance.Manager;
