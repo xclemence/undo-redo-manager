@@ -23,10 +23,10 @@ namespace Xce.TrackingItem.Fody.TestModel
         private void OnTestCollectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => 
             trackingManager.AddActions(TrackingActionFactory.GetCollectionChangedTrackingActionLIst(TestCollection, e));
 
-        public ObservableCollection<int> TestCollection { get; set; }
+        public ObservableCollection<int> TestCollection { get;  }
     }
 
-    public class ReferenceCollectionModel2 : IDisposable
+    public sealed class ReferenceCollectionModel2
     {
         private readonly TrackingManager trackingManager;
 
@@ -44,8 +44,7 @@ namespace Xce.TrackingItem.Fody.TestModel
 
         private void OnTestCollectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) =>
             trackingManager.AddActions(TrackingActionFactory.GetCollectionChangedTrackingActionLIst(TestCollection, e));
-        public void Dispose() => throw new NotImplementedException();
-
+       
         public ObservableCollection<int> TestCollection { get; set; }
     }
 }

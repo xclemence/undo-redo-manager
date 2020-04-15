@@ -46,7 +46,7 @@ namespace Xce.TrackingItem.Fody
 
         public override void Execute()
         {
-            WriteInfo($"Start Fody Xce Tracking");
+            WriteInfo("Start Fody Xce Tracking");
 
             foreach (var type in GetTrackingTypes())
             {
@@ -65,7 +65,7 @@ namespace Xce.TrackingItem.Fody
 
         private void AddCollectionChanged(TypeDefinition type, PropertyDefinition property, FieldDefinition fieldTracking)
         {
-            var collectionChangedMethod = AddCollectionTrackingMethod(type, property, fieldTracking);
+            var collectionChangedMethod = AddCollectionTrackingMethod(property, fieldTracking);
             AddCollectionChangedConstructor(type, property, collectionChangedMethod);
             AddCollectionFinaliser(type, property, collectionChangedMethod);
         }
@@ -112,7 +112,7 @@ namespace Xce.TrackingItem.Fody
         }
 
 
-        private MethodDefinition AddCollectionTrackingMethod(TypeDefinition type, PropertyDefinition property, FieldDefinition fieldTracking)
+        private MethodDefinition AddCollectionTrackingMethod(PropertyDefinition property, FieldDefinition fieldTracking)
         {
             var method = new MethodDefinition($"TrackingCollection_{property.Name}", MethodAttributes.Private, TypeSystem.VoidReference);
 

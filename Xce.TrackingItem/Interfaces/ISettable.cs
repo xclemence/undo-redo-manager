@@ -6,6 +6,6 @@ namespace Xce.TrackingItem.Interfaces
 {
     public interface ISettable<in T> where T : ISettable<T>
     {
-        void Set(T item);
+        void SetItem(T item);
     }
 }

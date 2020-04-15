@@ -2,7 +2,7 @@
 
 namespace Xce.TrackingItem
 {
-    public class StopTrackingScope : IDisposable
+    public sealed class StopTrackingScope : IDisposable
     {
         private readonly TrackingManager trackingManager;
         private readonly bool oldValue;

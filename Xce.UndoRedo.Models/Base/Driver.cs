@@ -29,8 +29,8 @@ namespace Xce.UndoRedo.Models.Base
             set => SetProperty(this, ref phoneNumber, value);
         }
 
-        public ObservableCollection<TCar> Cars { get; set; } = new ObservableCollection<TCar>();
-        public ObservableCollection<TAddr> Addresses { get; set; } = new ObservableCollection<TAddr>();
+        public ObservableCollection<TCar> Cars { get; } = new ObservableCollection<TCar>();
+        public ObservableCollection<TAddr> Addresses { get; } = new ObservableCollection<TAddr>();
 
         public virtual void FinishCreation() { }
     }

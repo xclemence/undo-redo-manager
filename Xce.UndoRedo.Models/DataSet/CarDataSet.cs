@@ -34,7 +34,7 @@ namespace Xce.UndoRedo.Models.DataSet
             }
         }
 
-        public void Set(CarDataSet item)
+        public void SetItem(CarDataSet item)
         {
             using (var scope = new StopTrackingScope(trackingManager))
             {

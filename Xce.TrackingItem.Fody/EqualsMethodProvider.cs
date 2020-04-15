@@ -76,7 +76,7 @@ namespace Xce.TrackingItem.Fody
             if (typeReference.FullName == typeof(string).FullName)
                 return FindStringComparisonMethods();
 
-            if (typeReference.FullName.StartsWith("System.Nullable"))
+            if (typeReference.FullName.StartsWith("System.Nullable", StringComparison.InvariantCulture))
                 return GetNullableEquality(typeReference);
 
             return GetStaticEquality(typeReference);

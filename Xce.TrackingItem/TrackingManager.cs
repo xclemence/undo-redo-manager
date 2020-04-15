@@ -73,6 +73,11 @@ namespace Xce.TrackingItem
             return scope;
         }
 
-        public void Dispose() => baseScope.Dispose();
+        public void Dispose()
+        {
+            baseScope.Dispose();
+
+            GC.SuppressFinalize(this);
+        }
     }
 }

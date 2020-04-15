@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Xce.TrackingItem;
 using Xce.UndoRedo.Models.Base;
 using Xce.UndoRedo.Models.DataSet;
@@ -29,7 +30,7 @@ namespace Xce.UndoRedo.Models.Multi
                 foreach (var test in testItems)
                 {
                     var property = test.GetType().GetProperty(callerName);
-                    property.SetValue(test, value, new object[] { });
+                    property.SetValue(test, value, Array.Empty<object>());
                 }
             }
         }

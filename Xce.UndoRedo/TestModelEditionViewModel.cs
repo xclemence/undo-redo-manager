@@ -26,7 +26,7 @@ namespace Xce.UndoRedo
         private readonly ITrackingManagerProvider managerProvider;
         private string logDetails;
 
-        public IList<StopTrackingScope> stopTrackingScopes;
+        private IList<StopTrackingScope> stopTrackingScopes;
 
         private IList<TrackingScope> scopes;
 
@@ -127,7 +127,7 @@ namespace Xce.UndoRedo
             LogDetails = builder.ToString();
         }
 
-        private string GenerateTrackingLog(TrackingManager manager)
+        private static string GenerateTrackingLog(TrackingManager manager)
         {
             var builder = new StringBuilder();
 
@@ -172,6 +172,7 @@ namespace Xce.UndoRedo
             EnableTracking();
             StopTrackingScope();
             managerProvider.Clear();
+            GC.SuppressFinalize(this);
         }
     }
 }
