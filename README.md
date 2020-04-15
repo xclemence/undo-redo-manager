@@ -1,7 +1,7 @@
 # Undo-redo Manager
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Ms Build](https://github.com/xclemence/undo-redo-manager/workflows/Ms%20Build/badge.svg?branch=master)
-![.NET Core](https://github.com/xclemence/undo-redo-manager/workflows/.NET%20Core/badge.svg?branch=master)
+![dotnet tool](https://github.com/xclemence/undo-redo-manager/workflows/dotnet%20tool/badge.svg?branch=master)
 
 Undo Redo, the best feature that every software should have. But, it is not simple to implement good undo-redo management. You should choose a good strategy to combine performance and maintainability (especially about the granularity of object persistence).
 
