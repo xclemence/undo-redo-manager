@@ -122,8 +122,8 @@ namespace Xce.TrackingItem.Fody
             method.Parameters.Add(itemParameter);
             method.Parameters.Add(valueParameter);
 
-            var TrickingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
-            var methodDefinition = TrickingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetCollectionChangedTrackingActionLIst), typeof(IList<>).FullName, typeof(NotifyCollectionChangedEventArgs).FullName);
+            var trackingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
+            var methodDefinition = trackingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetCollectionChangedTrackingActionLIst), typeof(IList<>).FullName, typeof(NotifyCollectionChangedEventArgs).FullName);
             var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(methodDefinition);
             var trackingActionFactoryMethod = new GenericInstanceMethod(trackingActionFactoryMethodNoGen);
 
@@ -316,8 +316,8 @@ namespace Xce.TrackingItem.Fody
             logInstanceMethod.GenericArguments.Add(item.DeclaringType);
             logInstanceMethod.GenericArguments.Add(item.PropertyType);
 
-            var TrickingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
-            var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(TrickingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetTrackingPropertyUpdateFunc), 3, typeof(Action<,>).FullName));
+            var trackingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
+            var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(trackingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetTrackingPropertyUpdateFunc), 3, typeof(Action<,>).FullName));
             
             
             var trackingActionFactoryMethod = new GenericInstanceMethod(trackingActionFactoryMethodNoGen);
