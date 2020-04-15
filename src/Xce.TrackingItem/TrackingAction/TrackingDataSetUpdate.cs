@@ -36,8 +36,8 @@ namespace Xce.TrackingItem.TrackingAction
         public TObject NewDataSet { get; }
         public TObject ReferenceDataSet { get; }
 
-        public void Apply() => ReferenceDataSet.Set(NewDataSet);
+        public void Apply() => ReferenceDataSet.SetItem(NewDataSet);
 
-        public void Revert() => ReferenceDataSet.Set(OldDataSet);
+        public void Revert() => ReferenceDataSet.SetItem(OldDataSet);
     }
 }

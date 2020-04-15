@@ -23,7 +23,7 @@ namespace Xce.UndoRedo
 
         private readonly GeneratorPropertiesModel generatorProperties = new GeneratorPropertiesModel();
 
-        public readonly IDictionary<string, Func<TestModelEditionViewModel>> modes;
+        private readonly IDictionary<string, Func<TestModelEditionViewModel>> modes;
 
         private TestModelEditionViewModel currentTestModelEdition;
         private string currentMode;

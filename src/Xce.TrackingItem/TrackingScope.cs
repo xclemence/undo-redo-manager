@@ -6,7 +6,7 @@ using Xce.TrackingItem.TrackingAction;
 
 namespace Xce.TrackingItem
 {
-    public class TrackingScope : IDisposable
+    public sealed class TrackingScope : IDisposable
     {
         private readonly object actionLocker = new object();
         private readonly Action<TrackingScope> onDispose;
@@ -16,9 +16,9 @@ namespace Xce.TrackingItem
             Parent = parent;
             this.onDispose = onDispose;
         }
-        public IList<ITrackingAction> LastActions { get; set; } = new List<ITrackingAction>();
+        public IList<ITrackingAction> LastActions { get; } = new List<ITrackingAction>();
 
-        public IList<ITrackingAction> RevertedActions { get; set; } = new List<ITrackingAction>();
+        public IList<ITrackingAction> RevertedActions { get; } = new List<ITrackingAction>();
         public IList<TrackingLog> Logs { get; } = new List<TrackingLog>();
 
         private TrackingScope Parent { get; }
@@ -101,6 +101,8 @@ namespace Xce.TrackingItem
                 Parent?.AddAction(new TrackingMultiUpdate(LastActions.ToList()));
 
             onDispose(this);
+
+            GC.SuppressFinalize(this);
         }
     }
 }

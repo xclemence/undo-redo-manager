@@ -23,7 +23,7 @@ namespace Xce.UndoRedo.Models.ItemSave
                 return this.DeepCopyDriver<DriverItem, CarItem, AddressItem>();
         }
 
-        public void Set(DriverItem item)
+        public void SetItem(DriverItem item)
         {
             using (var scope = new StopTrackingScope(trackingManager))
                 this.SetDriver<DriverItem, CarItem, AddressItem>(item);

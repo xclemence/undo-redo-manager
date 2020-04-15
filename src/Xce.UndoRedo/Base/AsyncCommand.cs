@@ -29,7 +29,7 @@ namespace Xce.UndoRedo
 
         public AsyncCommand(Func<T, Task> execute, Predicate<T> canExecute = null)
         {
-            this.execute = execute ?? throw new ArgumentNullException("execute");
+            this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
 
             this.canExecute = canExecute;
         }

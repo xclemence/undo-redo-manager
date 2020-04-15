@@ -35,7 +35,7 @@ namespace Xce.UndoRedo.Models.DataSet
             }
         }
 
-        public void Set(DriverDataSet item)
+        public void SetItem(DriverDataSet item)
         {
             using (var scope = new StopTrackingScope(trackingManager))
             {

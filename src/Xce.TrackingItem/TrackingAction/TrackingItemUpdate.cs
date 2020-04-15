@@ -50,13 +50,13 @@ namespace Xce.TrackingItem.TrackingAction
 
         public void Apply()
         {
-            ReferenceItem.Set(NewItem);
+            ReferenceItem.SetItem(NewItem);
             TrackingItemCache.Instance.SetCacheObject(ReferenceItem, NewItem);
         }
 
         public void Revert()
         {
-            ReferenceItem.Set(OldItem);
+            ReferenceItem.SetItem(OldItem);
             TrackingItemCache.Instance.SetCacheObject(ReferenceItem, OldItem);
         }
     }

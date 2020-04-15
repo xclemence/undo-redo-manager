@@ -35,7 +35,7 @@ namespace Xce.UndoRedo.Models.DataSet
             }
         }
 
-        public void Set(AddressDataSet item)
+        public void SetItem(AddressDataSet item)
         {
             using (var scope = new StopTrackingScope(trackingManager))
             {

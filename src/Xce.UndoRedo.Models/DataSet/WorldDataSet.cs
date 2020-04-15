@@ -41,7 +41,7 @@ namespace Xce.UndoRedo.Models.DataSet
             }
         }
 
-        public void Set(WorldDataSet item)
+        public void SetItem(WorldDataSet item)
         {
             using (var scope = new StopTrackingScope(trackingManager))
             {

@@ -6,7 +6,8 @@ namespace Xce.UndoRedo
 {
     public class IsEqualsConverter : IValueConverter
     {
-        public static IValueConverter instance;
+        private static IValueConverter instance;
+
         public static IValueConverter Instance => instance ?? (instance = new IsEqualsConverter());
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => value?.Equals(parameter) ?? parameter == null;

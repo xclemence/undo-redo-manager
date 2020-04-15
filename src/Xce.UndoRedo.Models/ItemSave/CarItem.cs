@@ -23,7 +23,7 @@ namespace Xce.UndoRedo.Models.ItemSave
                 return this.DeepCopyCar();
         }
 
-        public void Set(CarItem item)
+        public void SetItem(CarItem item)
         {
             using (var scope = new StopTrackingScope(trackingManager))
                 this.SetCar(item);

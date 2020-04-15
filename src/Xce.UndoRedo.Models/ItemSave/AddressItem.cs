@@ -23,7 +23,7 @@ namespace Xce.UndoRedo.Models.ItemSave
                 return this.DeepCopyAddress();
         }
 
-        public void Set(AddressItem item)
+        public void SetItem(AddressItem item)
         {
             using (var scope = new StopTrackingScope(trackingManager))
                 this.SetAddress(item);

@@ -13,7 +13,7 @@ namespace Xce.UndoRedo.Models.Base
             for (var i = 0; i < source.Count; ++i)
             {
                 if (i < target.Count && source[i].Id == target[i].Id)
-                    target[i].Set(source[i]);
+                    target[i].SetItem(source[i]);
             }
         }
     }

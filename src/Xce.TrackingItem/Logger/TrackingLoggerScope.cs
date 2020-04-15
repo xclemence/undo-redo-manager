@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Xce.TrackingItem.Logger
 {
-    public class TrackingLoggerScope : IDisposable
+    public sealed class TrackingLoggerScope : IDisposable
     {
         private readonly Stopwatch watch;
 
