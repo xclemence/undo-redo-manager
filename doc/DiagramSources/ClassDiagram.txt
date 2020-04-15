@@ -1,0 +1,42 @@
+classDiagram
+TrackingManager *-- TrackingScope
+TrackingScope o-- "*" ITrackingAction
+ITrackingAction <|-- TrackingPropertyUpdate
+ITrackingAction <|-- TrackingCollectionUpdate
+ITrackingAction *-- "*" TrackingMultiUpdate
+TrackingMultiUpdate --|> ITrackingAction
+ITrackingAction <|-- TrackingDataSetUpdate
+ITrackingAction <|-- TrackingItemUpdate
+<<interface>> ITrackingAction
+class ITrackingAction {
+  Apply()
+  Revert()
+}
+class TrackingPropertyUpdate {
+  - oldValue
+  - newValue
+  - referenceObject
+  - setterMethod
+}
+class TrackingCollectionUpdate {
+ - collection
+ - actionType: add or remove
+}
+
+class TrackingItemUpdate {
+ - referenceItem
+ - newItem
+ - oldItem
+}
+
+class TrackingDataSetUpdate {
+ - referenceDataSet
+ - newDataSet
+ - oldDataSet
+}
+
+---------------
+
+{
+  "theme": "neutral"
+}

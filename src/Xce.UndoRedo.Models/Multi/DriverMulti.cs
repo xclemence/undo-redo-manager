@@ -8,14 +8,13 @@ using Xce.UndoRedo.Models.PropertySave;
 
 namespace Xce.UndoRedo.Models.Multi
 {
-    public class AddressMulti : Address
+    public class DriverMulti : Driver<CarMulti, AddressMulti>
     {
         private readonly IList<AbsctractModel> testItems = new List<AbsctractModel>
         {
-            new AddressProperty(),
-            new AddressItem(),
-            new AddressDataSet(),
-            new AddressFody()
+            new DriverProperty(),
+            new DriverItem(),
+            new DriverDataSet()
         };
 
         private readonly TrackingManager trackingManager = MultiTrackingManagerProvider.Instance.Manager;

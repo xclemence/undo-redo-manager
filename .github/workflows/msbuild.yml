@@ -23,9 +23,12 @@ jobs:
     
     - name: Restore nuget packages
       run: dotnet restore
+      working-directory: src
     
     - name: Build sources
       run: msbuild UndoRedo.sln
+      working-directory: src
     
     - name: Run unit tests
       run: dotnet test
+      working-directory: src
