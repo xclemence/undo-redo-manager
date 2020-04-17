@@ -44,18 +44,23 @@ namespace Xce.TrackingItem
             GetCurrentRegisterScope()?.AddAction(action);
         }
 
-        public void Revert()
-        {
-            IsAction = true;
-            GetCurrentRegisterScope().Revert();
-            IsAction = false;
-        }
+        public void Revert() => ExecuteAction(GetCurrentRegisterScope().Revert);
 
-        public void Remake()
+        public void Remake() => ExecuteAction(GetCurrentRegisterScope().Remake);
+
+        public void Rollback() => ExecuteAction(GetCurrentRegisterScope().Rollback);
+
+        private void ExecuteAction(Action actionToExecute)
         {
             IsAction = true;
-            GetCurrentRegisterScope().Remake();
-            IsAction = false;
+            try
+            {
+                actionToExecute();
+            }
+            finally
+            {
+                IsAction = false;
+            }
         }
 
         private TrackingScope GetCurrentRegisterScope()
