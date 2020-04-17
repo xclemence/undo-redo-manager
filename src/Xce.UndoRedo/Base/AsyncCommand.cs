@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Xce.UndoRedo
+namespace Xce.UndoRedo.Base
 {
     public class AsyncCommand : AsyncCommand<object>
     {

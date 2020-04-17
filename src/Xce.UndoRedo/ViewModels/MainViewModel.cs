@@ -9,8 +9,9 @@ using Xce.UndoRedo.Models.Fody;
 using Xce.UndoRedo.Models.ItemSave;
 using Xce.UndoRedo.Models.Multi;
 using Xce.UndoRedo.Models.PropertySave;
+using Xce.UndoRedo.Models;
 
-namespace Xce.UndoRedo
+namespace Xce.UndoRedo.ViewModels
 {
     public class MainViewModel : PropertyObject
     {
@@ -27,7 +28,6 @@ namespace Xce.UndoRedo
 
         private TestModelEditionViewModel currentTestModelEdition;
         private string currentMode;
-
 
         public MainViewModel()
         {
@@ -48,18 +48,22 @@ namespace Xce.UndoRedo
             OpenTestPerfCommand = new AsyncCommand(OpenTestPerf);
         }
 
-        private void OpenTestPerf()
+        public ICommand OpenTestPerfCommand { get; }
+        public ICommand SetModeCommand { get; }
+
+        public string CurrentMode
         {
-            System.Windows.Application.Current.Dispatcher.Invoke(() => 
-            {
-                var window = new SetterPerformanceWindow();
-                window.Show();
-            });
+            get => currentMode;
+            set => Set(ref currentMode, value);
         }
 
-        public ICommand OpenTestPerfCommand { get; }
+        public TestModelEditionViewModel CurrentTestModelEdition
+        {
+            get => currentTestModelEdition;
+            set => Set(ref currentTestModelEdition, value);
+        }
 
-        private void SetMode(string mode) 
+        private void SetMode(string mode)
         {
             currentMode = mode;
 
@@ -67,17 +71,14 @@ namespace Xce.UndoRedo
             CurrentTestModelEdition = modes[mode]();
         }
 
-        public string CurrentMode
+        private void OpenTestPerf()
         {
-            get => currentMode;
-            set => Set(ref currentMode, value);
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                var window = new SetterPerformanceWindow();
+                window.Show();
+            });
         }
-        public TestModelEditionViewModel CurrentTestModelEdition
-        {
-            get => currentTestModelEdition;
-            set => Set(ref currentTestModelEdition, value);
-        }
-        public ICommand SetModeCommand { get; }
     }
 }
 

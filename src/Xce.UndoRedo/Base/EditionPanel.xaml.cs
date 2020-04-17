@@ -24,10 +24,14 @@ namespace Xce.UndoRedo.Base
 
             field = value;
 
+            NotifyPropertyChanged(CallerMemberNameAttribute);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(CallerMemberNameAttribute));
 
             return true;
         }
+
+        protected void NotifyPropertyChanged([CallerMemberName] string CallerMemberNameAttribute = "") => 
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(CallerMemberNameAttribute));
     }
 
     public class ItemManager : PropertyObject

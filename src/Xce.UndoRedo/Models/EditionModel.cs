@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Xce.UndoRedo
+namespace Xce.UndoRedo.Models
 {
     public class EditionModel
     {

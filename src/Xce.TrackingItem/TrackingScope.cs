@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xce.TrackingItem.Extensions;
 using Xce.TrackingItem.Logger;
 using Xce.TrackingItem.TrackingAction;
 
@@ -98,7 +99,7 @@ namespace Xce.TrackingItem
         public void Dispose()
         {
             if(LastActions.Count != 0)
-                Parent?.AddAction(new TrackingMultiUpdate(LastActions.ToList()));
+                Parent?.AddAction(new MultiTrackingAction(LastActions.Reduce().ToList()));
 
             onDispose(this);
 

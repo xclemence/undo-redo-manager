@@ -2,9 +2,9 @@
 
 namespace Xce.TrackingItem.TrackingAction
 {
-    public class TrackingPropertyUpdate<TObject, TValue> : ITrackingAction
+    public class PropertyTrackingAction<TObject, TValue> : ITrackingAction
     {
-        public TrackingPropertyUpdate(TValue oldValue, TValue newValue, TObject refenceObject, Action<TObject, TValue> setterAction)
+        public PropertyTrackingAction(TValue oldValue, TValue newValue, TObject refenceObject, Action<TObject, TValue> setterAction)
         {
             OldValue = oldValue;
             NewValue = newValue;
@@ -22,5 +22,7 @@ namespace Xce.TrackingItem.TrackingAction
         public void Apply() => SetterAction(ReferenceObject, NewValue);
 
         public void Revert() => SetterAction(ReferenceObject, OldValue);
+
+        public override string ToString() => $"Property: {ReferenceObject.GetType().Name}, {OldValue} | {NewValue}";
     }
 }

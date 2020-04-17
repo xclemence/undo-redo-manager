@@ -2,16 +2,16 @@
 
 namespace Xce.TrackingItem.TrackingAction
 {
-    public enum TrackingCollectionUdpateMode
+    public enum TrackingCollectionUpdateMode
     {
         Add,
         Remove,
     }
 
-    public class TrackingCollectionUdpate<TCollection, TValue> : ITrackingAction
+    public class CollectionTrackingAction<TCollection, TValue> : ITrackingAction
        where TCollection : IList<TValue>
     {
-        public TrackingCollectionUdpate(TCollection collection, IList<TValue> items, int position, TrackingCollectionUdpateMode mode)
+        public CollectionTrackingAction(TCollection collection, IList<TValue> items, int position, TrackingCollectionUpdateMode mode)
         {
             Items = items;
             Position = position;
@@ -24,7 +24,7 @@ namespace Xce.TrackingItem.TrackingAction
 
         public TCollection Collection { get; }
 
-        public TrackingCollectionUdpateMode Mode { get; }
+        public TrackingCollectionUpdateMode Mode { get; }
 
         protected void AddItems()
         {
@@ -47,7 +47,7 @@ namespace Xce.TrackingItem.TrackingAction
 
         public void Apply() 
         {
-            if (Mode == TrackingCollectionUdpateMode.Remove)
+            if (Mode == TrackingCollectionUpdateMode.Remove)
                 RemoveItems();
             else
                 AddItems();
@@ -55,10 +55,12 @@ namespace Xce.TrackingItem.TrackingAction
 
         public void Revert()
         {
-            if (Mode == TrackingCollectionUdpateMode.Remove)
+            if (Mode == TrackingCollectionUpdateMode.Remove)
                 AddItems();
             else
                 RemoveItems();
         }
+
+        public override string ToString() => $"Collection: {Collection.GetType().Name}, {Mode}";
     }
 }

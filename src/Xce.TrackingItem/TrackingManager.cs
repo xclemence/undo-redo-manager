@@ -7,14 +7,21 @@ namespace Xce.TrackingItem
     public class TrackingManager : IDisposable
     {
         private readonly Stack<TrackingScope> trackingScopes = new Stack<TrackingScope>();
-        private readonly TrackingScope baseScope;
 
         public TrackingManager()
         {
-            baseScope = NewScope();
+            BaseScope = NewScope();
         }
 
         public bool IsAction { get; set; }
+
+        public bool CanRevert=> (GetCurrentRegisterScope()?.LastActions.Count ?? 0) != 0;
+        public bool CanRemake => (GetCurrentRegisterScope()?.RevertedActions.Count ?? 0) != 0;
+
+        public int ScopeNumber => trackingScopes.Count;
+
+        public TrackingScope CurrentScope => trackingScopes.Peek();
+        public TrackingScope BaseScope { get; }
 
         public void AddAction(ITrackingAction action)
         {
@@ -26,7 +33,7 @@ namespace Xce.TrackingItem
         public void AddActions(IList<ITrackingAction> actions)
         {
             if (IsAction) return;
-            
+
             GetCurrentRegisterScope()?.AddActions(actions);
         }
 
@@ -36,11 +43,6 @@ namespace Xce.TrackingItem
 
             GetCurrentRegisterScope()?.AddAction(action);
         }
-
-        public bool CanRevert=> (GetCurrentRegisterScope()?.LastActions.Count ?? 0) != 0;
-        public bool CanRemake => (GetCurrentRegisterScope()?.RevertedActions.Count ?? 0) != 0;
-
-        public TrackingScope CurrentScope => trackingScopes.Peek();
 
         public void Revert()
         {
@@ -75,7 +77,7 @@ namespace Xce.TrackingItem
 
         public void Dispose()
         {
-            baseScope.Dispose();
+            BaseScope.Dispose();
 
             GC.SuppressFinalize(this);
         }

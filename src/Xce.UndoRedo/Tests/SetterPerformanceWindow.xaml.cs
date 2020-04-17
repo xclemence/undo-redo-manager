@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
+using Xce.UndoRedo.Base;
 
 namespace Xce.UndoRedo.Tests
 {

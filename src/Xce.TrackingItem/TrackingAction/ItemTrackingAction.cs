@@ -34,10 +34,10 @@ namespace Xce.TrackingItem.TrackingAction
         public void Clear() => cache.Clear();
     }
 
-    public class TrackingItemUpdate<TObject> : ITrackingAction
+    public class ItemTrackingAction<TObject> : ITrackingAction
         where TObject : class, ICopiable<TObject>, ISettable<TObject>
     {
-        public TrackingItemUpdate(TObject referenceItem)
+        public ItemTrackingAction(TObject referenceItem)
         {
             ReferenceItem = referenceItem;
             OldItem = TrackingItemCache.Instance.GetCacheObject(referenceItem);
@@ -59,5 +59,7 @@ namespace Xce.TrackingItem.TrackingAction
             ReferenceItem.SetItem(OldItem);
             TrackingItemCache.Instance.SetCacheObject(ReferenceItem, OldItem);
         }
+
+        public override string ToString() => $"Item: {ReferenceItem.GetType().Name}";
     }
 }

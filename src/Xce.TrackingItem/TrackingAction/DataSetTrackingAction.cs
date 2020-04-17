@@ -21,10 +21,10 @@ namespace Xce.TrackingItem.TrackingAction
         public void Clear() => currentDataSet = null;
     }
 
-    public class TrackingDataSetUpdate<TObject> : ITrackingAction
+    public class DataSetTrackingAction<TObject> : ITrackingAction
         where TObject : class, ICopiable<TObject>, ISettable<TObject>
     {
-        public TrackingDataSetUpdate(TObject newItem)
+        public DataSetTrackingAction(TObject newItem)
         {
             OldDataSet = TrackingDataSetCache.Instance.GetDataSet<TObject>();
             NewDataSet = TrackingDataSetCache.Instance.SetDataSet(newItem);
@@ -39,5 +39,7 @@ namespace Xce.TrackingItem.TrackingAction
         public void Apply() => ReferenceDataSet.SetItem(NewDataSet);
 
         public void Revert() => ReferenceDataSet.SetItem(OldDataSet);
+
+        public override string ToString() => $"Data Set: {ReferenceDataSet.GetType().Name}";
     }
 }

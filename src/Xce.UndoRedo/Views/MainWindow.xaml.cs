@@ -1,4 +1,6 @@
-﻿namespace Xce.UndoRedo
+﻿using Xce.UndoRedo.ViewModels;
+
+namespace Xce.UndoRedo.Views
 {
     public partial class MainWindow 
     {

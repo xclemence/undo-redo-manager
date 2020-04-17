@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Xce.UndoRedo
+namespace Xce.UndoRedo.Base
 {
     public class IsEqualsConverter : IValueConverter
     {

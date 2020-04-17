@@ -11,10 +11,7 @@ namespace Xce.TrackingItem
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ModelBase(TrackingManager trackingManager)
-        {
-            this.trackingManager = trackingManager;
-        }
+        public ModelBase(TrackingManager trackingManager) => this.trackingManager = trackingManager;
 
         protected bool SetProperty<TObject, TValue>(TObject item,  ref TValue field, TValue value, [CallerMemberName] string callerName = null)
             where TObject : ModelBase
@@ -23,8 +20,7 @@ namespace Xce.TrackingItem
             if (field == null && value == null || (field?.Equals(value) ?? false))
                 return false;
 
-            if(!trackingManager.IsAction)
-                trackingManager.AddAction(item.GetTrackingPropertyUpdate(field, value, callerName));
+            trackingManager.AddAction(item.GetTrackingPropertyUpdate(field, value, callerName));
 
             field = value;
 
@@ -36,15 +32,13 @@ namespace Xce.TrackingItem
         protected void OnAddItem<TCollection, TValue>(TCollection collection, IList<TValue> items, int position)
           where TCollection : IList<TValue>
         {
-            if (!trackingManager.IsAction)
-                trackingManager.AddAction(new TrackingCollectionUdpate<TCollection, TValue>(collection, items, position, TrackingCollectionUdpateMode.Add));
+            trackingManager.AddAction(new CollectionTrackingAction<TCollection, TValue>(collection, items, position, TrackingCollectionUpdateMode.Add));
         }
 
         protected void OnRemoveItem<TCollection, TValue>(TCollection collection, IList<TValue> items, int position)
-        where TCollection : IList<TValue>
+            where TCollection : IList<TValue>
         {
-            if (!trackingManager.IsAction)
-                trackingManager.AddAction(new TrackingCollectionUdpate<TCollection, TValue>(collection, items, position, TrackingCollectionUdpateMode.Remove));
+            trackingManager.AddAction(new CollectionTrackingAction<TCollection, TValue>(collection, items, position, TrackingCollectionUpdateMode.Remove));
         }
     }
 }

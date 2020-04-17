@@ -1,0 +1,24 @@
+﻿<mahapps:MetroWindow x:Class="Xce.UndoRedo.Views.TrackingItemsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="Tracking Items details" Height="450" Width="800">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <TextBlock Text="Be careful to performance" DockPanel.Dock="Right" Margin="10 0" VerticalAlignment="Center" FontWeight="Bold"/>
+            <Button Content="Refresh" Command="{Binding RefreshCommand}" DockPanel.Dock="Left"/>
+        </DockPanel>
+
+        <UniformGrid Columns="2" Rows="1">
+            <GroupBox Header="Main Scope">
+                <TextBox Text="{Binding MainScopeItems}" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+            </GroupBox>
+            <GroupBox Header="Current Scope">
+                <TextBox Text="{Binding CurrentScopeItems}" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+            </GroupBox>
+        </UniformGrid>
+    </DockPanel>
+</mahapps:MetroWindow>

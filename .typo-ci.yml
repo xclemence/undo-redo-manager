@@ -13,6 +13,8 @@ excluded_words:
   - typoci
   - Xce
   - Fody
+  - xaml
+  
 
 # Would you like filenames to also be spellchecked?
 spellcheck_filenames: true

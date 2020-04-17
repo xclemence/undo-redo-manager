@@ -1,8 +1,8 @@
 ﻿<Application x:Class="Xce.UndoRedo.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Xce.UndoRedo"
-             StartupUri="MainWindow.xaml">
+             xmlns:base="clr-namespace:Xce.UndoRedo.Base"
+             StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,7 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                <Setter Property="local:EnterValidationBehavior.Attach" Value="True"/>
+                <Setter Property="base:EnterValidationBehavior.Attach" Value="True"/>
             </Style>
         </ResourceDictionary>
         
