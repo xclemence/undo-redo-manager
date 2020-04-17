@@ -64,8 +64,10 @@ namespace Xce.UndoRedo.ViewModels
             UndoCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RevertMulti()), () => trackingManagers.First().CanRevert);
             RedoCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RemakeMulti()), () => trackingManagers.First().CanRemake);
 
-            UndoAllCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RevertAlltMulti()), () => trackingManagers.First().CanRevert);
+            UndoAllCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RevertAllMulti()), () => trackingManagers.First().CanRevert);
             RedoAllCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RemakeAllMulti()), () => trackingManagers.First().CanRemake);
+
+            RollbackCommand = new AsyncCommand(() => Application.Current.Dispatcher.Invoke(() => managerProvider.RollbackMulti()));
 
             GenerateDriversCommand = new AsyncCommand(GenerateFakeDrivers);
             GenerateCarsCommand = new AsyncCommand(GenerateFakeCars);
@@ -104,6 +106,8 @@ namespace Xce.UndoRedo.ViewModels
         public ICommand StopTrackingCommand { get; }
         public ICommand StartTrackingCommand { get; }
         public ICommand OpenScopeDetailsCommand { get; }
+        public ICommand RollbackCommand { get; }
+
 
         public GeneratorPropertiesModel GeneratorProperties { get; }
 

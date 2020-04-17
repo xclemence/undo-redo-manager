@@ -32,6 +32,7 @@
                     <Button Command="{Binding RedoCommand}" Content="Redo"/>
                     <Button Command="{Binding UndoAllCommand}" Content="Undo All"/>
                     <Button Command="{Binding RedoAllCommand}" Content="Redo All"/>
+                    <Button Command="{Binding RollbackCommand}" Content="Rollback"/>
                 </UniformGrid>
 
                 <UniformGrid Rows="1" Margin="0 2 0 0">

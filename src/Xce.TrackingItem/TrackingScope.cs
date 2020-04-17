@@ -48,7 +48,7 @@ namespace Xce.TrackingItem
             }
         }
 
-        public void AddActions(IList<ITrackingAction> actions) 
+        public void AddActions(IList<ITrackingAction> actions)
         {
             foreach (var item in actions)
                 AddAction(item);
@@ -89,16 +89,35 @@ namespace Xce.TrackingItem
             }
         }
 
+        public void Rollback()
+        {
+            lock (actionLocker)
+            {
+                using (var logger = new TrackingLoggerScope(Logs, "Rollback"))
+                {
+                    foreach (var item in LastActions)
+                        item.Revert();
+                }
+
+                ClearTrackingItems();
+            }
+        }
+
         public void Clear()
+        {
+            ClearTrackingItems();
+            Logs.Clear();
+        }
+
+        private void ClearTrackingItems()
         {
             LastActions.Clear();
             RevertedActions.Clear();
-            Logs.Clear();
         }
 
         public void Dispose()
         {
-            if(LastActions.Count != 0)
+            if (LastActions.Count != 0)
                 Parent?.AddAction(new MultiTrackingAction(LastActions.Reduce().ToList()));
 
             onDispose(this);

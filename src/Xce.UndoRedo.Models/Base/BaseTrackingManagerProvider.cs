@@ -13,8 +13,9 @@ namespace Xce.UndoRedo.Models.Base
 
         void RemakeAllMulti();
         void RemakeMulti();
-        void RevertAlltMulti();
+        void RevertAllMulti();
         void RevertMulti();
+        void RollbackMulti();
     }
 
     public abstract class BaseTrackingManagerProvider : ITrackingManagerProvider
@@ -48,7 +49,7 @@ namespace Xce.UndoRedo.Models.Base
                 RemakeMulti();
         }
 
-        public void RevertAlltMulti()
+        public void RevertAllMulti()
         {
             var trackingManagers = TrackingManagers.ToList();
 
@@ -56,6 +57,13 @@ namespace Xce.UndoRedo.Models.Base
 
             while (referenceManager.CanRevert)
                 RevertMulti();
+        }
+
+        public void RollbackMulti()
+        {
+            var trackingManagers = TrackingManagers.ToList();
+            foreach (var item in trackingManagers)
+                item.Rollback();
         }
 
         public void Clear()
