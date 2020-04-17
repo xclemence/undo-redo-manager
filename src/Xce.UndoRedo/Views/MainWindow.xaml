@@ -1,0 +1,47 @@
+﻿<Controls:MetroWindow x:Class="Xce.UndoRedo.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Xce.UndoRedo.ViewModels"
+        xmlns:local="clr-namespace:Xce.UndoRedo.Views"
+        xmlns:base="clr-namespace:Xce.UndoRedo.Base"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="Undo redo Tests" Height="450" Width="800">
+    <Controls:MetroWindow.Resources>
+        <DataTemplate DataType="{x:Type vm:TestModelEditionViewModel}">
+            <local:TestModelEditionView DataContext="{Binding}"/>
+        </DataTemplate>
+    </Controls:MetroWindow.Resources>
+
+    <DockPanel>
+        <GroupBox Header="Tracking Type" DockPanel.Dock="Top" Margin="5" Padding="10">
+            <UniformGrid Rows="1" >
+
+                <RadioButton Content="Demo" Command="{Binding SetModeCommand}" CommandParameter="{x:Static vm:MainViewModel.DemoModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static base:IsEqualsConverter.Instance}, ConverterParameter={x:Static vm:MainViewModel.DemoModeKey}, Mode=OneWay}"/>
+
+                <RadioButton Content="Fody" Command="{Binding SetModeCommand}" CommandParameter="{x:Static vm:MainViewModel.FodyModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static base:IsEqualsConverter.Instance}, ConverterParameter={x:Static vm:MainViewModel.FodyModeKey}, Mode=OneWay}"/>
+
+                <RadioButton Content="Property" Command="{Binding SetModeCommand}" CommandParameter="{x:Static vm:MainViewModel.PropertyModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static base:IsEqualsConverter.Instance}, ConverterParameter={x:Static vm:MainViewModel.PropertyModeKey}, Mode=OneWay}"/>
+
+                <RadioButton Content="Item" Command="{Binding SetModeCommand}" CommandParameter="{x:Static vm:MainViewModel.ItemModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static base:IsEqualsConverter.Instance}, ConverterParameter={x:Static vm:MainViewModel.ItemModeKey}, Mode=OneWay}"/>
+                
+                <RadioButton Content="DataSet" Command="{Binding SetModeCommand}" CommandParameter="{x:Static vm:MainViewModel.DataSetModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static base:IsEqualsConverter.Instance}, ConverterParameter={x:Static vm:MainViewModel.DataSetModeKey}, Mode=OneWay}"/>
+
+                <RadioButton Content="All" Command="{Binding SetModeCommand}" CommandParameter="{x:Static vm:MainViewModel.AllModeKey}"
+                         IsChecked="{Binding CurrentMode, Converter={x:Static base:IsEqualsConverter.Instance}, ConverterParameter={x:Static vm:MainViewModel.AllModeKey}, Mode=OneWay}"/>
+
+                <Button Content="Test Perf" Command="{Binding OpenTestPerfCommand}"/>
+
+            </UniformGrid>
+        </GroupBox>
+        
+        <ContentControl Content="{Binding CurrentTestModelEdition}" />
+    </DockPanel>
+</Controls:MetroWindow>

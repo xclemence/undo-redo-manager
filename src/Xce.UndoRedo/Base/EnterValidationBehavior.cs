@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace Xce.UndoRedo
+namespace Xce.UndoRedo.Base
 {
     public static class EnterValidationBehavior
     {

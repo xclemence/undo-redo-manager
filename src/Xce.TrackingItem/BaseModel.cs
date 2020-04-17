@@ -37,14 +37,14 @@ namespace Xce.TrackingItem
           where TCollection : IList<TValue>
         {
             if (!trackingManager.IsAction)
-                trackingManager.AddAction(new TrackingCollectionUdpate<TCollection, TValue>(collection, items, position, TrackingCollectionUdpateMode.Add));
+                trackingManager.AddAction(new CollectionTrackingAction<TCollection, TValue>(collection, items, position, TrackingCollectionUdpateMode.Add));
         }
 
         protected void OnRemoveItem<TCollection, TValue>(TCollection collection, IList<TValue> items, int position)
         where TCollection : IList<TValue>
         {
             if (!trackingManager.IsAction)
-                trackingManager.AddAction(new TrackingCollectionUdpate<TCollection, TValue>(collection, items, position, TrackingCollectionUdpateMode.Remove));
+                trackingManager.AddAction(new CollectionTrackingAction<TCollection, TValue>(collection, items, position, TrackingCollectionUdpateMode.Remove));
         }
     }
 }

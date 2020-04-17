@@ -9,12 +9,14 @@ using Xce.UndoRedo.Base;
 using Xce.TrackingItem;
 using Xce.UndoRedo.Models.Base;
 using Xce.UndoRedo.Models.Interfaces;
+using Xce.UndoRedo.Models;
+using System.Threading.Tasks;
+using Xce.UndoRedo.Views;
 
-namespace Xce.UndoRedo
+namespace Xce.UndoRedo.ViewModels
 {
     public abstract class TestModelEditionViewModel : PropertyObject, IDisposable
     {
-        //public abstract void Dispose();
         private bool disposedValue = false; // To detect redundant calls
 
         protected abstract void OnDisposeManaged();
@@ -48,10 +50,9 @@ namespace Xce.UndoRedo
         private readonly IList<TrackingManager> trackingManagers;
         private readonly ITrackingManagerProvider managerProvider;
         private string logDetails;
+        private EditionModel model;
 
         private IList<StopTrackingScope> stopTrackingScopes;
-
-        private IList<TrackingScope> scopes;
 
         public TestModelEditionViewModel(ITrackingManagerProvider managerProvider, GeneratorPropertiesModel generatorProperties)
         {
@@ -70,8 +71,9 @@ namespace Xce.UndoRedo
             GenerateCarsCommand = new AsyncCommand(GenerateFakeCars);
             GenerateAddressesCommand = new AsyncCommand(GenerateFakeAddresses);
 
-            StartNewScopeCommand = new AsyncCommand(StartTrackingScope, () => scopes == null);
-            StopNewScopeCommand = new AsyncCommand(StopTrackingScope, () => scopes != null);
+            StartNewScopeCommand = new AsyncCommand(StartTrackingScope);
+            StopNewScopeCommand = new AsyncCommand(StopTrackingScope, CanStopTrackingScope);
+            OpenScopeDetailsCommand = new AsyncCommand(() => Application.Current.Dispatcher.BeginInvoke(new Action(() => OpenScopeDetails())));
 
             StopTrackingCommand = new AsyncCommand(DisableTracking, () => stopTrackingScopes == null);
             StartTrackingCommand = new AsyncCommand(EnableTracking, () => stopTrackingScopes != null);
@@ -79,8 +81,6 @@ namespace Xce.UndoRedo
             RefreshLogCommand = new AsyncCommand(RefreshLogs);
         }
 
-        private EditionModel model;
-        
         public EditionModel Model
         {
             get => model;
@@ -103,8 +103,11 @@ namespace Xce.UndoRedo
 
         public ICommand StopTrackingCommand { get; }
         public ICommand StartTrackingCommand { get; }
+        public ICommand OpenScopeDetailsCommand { get; }
 
         public GeneratorPropertiesModel GeneratorProperties { get; }
+
+        public int ScopeNumber => trackingManagers.FirstOrDefault()?.ScopeNumber ?? 0;
 
         public string LogDetails
         {
@@ -135,10 +138,7 @@ namespace Xce.UndoRedo
             UpdateModel(new List<object>(faker.Generate(itemNumber)));
         }
 
-        private void UpdateModel(IList<object> items)
-        {
-            Model = new EditionModel { Items = items };
-        }
+        private void UpdateModel(IList<object> items) => Model = new EditionModel { Items = items };
                 
         private void RefreshLogs() 
         {
@@ -182,9 +182,44 @@ namespace Xce.UndoRedo
 
             collection = null;
         }
-        private void StopTrackingScope() => CleanUp(ref scopes);
 
-        private void StartTrackingScope() => scopes = trackingManagers.Select(x => x.NewScope()).ToList();
+        private bool CanStopTrackingScope()
+        {
+            var trackingManagerReference = trackingManagers.First();
+            return trackingManagerReference.CurrentScope != trackingManagerReference.BaseScope;
+        }
+
+
+        private void StopTrackingScope()
+        {
+            foreach (var item in trackingManagers)
+            {
+                if (item.CurrentScope != item.BaseScope)
+                    item.CurrentScope.Dispose();
+            }
+
+            NotifyPropertyChanged(nameof(ScopeNumber));
+        }
+
+        private void StartTrackingScope()
+        {
+            foreach (var item in trackingManagers)
+                item.NewScope();
+
+            NotifyPropertyChanged(nameof(ScopeNumber));
+        }
+
+        private void OpenScopeDetails() 
+        {
+            var viewModel = new TrackingItemsViewModel(trackingManagers.First());
+
+            var window = new TrackingItemsWindow
+            {
+                DataContext = viewModel
+            };
+
+            window.Show();
+        }
 
         private void DisableTracking() => stopTrackingScopes = trackingManagers.Select(x => new StopTrackingScope(x)).ToList();
         

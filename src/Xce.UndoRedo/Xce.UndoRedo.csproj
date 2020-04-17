@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="TestModelEditionView.xaml">
+    <Page Update="Views\TestModelEditionView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Xce.UndoRedo.Models.Base;
 using Xce.UndoRedo.Models.Interfaces;
 
 namespace Xce.UndoRedo

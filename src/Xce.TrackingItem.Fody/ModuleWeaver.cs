@@ -262,7 +262,7 @@ namespace Xce.TrackingItem.Fody
             var genericActionTypeDef = referenceProvider.GetTypeReference(typeof(Action<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
             var actionContructor = referenceProvider.GetMethodReference(genericActionTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
-            var trackingPropertyTypeDef = referenceProvider.GetTypeReference(typeof(TrackingPropertyUpdate<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
+            var trackingPropertyTypeDef = referenceProvider.GetTypeReference(typeof(PropertyTrackingAction<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
             var trackingActionContructor = referenceProvider.GetMethodReference(trackingPropertyTypeDef.Resolve().FindMethod(".ctor", 3, typeof(Action<,>).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var logInstanceMethod = new GenericInstanceMethod(addActionMethod);

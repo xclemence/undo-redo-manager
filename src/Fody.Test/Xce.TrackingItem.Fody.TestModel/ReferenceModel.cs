@@ -22,7 +22,7 @@ namespace Xce.TrackingItem.Fody.TestModel
             get => value;
             set
             {
-                trackingManager.AddAction(new TrackingPropertyUpdate<ReferenceModel, int>(this.Value, value, this, TrackingValue));
+                trackingManager.AddAction(new PropertyTrackingAction<ReferenceModel, int>(this.Value, value, this, TrackingValue));
                 this.value = value;
             }
         }

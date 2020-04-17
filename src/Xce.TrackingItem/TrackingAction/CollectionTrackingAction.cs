@@ -8,10 +8,10 @@ namespace Xce.TrackingItem.TrackingAction
         Remove,
     }
 
-    public class TrackingCollectionUdpate<TCollection, TValue> : ITrackingAction
+    public class CollectionTrackingAction<TCollection, TValue> : ITrackingAction
        where TCollection : IList<TValue>
     {
-        public TrackingCollectionUdpate(TCollection collection, IList<TValue> items, int position, TrackingCollectionUdpateMode mode)
+        public CollectionTrackingAction(TCollection collection, IList<TValue> items, int position, TrackingCollectionUdpateMode mode)
         {
             Items = items;
             Position = position;
@@ -60,5 +60,7 @@ namespace Xce.TrackingItem.TrackingAction
             else
                 RemoveItems();
         }
+
+        public override string ToString() => $"Collection: {Collection.GetType().Name}, {Mode}";
     }
 }

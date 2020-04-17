@@ -1,35 +1,38 @@
+mermaid
+
+
 classDiagram
 TrackingManager *-- TrackingScope
 TrackingScope o-- "*" ITrackingAction
-ITrackingAction <|-- TrackingPropertyUpdate
-ITrackingAction <|-- TrackingCollectionUpdate
-ITrackingAction *-- "*" TrackingMultiUpdate
-TrackingMultiUpdate --|> ITrackingAction
-ITrackingAction <|-- TrackingDataSetUpdate
-ITrackingAction <|-- TrackingItemUpdate
+ITrackingAction <|-- PropertyTrackingAction
+ITrackingAction <|-- CollectionTrackingAction
+ITrackingAction *-- "*" MultiTrackingAction
+MultiTrackingAction --|> ITrackingAction
+ITrackingAction <|-- DataSetTrackingAction
+ITrackingAction <|-- ItemTrackingAction
 <<interface>> ITrackingAction
 class ITrackingAction {
   Apply()
   Revert()
 }
-class TrackingPropertyUpdate {
+class PropertyTrackingAction {
   - oldValue
   - newValue
   - referenceObject
   - setterMethod
 }
-class TrackingCollectionUpdate {
+class CollectionTrackingAction {
  - collection
  - actionType: add or remove
 }
 
-class TrackingItemUpdate {
+class ItemTrackingAction {
  - referenceItem
  - newItem
  - oldItem
 }
 
-class TrackingDataSetUpdate {
+class DataSetTrackingAction {
  - referenceDataSet
  - newDataSet
  - oldDataSet

@@ -36,34 +36,34 @@ namespace Xce.TrackingItem
         public static ITrackingAction GetTrackingPropertyUpdate<TObject, TValue>(this TObject item, TValue field, TValue value, string propertyName)
         {
             var setterMethod = GetSetter<TObject, TValue>(propertyName);
-            return new TrackingPropertyUpdate<TObject, TValue>(field, value, item, setterMethod);
+            return new PropertyTrackingAction<TObject, TValue>(field, value, item, setterMethod);
         }
 
         public static ITrackingAction GetTrackingPropertyUpdate<TObject, TValue>(this TObject item, TValue field, TValue value, Action<TObject, TValue> setter)
         {
-            return new TrackingPropertyUpdate<TObject, TValue>(field, value, item, setter);
+            return new PropertyTrackingAction<TObject, TValue>(field, value, item, setter);
         }
 
         public static Func<ITrackingAction> GetTrackingPropertyUpdateFunc<TObject, TValue>(this TObject item, TValue field, TValue value, Action<TObject, TValue> setter)
         {
-            return () => new TrackingPropertyUpdate<TObject, TValue>(field, value, item, setter);
+            return () => new PropertyTrackingAction<TObject, TValue>(field, value, item, setter);
         }
 
         public static ITrackingAction GetTrackingPropertyUpdateV2<TObject, TValue>(this TObject item, TValue field, TValue value, string propertyName)
         {
-            return new TrackingPropertyUpdate<TObject, TValue>(field, value, item, (x, y) => GetSetter<TObject, TValue>(propertyName)(x, y));
+            return new PropertyTrackingAction<TObject, TValue>(field, value, item, (x, y) => GetSetter<TObject, TValue>(propertyName)(x, y));
         }
 
         public static ITrackingAction GetTrackingItemUpdate<TObject>(this TObject referenceItem)
             where TObject : class, ICopiable<TObject>, ISettable<TObject>
         {
-            return new TrackingItemUpdate<TObject>(referenceItem);
+            return new ItemTrackingAction<TObject>(referenceItem);
         }
 
         public static ITrackingAction GetTrackingDatSetUpdate<TDataSet>(this TDataSet currentDataSet)
             where TDataSet : class, ICopiable<TDataSet>, ISettable<TDataSet>
         {
-            return new TrackingDataSetUpdate<TDataSet>(currentDataSet);
+            return new DataSetTrackingAction<TDataSet>(currentDataSet);
         }
 
         public static IEnumerable<ITrackingAction> GetCollectionChangedTrackingAction<TValue>(this IList<TValue> collection, NotifyCollectionChangedEventArgs e)
@@ -72,13 +72,13 @@ namespace Xce.TrackingItem
             if (e.NewItems != null)
             {
                 var items = e.NewItems.Cast<TValue>().ToList();
-                yield return new TrackingCollectionUdpate<IList<TValue>, TValue>(collection, items, e.NewStartingIndex, TrackingCollectionUdpateMode.Add);
+                yield return new CollectionTrackingAction<IList<TValue>, TValue>(collection, items, e.NewStartingIndex, TrackingCollectionUdpateMode.Add);
             }
 
             if (e.OldItems != null)
             {
                 var items = e.OldItems.Cast<TValue>().ToList();
-                yield return new TrackingCollectionUdpate<IList<TValue>, TValue>(collection, items, e.OldStartingIndex, TrackingCollectionUdpateMode.Remove);
+                yield return new CollectionTrackingAction<IList<TValue>, TValue>(collection, items, e.OldStartingIndex, TrackingCollectionUdpateMode.Remove);
             }
         }
 
