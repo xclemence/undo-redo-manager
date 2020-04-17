@@ -1,5 +1,4 @@
-﻿using System;
-using Xce.TrackingItem.Attributes;
+﻿using Xce.TrackingItem.Attributes;
 
 namespace Xce.TrackingItem.Fody.TestModel
 {
@@ -11,13 +10,4 @@ namespace Xce.TrackingItem.Fody.TestModel
         [NoPropertyTracking]
         public object NoTracking { get; set; }
     }
-
-    //[Tracking]
-    //public class BaseModel2 : BaseModel
-    //{
-    //    public int Value { get; set; }
-
-    //}
-
-
 }

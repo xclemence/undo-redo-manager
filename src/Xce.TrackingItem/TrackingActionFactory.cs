@@ -72,13 +72,13 @@ namespace Xce.TrackingItem
             if (e.NewItems != null)
             {
                 var items = e.NewItems.Cast<TValue>().ToList();
-                yield return new CollectionTrackingAction<IList<TValue>, TValue>(collection, items, e.NewStartingIndex, TrackingCollectionUdpateMode.Add);
+                yield return new CollectionTrackingAction<IList<TValue>, TValue>(collection, items, e.NewStartingIndex, TrackingCollectionUpdateMode.Add);
             }
 
             if (e.OldItems != null)
             {
                 var items = e.OldItems.Cast<TValue>().ToList();
-                yield return new CollectionTrackingAction<IList<TValue>, TValue>(collection, items, e.OldStartingIndex, TrackingCollectionUdpateMode.Remove);
+                yield return new CollectionTrackingAction<IList<TValue>, TValue>(collection, items, e.OldStartingIndex, TrackingCollectionUpdateMode.Remove);
             }
         }
 
