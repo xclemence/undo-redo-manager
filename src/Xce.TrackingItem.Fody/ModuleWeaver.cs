@@ -260,10 +260,10 @@ namespace Xce.TrackingItem.Fody
             var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(ITrackingAction).FullName));
 
             var actionDefinition = FindTypeDefinition(typeof(Action<,>).FullName);
-            var actionContructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+            var actionConstructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var trackingPropertyTypeDef = referenceProvider.GetTypeReference(typeof(PropertyTrackingAction<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
-            var trackingActionContructor = referenceProvider.GetMethodReference(trackingPropertyTypeDef.Resolve().FindMethod(".ctor", 3, typeof(Action<,>).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+            var trackingActionConstructor = referenceProvider.GetMethodReference(trackingPropertyTypeDef.Resolve().FindMethod(".ctor", 3, typeof(Action<,>).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var logInstanceMethod = new GenericInstanceMethod(addActionMethod);
 
@@ -279,8 +279,8 @@ namespace Xce.TrackingItem.Fody
                                      Instruction.Create(OpCodes.Ldarg_0),
                                      Instruction.Create(OpCodes.Ldnull),
                                      Instruction.Create(OpCodes.Ldftn, localtracingMethod),
-                                     Instruction.Create(OpCodes.Newobj, actionContructor),
-                                     Instruction.Create(OpCodes.Newobj, trackingActionContructor),
+                                     Instruction.Create(OpCodes.Newobj, actionConstructor),
+                                     Instruction.Create(OpCodes.Newobj, trackingActionConstructor),
                                      Instruction.Create(OpCodes.Callvirt, addActionMethod));
 
             //IL_0000: nop
@@ -308,7 +308,7 @@ namespace Xce.TrackingItem.Fody
             var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(Func<>).FullName));
 
             var actionDefinition = FindTypeDefinition(typeof(Action<,>).FullName);
-            var actionContructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+            var actionConstructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var logInstanceMethod = new GenericInstanceMethod(addActionMethod);
 
@@ -348,7 +348,7 @@ namespace Xce.TrackingItem.Fody
                                     Instruction.Create(OpCodes.Ldarg_1),
                                     Instruction.Create(OpCodes.Ldnull),
                                     Instruction.Create(OpCodes.Ldftn, localTracingMethod),
-                                    Instruction.Create(OpCodes.Newobj, actionContructor),
+                                    Instruction.Create(OpCodes.Newobj, actionConstructor),
                                     Instruction.Create(OpCodes.Call, trackingActionFactoryMethod),
                                     Instruction.Create(OpCodes.Callvirt, addActionMethod));
 
