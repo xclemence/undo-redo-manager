@@ -15,20 +15,11 @@ jobs:
     
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
-    
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.200
-    
+
     - name: Restore nuget packages
-      run: dotnet restore
+      run: msbuild -t:restore
       working-directory: src
     
     - name: Build sources
       run: msbuild UndoRedo.sln
-      working-directory: src
-    
-    - name: Run unit tests
-      run: dotnet test
       working-directory: src
