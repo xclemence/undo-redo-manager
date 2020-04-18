@@ -29,7 +29,10 @@ To improve performance and avoid make refection analyses each call, we can easil
 
 ### Tracking by Data set
 
-Tracking by data set consist to save a snapshot of a Data set (world with all items to include in undo-redo) and apply the good snapshot on the current world. For that, we need one method to duplication the world and another to reset the world state.
+Tracking by dataset consists to save a snapshot of a World (Entry point with all items to include in undo-redo) and apply the good snapshot of the current world. For that, we need:
+* a method to duplicate the world
+* a method to restore the world 
+* a unique identifier for each object (object reference is not usable due to world copy). 
 
 The cache with this method is embedded. Indeed, a snapshot is an instance of a cache object.
 
@@ -120,6 +123,7 @@ public class BaseModel
 | Reflection for generic code | Keep one item reference per item | Keep one item reference per item | Framework to generate code on build |
 |                             | Save item state methods          | Save item state methods          |                                     |
 |                             | Restore item state methods       | Restore item state methods       |                                     |
+|                             |                                  | Object identifier (Guid)         |                                     |
 |                             |                                  | Entry point                      |                                     |
 
 ###  Persistence compare
