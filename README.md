@@ -77,7 +77,7 @@ Base code:
 [Tracking]
 public class TestModel
 {
-  public int Value { get; set; }
+  public string Name { get; set; }
 }
 ```
 Generated code:
@@ -87,31 +87,27 @@ public class BaseModel
 {
   private TrackingManager trackingManager;
 
-  public int Value
+  public BaseModel() => trackingManager = TrackingManagerProvider.GetDefault();
+
+  public string Name
   {
     [CompilerGenerated]
     get
     {
-      return Value;
+      return <Name>k__BackingField;
     }
     [CompilerGenerated]
     set
     {
-      if (Value != value)
+      if (Name != value)
       {
-        trackingManager.AddAction(this.GetTrackingPropertyUpdateFunc(Value, value, new Action<BaseModel, int>(TrackingItemSetter_Value)));
+        trackingManager.AddAction(this.GetTrackingPropertyUpdateFunc(Name, value, TrackingItemSetter_Name));
       }
-      Value = value;
+      <Name>k__BackingField = value;
     }
-  }  
-  public BaseModel()
-  {
-      trackingManager = TrackingManagerProvider.GetDefault();
-  }  
-  private static void TrackingItemSetter_Value(BaseModel P_0, int P_1)
-  {
-      P_0.Value = P_1;
   }
+
+  private static void TrackingItemSetter_Name(BaseModel P_0, string P_1) => P_0.Name = P_1;
 }
 
 ```
