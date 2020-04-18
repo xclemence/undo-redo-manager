@@ -76,8 +76,9 @@ namespace Xce.TrackingItem.Fody
                 return (existingFinalizeMethod, 1);
             }
 
-            var objectTypeDefinition = referenceProvider.GetTypeReference(typeof(object));
-            var objectFinalizeReference = referenceProvider.GetMethodReference(objectTypeDefinition.Resolve().FindMethod("Finalize"));
+            var objectTypeDefinition = FindTypeDefinition(typeof(object).FullName);
+
+            var objectFinalizeReference = referenceProvider.GetMethodReference(objectTypeDefinition.FindMethod("Finalize"));
 
 
             var finalizeMethod = new MethodDefinition("Finalize", MethodAttributes.HideBySig | MethodAttributes.Family | MethodAttributes.Virtual, TypeSystem.VoidReference);
@@ -122,6 +123,7 @@ namespace Xce.TrackingItem.Fody
 
             var trackingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
             var methodDefinition = trackingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetCollectionChangedTrackingActionLIst), typeof(IList<>).FullName, typeof(NotifyCollectionChangedEventArgs).FullName);
+
             var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(methodDefinition);
             var trackingActionFactoryMethod = new GenericInstanceMethod(trackingActionFactoryMethodNoGen);
 
@@ -257,11 +259,11 @@ namespace Xce.TrackingItem.Fody
 
             var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(ITrackingAction).FullName));
 
-            var genericActionTypeDef = referenceProvider.GetTypeReference(typeof(Action<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
-            var actionContructor = referenceProvider.GetMethodReference(genericActionTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+            var actionDefinition = FindTypeDefinition(typeof(Action<,>).FullName);
+            var actionConstructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var trackingPropertyTypeDef = referenceProvider.GetTypeReference(typeof(PropertyTrackingAction<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
-            var trackingActionContructor = referenceProvider.GetMethodReference(trackingPropertyTypeDef.Resolve().FindMethod(".ctor", 3, typeof(Action<,>).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+            var trackingActionConstructor = referenceProvider.GetMethodReference(trackingPropertyTypeDef.Resolve().FindMethod(".ctor", 3, typeof(Action<,>).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var logInstanceMethod = new GenericInstanceMethod(addActionMethod);
 
@@ -277,8 +279,8 @@ namespace Xce.TrackingItem.Fody
                                      Instruction.Create(OpCodes.Ldarg_0),
                                      Instruction.Create(OpCodes.Ldnull),
                                      Instruction.Create(OpCodes.Ldftn, localtracingMethod),
-                                     Instruction.Create(OpCodes.Newobj, actionContructor),
-                                     Instruction.Create(OpCodes.Newobj, trackingActionContructor),
+                                     Instruction.Create(OpCodes.Newobj, actionConstructor),
+                                     Instruction.Create(OpCodes.Newobj, trackingActionConstructor),
                                      Instruction.Create(OpCodes.Callvirt, addActionMethod));
 
             //IL_0000: nop
@@ -305,9 +307,8 @@ namespace Xce.TrackingItem.Fody
 
             var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(Func<>).FullName));
 
-            var genericActionTypeDef = referenceProvider.GetTypeReference(typeof(Action<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
-
-            var actionContructor = referenceProvider.GetMethodReference(genericActionTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+            var actionDefinition = FindTypeDefinition(typeof(Action<,>).FullName);
+            var actionConstructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var logInstanceMethod = new GenericInstanceMethod(addActionMethod);
 
@@ -347,7 +348,7 @@ namespace Xce.TrackingItem.Fody
                                     Instruction.Create(OpCodes.Ldarg_1),
                                     Instruction.Create(OpCodes.Ldnull),
                                     Instruction.Create(OpCodes.Ldftn, localTracingMethod),
-                                    Instruction.Create(OpCodes.Newobj, actionContructor),
+                                    Instruction.Create(OpCodes.Newobj, actionConstructor),
                                     Instruction.Create(OpCodes.Call, trackingActionFactoryMethod),
                                     Instruction.Create(OpCodes.Callvirt, addActionMethod));
 
@@ -397,14 +398,12 @@ namespace Xce.TrackingItem.Fody
 
         public override IEnumerable<string> GetAssembliesForScanning()
         {
+            yield return "netstandard";
             yield return "mscorlib";
             yield return "System";
             yield return "System.Runtime";
             yield return "System.Core";
-            yield return "netstandard";
-            yield return "System.Collections";
             yield return "System.ObjectModel";
-            yield return "System.Threading";
             yield return "Xce.TrackingItem";
             yield return "Xce.TrackingItem.Attributes";
         }

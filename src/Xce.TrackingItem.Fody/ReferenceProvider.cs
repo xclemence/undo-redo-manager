@@ -43,7 +43,6 @@ namespace Xce.TrackingItem.Fody
 
         public MethodReference GetMethodReference(GenericInstanceMethod method, IGenericParameterProvider generic)
         {
-            // test if fullName of generic method contrains generics parameters !!.
             if (methodCache.ContainsKey(method.FullName))
                 return methodCache[method.FullName];
 
