@@ -76,8 +76,9 @@ namespace Xce.TrackingItem.Fody
                 return (existingFinalizeMethod, 1);
             }
 
-            var objectTypeDefinition = referenceProvider.GetTypeReference(typeof(object));
-            var objectFinalizeReference = referenceProvider.GetMethodReference(objectTypeDefinition.Resolve().FindMethod("Finalize"));
+            var objectTypeDefinition = FindTypeDefinition(typeof(object).FullName);
+
+            var objectFinalizeReference = referenceProvider.GetMethodReference(objectTypeDefinition.FindMethod("Finalize"));
 
 
             var finalizeMethod = new MethodDefinition("Finalize", MethodAttributes.HideBySig | MethodAttributes.Family | MethodAttributes.Virtual, TypeSystem.VoidReference);
@@ -122,6 +123,7 @@ namespace Xce.TrackingItem.Fody
 
             var trackingActionfactoryTypeDef = referenceProvider.GetTypeReference(typeof(TrackingActionFactory));
             var methodDefinition = trackingActionfactoryTypeDef.Resolve().FindMethod(nameof(TrackingActionFactory.GetCollectionChangedTrackingActionLIst), typeof(IList<>).FullName, typeof(NotifyCollectionChangedEventArgs).FullName);
+
             var trackingActionFactoryMethodNoGen = referenceProvider.GetMethodReference(methodDefinition);
             var trackingActionFactoryMethod = new GenericInstanceMethod(trackingActionFactoryMethodNoGen);
 
@@ -257,8 +259,8 @@ namespace Xce.TrackingItem.Fody
 
             var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(ITrackingAction).FullName));
 
-            var genericActionTypeDef = referenceProvider.GetTypeReference(typeof(Action<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
-            var actionContructor = referenceProvider.GetMethodReference(genericActionTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+            var actionDefinition = FindTypeDefinition(typeof(Action<,>).FullName);
+            var actionContructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var trackingPropertyTypeDef = referenceProvider.GetTypeReference(typeof(PropertyTrackingAction<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
             var trackingActionContructor = referenceProvider.GetMethodReference(trackingPropertyTypeDef.Resolve().FindMethod(".ctor", 3, typeof(Action<,>).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
@@ -305,9 +307,11 @@ namespace Xce.TrackingItem.Fody
 
             var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(Func<>).FullName));
 
-            var genericActionTypeDef = referenceProvider.GetTypeReference(typeof(Action<,>)).MakeGenericInstanceType(item.DeclaringType, item.PropertyType);
+            var actionDefinition = FindTypeDefinition(typeof(Action<,>).FullName);
 
-            var actionContructor = referenceProvider.GetMethodReference(genericActionTypeDef.Resolve().FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
+            WriteMessage($"Action is null: {actionDefinition == null}", MessageImportance.High);
+
+            var actionContructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var logInstanceMethod = new GenericInstanceMethod(addActionMethod);
 
@@ -397,14 +401,12 @@ namespace Xce.TrackingItem.Fody
 
         public override IEnumerable<string> GetAssembliesForScanning()
         {
+            yield return "netstandard";
             yield return "mscorlib";
             yield return "System";
             yield return "System.Runtime";
             yield return "System.Core";
-            yield return "netstandard";
-            yield return "System.Collections";
             yield return "System.ObjectModel";
-            yield return "System.Threading";
             yield return "Xce.TrackingItem";
             yield return "Xce.TrackingItem.Attributes";
         }
