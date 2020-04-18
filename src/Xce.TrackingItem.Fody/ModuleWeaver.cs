@@ -308,9 +308,6 @@ namespace Xce.TrackingItem.Fody
             var addActionMethod = ModuleDefinition.ImportReference(field.FieldType.Resolve().FindMethod(nameof(TrackingManager.AddAction), typeof(Func<>).FullName));
 
             var actionDefinition = FindTypeDefinition(typeof(Action<,>).FullName);
-
-            WriteMessage($"Action is null: {actionDefinition == null}", MessageImportance.High);
-
             var actionContructor = referenceProvider.GetMethodReference(actionDefinition.FindMethod(".ctor", typeof(Object).FullName, typeof(IntPtr).FullName)).MakeHostInstanceGeneric(item.DeclaringType, item.PropertyType);
 
             var logInstanceMethod = new GenericInstanceMethod(addActionMethod);
