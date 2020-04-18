@@ -42,7 +42,7 @@ namespace Xce.UndoRedo
         public static Faker<TDriver> GetFakerDriver<TDriver, TCar, TAddress>(int carMaxNumber, int addressMaxNumber)
             where TDriver : class, IDriver<TCar, TAddress>, new()
             where TCar : class, ICar, new()
-            where TAddress : class, IAddress, new ()
+            where TAddress : class, IAddress, new()
         {
             var fakerCar = GetFakerCar<TCar>();
             var fakerAddr = GetFakerAddress<TAddress>();
@@ -52,7 +52,7 @@ namespace Xce.UndoRedo
                                        .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
                                        .FinishWith((f, u) =>
                                        {
-                                            var addresses = fakerAddr.Generate(f.Random.Int(1, addressMaxNumber));
+                                           var addresses = fakerAddr.Generate(f.Random.Int(1, addressMaxNumber));
 
                                            foreach (var item in addresses)
                                                u.Addresses.Add(item);

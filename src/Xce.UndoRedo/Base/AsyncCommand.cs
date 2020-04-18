@@ -7,12 +7,12 @@ namespace Xce.UndoRedo.Base
     public class AsyncCommand : AsyncCommand<object>
     {
         public AsyncCommand(Func<Task> execute, Func<bool> canExecute = null)
-            : base(_ => execute(), canExecute == null ? (Predicate<object>) null : (_) => canExecute())
+            : base(_ => execute(), canExecute == null ? (Predicate<object>)null : (_) => canExecute())
         {
         }
 
         public AsyncCommand(Action execute, Func<bool> canExecute = null)
-          : base(_ => execute(), canExecute == null ? (Predicate<object>) null : (_) => canExecute())
+          : base(_ => execute(), canExecute == null ? (Predicate<object>)null : (_) => canExecute())
         {
         }
     }

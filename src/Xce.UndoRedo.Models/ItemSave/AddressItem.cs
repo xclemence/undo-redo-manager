@@ -28,7 +28,7 @@ namespace Xce.UndoRedo.Models.ItemSave
             using (var scope = new StopTrackingScope(trackingManager))
                 this.SetAddress(item);
         }
-        
+
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
         {
             trackingManager.AddAction(() =>

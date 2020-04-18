@@ -2,7 +2,7 @@
 {
     internal static class ModelExtensions
     {
-        public static void SetDriver<TDriver, TCar, TAddr>(this TDriver target, TDriver source) 
+        public static void SetDriver<TDriver, TCar, TAddr>(this TDriver target, TDriver source)
             where TDriver : Driver<TCar, TAddr>
             where TCar : Car
             where TAddr : Address

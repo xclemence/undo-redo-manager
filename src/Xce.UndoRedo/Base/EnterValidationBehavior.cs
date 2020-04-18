@@ -12,7 +12,7 @@ namespace Xce.UndoRedo.Base
                             typeof(bool),
                             typeof(EnterValidationBehavior),
                             new UIPropertyMetadata(false, OnAttachChanged));
-      
+
         internal static void OnAttachChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
         {
             if (!(target is TextBox textBox)) return;
@@ -30,8 +30,8 @@ namespace Xce.UndoRedo.Base
         public static ICommand GetTextBindingCommand() => new AsyncCommand<TextBox>((x) =>
         {
             var binding = BindingOperations.GetBindingExpression(x, TextBox.TextProperty);
-            
-            if(binding.IsDirty)
+
+            if (binding.IsDirty)
                 Application.Current.Dispatcher.Invoke(() => binding.UpdateSource());
         });
 

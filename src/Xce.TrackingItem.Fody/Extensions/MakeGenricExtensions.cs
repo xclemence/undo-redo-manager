@@ -28,15 +28,15 @@ namespace Xce.TrackingItem.Fody.Extensions
             if (reference.DeclaringType.HasGenericParameters)
             {
                 var declaringType = new GenericInstanceType(reference.DeclaringType);
-                
+
                 foreach (var parameter in reference.DeclaringType.GenericParameters)
                     declaringType.GenericArguments.Add(parameter);
 
                 var methodReference = new MethodReference(reference.Name, reference.MethodReturnType.ReturnType, declaringType);
-                
+
                 foreach (var parameterDefinition in reference.Parameters)
                     methodReference.Parameters.Add(parameterDefinition);
-               
+
                 methodReference.HasThis = reference.HasThis;
                 return methodReference;
             }

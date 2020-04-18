@@ -1,8 +1,8 @@
 ﻿using System;
-using Xce.TrackingItem.Interfaces;
-using Xce.UndoRedo.Models.Base;
-using Xce.TrackingItem.TrackingAction;
 using Xce.TrackingItem;
+using Xce.TrackingItem.Interfaces;
+using Xce.TrackingItem.TrackingAction;
+using Xce.UndoRedo.Models.Base;
 
 namespace Xce.UndoRedo.Models.DataSet
 {
@@ -20,7 +20,7 @@ namespace Xce.UndoRedo.Models.DataSet
         }
 
         public Guid Id { get; private set; } = Guid.NewGuid();
-        
+
         public override void Initialize() => DataSetTrackingManagerProvider.Instance.DataSet.Addresses.Add(this);
 
         public AddressDataSet DeepCopy()
@@ -43,7 +43,7 @@ namespace Xce.UndoRedo.Models.DataSet
                 this.Id = item.Id;
             }
         }
-        
+
         protected override void OnAfterSetProperty<TObject, TValue>(TObject item, TValue field, TValue value, string callerName)
         {
             trackingManager.AddAction(() =>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Fody;
 using Mono.Cecil;
 
@@ -10,21 +9,18 @@ namespace Xce.TrackingItem.Fody
     {
         private readonly Dictionary<string, MethodReference> methodCache = new Dictionary<string, MethodReference>();
         private readonly Dictionary<string, TypeReference> typeCache = new Dictionary<string, TypeReference>();
-        
+
         private readonly BaseModuleWeaver moduleWeaver;
 
-        public ReferenceProvider(BaseModuleWeaver moduleWeaver)
-        {
-            this.moduleWeaver = moduleWeaver;
-        }
+        public ReferenceProvider(BaseModuleWeaver moduleWeaver) => this.moduleWeaver = moduleWeaver;
 
         public TypeReference GetTypeReference(string typeName)
         {
             var typeDefinition = moduleWeaver.FindTypeDefinition(typeName);
-            
+
             if (typeCache.ContainsKey(typeDefinition.FullName))
                 return typeCache[typeDefinition.FullName];
-            
+
             return typeCache[typeDefinition.FullName] = moduleWeaver.ModuleDefinition.ImportReference(typeDefinition);
         }
 
@@ -32,7 +28,7 @@ namespace Xce.TrackingItem.Fody
         {
             if (typeCache.ContainsKey(type.FullName))
                 return typeCache[type.FullName];
-        
+
             return typeCache[type.FullName] = moduleWeaver.ModuleDefinition.ImportReference(type);
         }
 

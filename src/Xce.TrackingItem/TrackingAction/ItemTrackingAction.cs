@@ -9,7 +9,7 @@ namespace Xce.TrackingItem.TrackingAction
 
         private readonly IDictionary<object, object> cache = new Dictionary<object, object>();
 
-        public T GetCacheObject<T>(T referenceObject) where T: class
+        public T GetCacheObject<T>(T referenceObject) where T : class
         {
             if (cache.TryGetValue(referenceObject, out var item))
                 return item as T;

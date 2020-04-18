@@ -7,10 +7,7 @@ namespace Xce.UndoRedo.Models.Fody
     {
         public static FodyTrackingManagerProvider Instance { get; } = new FodyTrackingManagerProvider();
 
-        FodyTrackingManagerProvider()
-        {
-            Manager = TrackingManagerProvider.GetDefault();
-        }
+        private FodyTrackingManagerProvider() => Manager = TrackingManagerProvider.GetDefault();
 
     }
 }

@@ -32,7 +32,7 @@ namespace Xce.UndoRedo.Models.Fody
 
         [NoPropertyTracking, CollectionTracking]
         public ObservableCollection<AddressFody> Addresses { get; set; } = new ObservableCollection<AddressFody>();
-        
+
         [NoPropertyTracking, CollectionTracking]
         public ObservableCollection<CarFody> Cars { get; set; } = new ObservableCollection<CarFody>();
 

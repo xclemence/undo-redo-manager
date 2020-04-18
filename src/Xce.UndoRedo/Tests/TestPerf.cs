@@ -15,18 +15,18 @@ namespace Xce.UndoRedo.Tests
             yield return ("PropertyInfo With Reflexion", ExecuteTest(() => testObject.TestFindPropertyInfoReflexion(nameof(ObjectReflexion.Name))));
             yield return ("PropertyInfo With Expression", ExecuteTest(() => ObjectReflexion.TestFindPropertyInfoExpression(() => testObject.Name)));
             yield return ("MathodInfo with Reflexion", ExecuteTest(() => testObject.TestFindSetterAndCreateMethodInfo(nameof(ObjectReflexion.Name))));
-            
+
             yield return ("Delegate From Delegate", ExecuteTest(() => ObjectReflexion.TestFindSetterAndCreateDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name))));
-            
+
             yield return ("Delegate Lazy", ExecuteTest(() => ObjectReflexion.TestFindSetterLazyDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name))));
 
             yield return ("Action From MethodInfo (capture)", ExecuteTest(() => testObject.TestFindSetterCreateActionInvoke(nameof(ObjectReflexion.Name))));
             yield return ("Action From MethodInfo (no capture)", ExecuteTest(() => ObjectReflexion.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name))));
 
             yield return ("-------------------------------", TimeSpan.Zero);
-            
+
             yield return ("Set Direct", ExecuteTest(() => testObject.Name = "truc"));
-            
+
             var propertyInfo = testObject.TestFindPropertyInfoReflexion(nameof(ObjectReflexion.Name));
             yield return ("Set PropertyInfo", ExecuteTest(() => propertyInfo.SetValue(testObject, "truc")));
 
@@ -35,7 +35,7 @@ namespace Xce.UndoRedo.Tests
 
             var setterDelegate = ObjectReflexion.TestFindSetterAndCreateDelegate<ObjectReflexion, string>(nameof(ObjectReflexion.Name));
             var setterDelegateFromMethod = testObject.TestFindSetterAndCreateDelegateFromInfo<string>(nameof(ObjectReflexion.Name));
-            
+
             var setterActionContext = testObject.TestFindSetterCreateActionInvoke(nameof(ObjectReflexion.Name));
             var setterActionNoContext = ObjectReflexion.TestFindSetterFullAction<string>(nameof(ObjectReflexion.Name));
 

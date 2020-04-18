@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Xce.TrackingItem.Attributes;
+﻿using Xce.TrackingItem.Attributes;
 using Xce.UndoRedo.Models.Base;
 using Xce.UndoRedo.Models.Interfaces;
 

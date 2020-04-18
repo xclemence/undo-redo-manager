@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
 using System.Text;
 
 namespace Xce.TrackingItem.TrackingAction
@@ -12,7 +12,7 @@ namespace Xce.TrackingItem.TrackingAction
         public MultiTrackingAction(IList<ITrackingAction> actions) => Actions = actions.ToList();
 
         public IList<ITrackingAction> Actions { get; }
-        
+
         public void Apply()
         {
             var revertActions = Actions.Reverse().ToList();

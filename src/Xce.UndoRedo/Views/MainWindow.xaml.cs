@@ -2,7 +2,7 @@
 
 namespace Xce.UndoRedo.Views
 {
-    public partial class MainWindow 
+    public partial class MainWindow
     {
         public MainWindow()
         {

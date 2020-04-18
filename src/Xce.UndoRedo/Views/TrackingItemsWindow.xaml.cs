@@ -1,12 +1,7 @@
-﻿using System.Windows;
-
-namespace Xce.UndoRedo.Views
+﻿namespace Xce.UndoRedo.Views
 {
     public partial class TrackingItemsWindow
     {
-        public TrackingItemsWindow()
-        {
-            InitializeComponent();
-        }
+        public TrackingItemsWindow() => InitializeComponent();
     }
 }

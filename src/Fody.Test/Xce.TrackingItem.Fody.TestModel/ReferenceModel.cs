@@ -6,8 +6,9 @@ namespace Xce.TrackingItem.Fody.TestModel
 {
     public class ReferenceModel
     {
-        private TrackingManager trackingManager;
+        private readonly TrackingManager trackingManager;
         private int value;
+
         public ReferenceModel()
         {
             trackingManager = TrackingManagerProvider.GetDefault();
@@ -34,17 +35,14 @@ namespace Xce.TrackingItem.Fody.TestModel
             {
                 this.value = value;
 
-                if(Value2 != value)
+                if (Value2 != value)
                 {
                     trackingManager.AddAction(TrackingActionFactory.GetTrackingPropertyUpdateFunc(this, Value, value, TrackingValue));
                 }
             }
         }
 
-        private static void TrackingValue(ReferenceModel model, int value)
-        {
-            model.Value = value;
-        }
+        private static void TrackingValue(ReferenceModel model, int value) => model.Value = value;
 
         public ObservableCollection<int> TestCollection { get; set; }
 

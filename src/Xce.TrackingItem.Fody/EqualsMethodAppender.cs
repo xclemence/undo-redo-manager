@@ -56,10 +56,7 @@ namespace Xce.TrackingItem.Fody
     {
         private readonly EqualsMethodProvider methodProvider;
 
-        public EqualsMethodAppender(EqualsMethodProvider methodProvider)
-        {
-            this.methodProvider = methodProvider;
-        }
+        public EqualsMethodAppender(EqualsMethodProvider methodProvider) => this.methodProvider = methodProvider;
 
         public void InjectEqualityCheck(int index, IList<Instruction> instructions, Instruction valueInstruction, TypeReference targetType, Instruction trueInstruction)
         {

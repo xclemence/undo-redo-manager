@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Reflection;
-using System.ComponentModel;
 using System.Windows.Controls.Primitives;
-using System.Runtime.CompilerServices;
-using System;
+using System.Windows.Data;
 
 namespace Xce.UndoRedo.Base
 {
@@ -30,7 +30,7 @@ namespace Xce.UndoRedo.Base
             return true;
         }
 
-        protected void NotifyPropertyChanged([CallerMemberName] string CallerMemberNameAttribute = "") => 
+        protected void NotifyPropertyChanged([CallerMemberName] string CallerMemberNameAttribute = "") =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(CallerMemberNameAttribute));
     }
 
@@ -107,13 +107,13 @@ namespace Xce.UndoRedo.Base
         {
             InitializeComponent();
 
-             SelectionManager = new SelectionManager(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectionManager))));
+            SelectionManager = new SelectionManager(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectionManager))));
         }
 
         public object EditObject
         {
-            get { return (object)GetValue(EditObjectProperty); }
-            set { SetValue(EditObjectProperty, value); }
+            get => GetValue(EditObjectProperty);
+            set => SetValue(EditObjectProperty, value);
         }
 
         public SelectionManager SelectionManager { get; }
@@ -151,7 +151,7 @@ namespace Xce.UndoRedo.Base
             var dataGrid = new DataGrid { HeadersVisibility = DataGridHeadersVisibility.Column };
 
             dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(item.Name));
-            
+
             var index = SelectionManager.AddNewItem();
 
             var selectionBinding = new Binding($"{nameof(SelectionManager)}[{index}]")
@@ -171,11 +171,11 @@ namespace Xce.UndoRedo.Base
             {
                 // Do nothing
             }
-            
+
             dataGrid.SetBinding(Selector.SelectedItemProperty, selectionBinding);
 
-            var group = new GroupBox 
-            { 
+            var group = new GroupBox
+            {
                 Header = $"{item.Name} ({value}",
                 Content = dataGrid,
             };

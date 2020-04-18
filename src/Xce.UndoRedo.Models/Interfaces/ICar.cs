@@ -1,6 +1,6 @@
 ﻿namespace Xce.UndoRedo.Models.Interfaces
 {
-    public interface ICar: IAbsctractModel
+    public interface ICar : IAbsctractModel
     {
         string Fuel { get; set; }
         string Manufacturer { get; set; }

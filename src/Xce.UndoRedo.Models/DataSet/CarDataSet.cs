@@ -1,8 +1,8 @@
 ﻿using System;
-using Xce.TrackingItem.Interfaces;
-using Xce.UndoRedo.Models.Base;
-using Xce.TrackingItem.TrackingAction;
 using Xce.TrackingItem;
+using Xce.TrackingItem.Interfaces;
+using Xce.TrackingItem.TrackingAction;
+using Xce.UndoRedo.Models.Base;
 
 namespace Xce.UndoRedo.Models.DataSet
 {

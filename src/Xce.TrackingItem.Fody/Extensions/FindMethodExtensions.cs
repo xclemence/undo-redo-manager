@@ -24,7 +24,7 @@ namespace Xce.TrackingItem.Fody.Extensions
         private static bool IsMatch(this MethodReference methodReference, int expectedGenericNumber, params string[] paramTypes)
         {
             var genericParameterNumber = methodReference.Parameters.Count(x => x.ParameterType.IsGenericParameter);
-            
+
             if (expectedGenericNumber != genericParameterNumber)
                 return false;
 

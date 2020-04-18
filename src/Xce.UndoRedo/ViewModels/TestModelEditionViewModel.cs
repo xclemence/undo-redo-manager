@@ -5,12 +5,11 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using Bogus;
-using Xce.UndoRedo.Base;
 using Xce.TrackingItem;
+using Xce.UndoRedo.Base;
+using Xce.UndoRedo.Models;
 using Xce.UndoRedo.Models.Base;
 using Xce.UndoRedo.Models.Interfaces;
-using Xce.UndoRedo.Models;
-using System.Threading.Tasks;
 using Xce.UndoRedo.Views;
 
 namespace Xce.UndoRedo.ViewModels
@@ -129,22 +128,22 @@ namespace Xce.UndoRedo.ViewModels
 
         private void GenerateFakeCars() => GenerateFake(FakerProviders.GetFakerCar<TCar>(), GeneratorProperties.CarNumber);
 
-        private void GenerateFakeDrivers() => 
+        private void GenerateFakeDrivers() =>
             GenerateFake(FakerProviders.GetFakerDriver<TDriver, TCar, TAddr>(GeneratorProperties.CarNumber, GeneratorProperties.AddressNumber), GeneratorProperties.DriverNumber);
 
         private void GenerateFake<T>(Faker<T> faker, int itemNumber)
-            where T: class
+            where T : class
         {
             managerProvider.Clear();
-            
+
             ApplySeed();
 
             UpdateModel(new List<object>(faker.Generate(itemNumber)));
         }
 
         private void UpdateModel(IList<object> items) => Model = new EditionModel { Items = items };
-                
-        private void RefreshLogs() 
+
+        private void RefreshLogs()
         {
             var builder = new StringBuilder();
 
@@ -213,7 +212,7 @@ namespace Xce.UndoRedo.ViewModels
             NotifyPropertyChanged(nameof(ScopeNumber));
         }
 
-        private void OpenScopeDetails() 
+        private void OpenScopeDetails()
         {
             var viewModel = new TrackingItemsViewModel(trackingManagers.First());
 
@@ -226,7 +225,7 @@ namespace Xce.UndoRedo.ViewModels
         }
 
         private void DisableTracking() => stopTrackingScopes = trackingManagers.Select(x => new StopTrackingScope(x)).ToList();
-        
+
         private void EnableTracking() => CleanUp(ref stopTrackingScopes);
 
         protected override void OnDisposeManaged()

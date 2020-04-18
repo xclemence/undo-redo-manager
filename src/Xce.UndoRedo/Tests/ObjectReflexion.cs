@@ -22,7 +22,7 @@ namespace Xce.UndoRedo.Tests
 
         public static Action<TObject, TValue> TestFindSetterLazyDelegate<TObject, TValue>(string callerName)
         {
-            return (x, y) => 
+            return (x, y) =>
             {
                 var action = (Action<TObject, TValue>)Delegate.CreateDelegate(typeof(Action<TObject, TValue>), null, typeof(TObject).GetProperty(callerName).GetSetMethod());
                 action(x, y);
@@ -43,7 +43,7 @@ namespace Xce.UndoRedo.Tests
             return (x, y) => methodInfo.Invoke(x, new[] { y });
         }
 
-        public static Action<ObjectReflexion, T> TestFindSetterFullAction<T>(string callerName) => 
+        public static Action<ObjectReflexion, T> TestFindSetterFullAction<T>(string callerName) =>
             (x, t) => x.GetType().GetProperty(callerName).GetSetMethod().CreateDelegate(typeof(Action<ObjectReflexion, T>));
 
         public void TestSet(PropertyInfo info, string value) => info.SetValue(this, value);

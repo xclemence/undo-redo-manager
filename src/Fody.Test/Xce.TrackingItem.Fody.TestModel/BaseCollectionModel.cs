@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using Xce.TrackingItem.Attributes;
 
 namespace Xce.TrackingItem.Fody.TestModel

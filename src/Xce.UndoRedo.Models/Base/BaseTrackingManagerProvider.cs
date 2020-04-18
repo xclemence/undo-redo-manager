@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Xce.UndoRedo.Models.DataSet;
-using Xce.TrackingItem.TrackingAction;
 using Xce.TrackingItem;
+using Xce.TrackingItem.TrackingAction;
+using Xce.UndoRedo.Models.DataSet;
 
 namespace Xce.UndoRedo.Models.Base
 {
@@ -22,7 +22,7 @@ namespace Xce.UndoRedo.Models.Base
     {
         protected BaseTrackingManagerProvider() => Manager = new TrackingManager();
 
-        protected internal TrackingManager Manager { get; set; } 
+        protected internal TrackingManager Manager { get; set; }
 
         public void RevertMulti()
         {

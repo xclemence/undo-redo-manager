@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace Xce.TrackingItem.Fody.TestModel
@@ -20,10 +19,10 @@ namespace Xce.TrackingItem.Fody.TestModel
             TestCollection.CollectionChanged -= OnTestCollectionCollectionChanged;
         }
 
-        private void OnTestCollectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => 
+        private void OnTestCollectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) =>
             trackingManager.AddActions(TrackingActionFactory.GetCollectionChangedTrackingActionLIst(TestCollection, e));
 
-        public ObservableCollection<int> TestCollection { get;  }
+        public ObservableCollection<int> TestCollection { get; }
     }
 
     public sealed class ReferenceCollectionModel2
@@ -44,7 +43,7 @@ namespace Xce.TrackingItem.Fody.TestModel
 
         private void OnTestCollectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) =>
             trackingManager.AddActions(TrackingActionFactory.GetCollectionChangedTrackingActionLIst(TestCollection, e));
-       
+
         public ObservableCollection<int> TestCollection { get; set; }
     }
 }

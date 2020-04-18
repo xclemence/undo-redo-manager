@@ -9,7 +9,7 @@ namespace Xce.TrackingItem.Fody.Extensions
         {
             var currnentPosition = position;
 
-            foreach(var item in instructions)
+            foreach (var item in instructions)
             {
                 baseColletion.Insert(currnentPosition, item);
                 currnentPosition++;

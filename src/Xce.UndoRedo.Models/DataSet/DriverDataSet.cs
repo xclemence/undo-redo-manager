@@ -1,8 +1,8 @@
 ﻿using System;
-using Xce.TrackingItem.Interfaces;
-using Xce.UndoRedo.Models.Base;
-using Xce.TrackingItem.TrackingAction;
 using Xce.TrackingItem;
+using Xce.TrackingItem.Interfaces;
+using Xce.TrackingItem.TrackingAction;
+using Xce.UndoRedo.Models.Base;
 
 namespace Xce.UndoRedo.Models.DataSet
 {
@@ -18,7 +18,7 @@ namespace Xce.UndoRedo.Models.DataSet
                 TrackingDataSetCache.Instance.SetDataSet(DataSetTrackingManagerProvider.Instance.DataSet);
             }
         }
-     
+
         public Guid Id { get; private set; } = Guid.NewGuid();
 
         public override void Initialize() => DataSetTrackingManagerProvider.Instance.DataSet.Drivers.Add(this);

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using Xce.UndoRedo.Base;
-using Xce.UndoRedo.Tests;
+using Xce.UndoRedo.Models;
 using Xce.UndoRedo.Models.DataSet;
 using Xce.UndoRedo.Models.Demo;
 using Xce.UndoRedo.Models.Fody;
 using Xce.UndoRedo.Models.ItemSave;
 using Xce.UndoRedo.Models.Multi;
 using Xce.UndoRedo.Models.PropertySave;
-using Xce.UndoRedo.Models;
+using Xce.UndoRedo.Tests;
 
 namespace Xce.UndoRedo.ViewModels
 {

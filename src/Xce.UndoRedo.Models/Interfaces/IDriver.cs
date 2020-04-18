@@ -6,7 +6,7 @@ namespace Xce.UndoRedo.Models.Interfaces
         where TCar : ICar
         where TAddr : IAddress
     {
-        ObservableCollection<TAddr> Addresses { get;}
+        ObservableCollection<TAddr> Addresses { get; }
         ObservableCollection<TCar> Cars { get; }
         string FirstName { get; set; }
         string LastName { get; set; }

@@ -45,7 +45,7 @@ namespace Xce.TrackingItem.TrackingAction
             }
         }
 
-        public void Apply() 
+        public void Apply()
         {
             if (Mode == TrackingCollectionUpdateMode.Remove)
                 RemoveItems();

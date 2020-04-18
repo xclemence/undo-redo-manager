@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Xce.TrackingItem.Interfaces;
-using Xce.UndoRedo.Models.Base;
-using Xce.TrackingItem.TrackingAction;
 using Xce.TrackingItem;
+using Xce.TrackingItem.Interfaces;
+using Xce.TrackingItem.TrackingAction;
+using Xce.UndoRedo.Models.Base;
 
 namespace Xce.UndoRedo.Models.DataSet
 {
@@ -18,7 +18,7 @@ namespace Xce.UndoRedo.Models.DataSet
             Cars = new List<CarDataSet>();
             Addresses = new List<AddressDataSet>();
 
-            if(!trackingManager.IsAction)
+            if (!trackingManager.IsAction)
                 TrackingDataSetCache.Instance.SetDataSet(this);
         }
 

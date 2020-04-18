@@ -8,14 +8,11 @@ namespace Xce.TrackingItem
     {
         private readonly Stack<TrackingScope> trackingScopes = new Stack<TrackingScope>();
 
-        public TrackingManager()
-        {
-            BaseScope = NewScope();
-        }
+        public TrackingManager() => BaseScope = NewScope();
 
         public bool IsAction { get; set; }
 
-        public bool CanRevert=> (GetCurrentRegisterScope()?.LastActions.Count ?? 0) != 0;
+        public bool CanRevert => (GetCurrentRegisterScope()?.LastActions.Count ?? 0) != 0;
         public bool CanRemake => (GetCurrentRegisterScope()?.RevertedActions.Count ?? 0) != 0;
 
         public int ScopeNumber => trackingScopes.Count;
@@ -71,7 +68,7 @@ namespace Xce.TrackingItem
             return trackingScopes.Peek();
         }
 
-        public TrackingScope NewScope() 
+        public TrackingScope NewScope()
         {
             var current = GetCurrentRegisterScope();
             var scope = new TrackingScope(current, _ => trackingScopes.Pop());
