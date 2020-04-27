@@ -7,7 +7,7 @@ Undo Redo, the best feature that every software should have. But, it is not simp
 
 This project is an analysis to compare three types of persistence for undo-redo management.
 
-## Tacking manager
+## Tracking manager
 Undo redo concepts need a mechanism to revert and apply changes to a simple object. It's very similar to track all actions (with all information mandatory to revert/apply changes) and save them in a list.
 All tracking items should be standalone to manage revert/apply.
 
