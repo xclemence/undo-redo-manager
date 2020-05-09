@@ -1,7 +1,7 @@
 # Undo-redo Manager
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Ms Build](https://github.com/xclemence/undo-redo-manager/workflows/Ms%20Build/badge.svg?branch=master)
-![dotnet CLI](https://github.com/xclemence/undo-redo-manager/workflows/dotnet%20CLI/badge.svg?branch=master)
+[![Ms Build][msbuild-github-actions-badge]][msbuild-github-actions]
+[![dotnet CLI][dotnet-github-actions-badge]][dotnet-github-actions]
 
 Undo Redo, the best feature that every software should have. But, it is not simple to implement good undo-redo management. You should choose a good strategy to combine performance and maintainability (especially about the granularity of object persistence).
 
@@ -153,3 +153,9 @@ Test parameters:
 
 ### Interface of Test application 
 <img src="doc/TestApp.png"/>
+
+
+[msbuild-github-actions]:                  https://github.com/xclemence/undo-redo-manager/actions?query=workflow%3A%22Ms+Build%22
+[msbuild-github-actions-badge]:            https://github.com/xclemence/undo-redo-manager/workflows/Ms%20Build/badge.svg?branch=master
+[dotnet-github-actions]:                   https://github.com/xclemence/undo-redo-manager/actions?query=workflow%3A%22dotnet+CLI%22
+[dotnet-github-actions-badge]:             https://github.com/xclemence/undo-redo-manager/workflows/dotnet%20CLI/badge.svg?branch=master
